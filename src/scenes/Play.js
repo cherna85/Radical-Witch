@@ -24,7 +24,7 @@ class Play extends Phaser.Scene {
         }
         this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
 
-        this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH', 0, 0, 0);
+        this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH', 0, 5, 25);
     }
     
     //Time = time passed since game launch
