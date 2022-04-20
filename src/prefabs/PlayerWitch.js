@@ -10,6 +10,7 @@ class PlayerWitch extends Phaser.GameObjects.Sprite {
         this.gravityAccel = gravityAccel
         this.gravityMax = gravityMax
         this.blastForce = blastForce
+        this.gravity = 10
 
         scene.add.existing(this);
     }
@@ -18,5 +19,8 @@ class PlayerWitch extends Phaser.GameObjects.Sprite {
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             console.log("Pressed the bomb button");
         }
+
+        this.y += this.gravity * (delta / 1000)
+        //If I add gravity * delta, that should change grav to pixels per sec, right?
     }
 }

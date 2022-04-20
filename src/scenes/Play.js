@@ -28,8 +28,9 @@ class Play extends Phaser.Scene {
     }
     
     //Time = time passed since game launch
-    //Delta = time since last frame in MS
+    //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
+        //console.log("Delta: " + delta)
         this.plrWtich.update(time, delta);
     }
 }
