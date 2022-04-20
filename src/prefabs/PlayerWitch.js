@@ -13,4 +13,10 @@ class PlayerWitch extends Phaser.GameObjects.Sprite {
 
         scene.add.existing(this);
     }
+
+    update(time, delta){
+        if(Phaser.Input.Keyboard.JustDown(keyBomb)){
+            console.log("Pressed the bomb button");
+        }
+    }
 }

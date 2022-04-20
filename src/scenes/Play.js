@@ -14,13 +14,15 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        
         let placeholderConfig = {
             fontFamily: 'Courier',
             fonstSize: '28px',
             color: '#F0FF5B',
             align: 'left'
         }
-        this.add.text(50, 50, "Radical Witch play scene", placeholderConfig);
+        this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
 
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH', 0, 0, 0);
     }
@@ -28,6 +30,6 @@ class Play extends Phaser.Scene {
     //Time = time passed since game launch
     //Delta = time since last frame in MS
     update(time, delta) {
-
+        this.plrWtich.update(time, delta);
     }
 }

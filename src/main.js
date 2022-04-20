@@ -4,4 +4,8 @@ let config = {
     height: 480,
     scene: [ Play ]
 }
+
+//reserve keyboard vars
+let keyBomb, keyDown, keyLeft, keyRight, keyCancel;
+
 let game = new Phaser.Game(config);
