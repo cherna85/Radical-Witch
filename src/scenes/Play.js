@@ -10,6 +10,7 @@ class Play extends Phaser.Scene {
 
     preload() {
         //Load assets here
+        this.load.image('witchPH', './assets/rocket.png');
     }
 
     create() {
@@ -20,6 +21,8 @@ class Play extends Phaser.Scene {
             align: 'left'
         }
         this.add.text(50, 50, "Radical Witch play scene", placeholderConfig);
+
+        this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH', 0, 0, 0);
     }
     
     //Time = time passed since game launch

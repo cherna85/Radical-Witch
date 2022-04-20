@@ -10,5 +10,7 @@ class PlayerWitch extends Phaser.GameObjects.Sprite {
         this.gravityAccel = gravityAccel
         this.gravityMax = gravityMax
         this.blastForce = blastForce
+
+        scene.add.existing(this);
     }
 }
