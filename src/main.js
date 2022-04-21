@@ -9,10 +9,12 @@ let config = {
               debug: true
         }
   },
-    scene: [ Play ]
+    scene: [ Menu, Play, Tutorial, Option, Credit ]
 }
+// for selecting menu
+let sceneSelect = 'playScene';
 
 //reserve keyboard vars
-let keyBomb, keyDown, keyLeft, keyRight, keyCancel;
+let keyBomb, keyDown, keyLeft, keyRight, keyCancel, keyUp;
 
 let game = new Phaser.Game(config);
