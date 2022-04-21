@@ -3,32 +3,29 @@ Main player character
 - Santiago
 */
 
-class PlayerWitch extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, gravityAccel = 25, gravityMax = 50, blastForce = -100) {
+class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, texture, frame, blastPower = -400) {
         super(scene, x, y, texture, frame);
         
-        this.gravityAccel = gravityAccel
-        this.gravityMax = gravityMax
-        this.blastForce = blastForce
-        this.verticalVel = 0
-
+        //These have to be first for physics stuff to work
         scene.add.existing(this);
+        scene.physics.add.existing(this); //Assigns this sprite a physics body
+        
+        this.blastPower = blastPower;
+        this.setCircle(20); //Testing collision box resizing/changing
+        this.setBodySize(200, 50, this.center)
     }
 
     update(time, delta){
-        delta /= 1000; //Convert delta from MS to S
-
-        this.verticalVel += this.gravityAccel * delta;
-        if(this.verticalVel > this.gravityMax){
-            this.verticalVel = this.gravityMax;
-        }
+        /* Converts delta from milliseconds to seconds. For me it's easier
+        to read, but might not match up with how physics object uses delta.
+        Let me know if physics seems weird
+        - Santiago */
+        delta /= 1000
 
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             console.log("Pressed the bomb button");
-            this.verticalVel = this.blastForce;
+            this.setVelocityY(this.blastPower);
         }
-        
-        this.y += this.verticalVel * delta;
-        //If I add verticalVel * delta, that should change grav to pixels per sec, right?
     }
 }
