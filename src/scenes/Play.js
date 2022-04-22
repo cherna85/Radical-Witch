@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
 
     create() {
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         
         let placeholderConfig = {
             fontFamily: 'Courier',
