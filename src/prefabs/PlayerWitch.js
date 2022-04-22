@@ -17,6 +17,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.bombSprite = bombSprite
         this.setCircle(20); //Testing collision box resizing/changing
         this.setBodySize(200, 50, this.center)
+
+        this.body.allowGravity = false;
     }
 
     update(time, delta){
@@ -28,7 +30,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldownTimer -= delta
 
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
-            this.setVelocityY(this.blastPower);
+            //this.setVelocityY(this.blastPower);
             this.throwBomb()
         }
     }
