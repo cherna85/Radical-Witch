@@ -7,8 +7,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this); //Assigns this sprite a physics body
         //remove gravity
         this.body.allowGravity = false;
-        console.log(this);
-
         this.points = pointValue;
         this.attackPower = attackPower;
         this.moveSpeed = Phaser.Math.Between(4,10);

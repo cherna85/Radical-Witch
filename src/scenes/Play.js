@@ -26,8 +26,7 @@ class Play extends Phaser.Scene {
         this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
 
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
-
-       this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
+        this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
     }
     
 
@@ -40,6 +39,9 @@ class Play extends Phaser.Scene {
         //moves the ship
         if(!this.gameOver){
             this.enemy01.update();
+            if(this.enemy01.active == false){
+                this.enemySpawn();
+            }
         }
         if(this.checkCollision(this.plrWtich, this.enemy01) && this.enemy01.active == true){
             this.enemy01.destroyEnemy();
@@ -58,7 +60,7 @@ class Play extends Phaser.Scene {
                 return false;
             }
     }
-    enemySpawner(){
-        //pass
+    enemySpawn(){
+        this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
     }
 }
