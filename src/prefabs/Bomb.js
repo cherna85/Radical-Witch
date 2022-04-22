@@ -11,6 +11,9 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         this.setCircle(16)
+        this.body.allowGravity = false
+        this.body.allowDrag = false
+        this.body.allowRotation = false
     }
 
 
