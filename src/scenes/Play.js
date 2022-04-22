@@ -27,9 +27,7 @@ class Play extends Phaser.Scene {
 
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
 
-        // Enemy implementation
-        //// tweak the range 
-        this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0); 
+       this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
     }
     
 
@@ -43,11 +41,12 @@ class Play extends Phaser.Scene {
         if(!this.gameOver){
             this.enemy01.update();
         }
-        if(this.checkCollision(this.plrWtich, this.enemy01)){
-            this.enemy01.reset();
+        if(this.checkCollision(this.plrWtich, this.enemy01) && this.enemy01.active == true){
+            this.enemy01.destroyEnemy();
         }
-
+        
     }
+    //temp
     checkCollision(witch, enemy){
         //AABB checking
         if(witch.x < enemy.x + enemy.width && 
@@ -58,5 +57,8 @@ class Play extends Phaser.Scene {
             }else {
                 return false;
             }
+    }
+    enemySpawner(){
+        //pass
     }
 }

@@ -1,25 +1,35 @@
-class Enemy extends Phaser.GameObjects.Sprite {
-    constructor(scene,x,y,texture,frame, pointValue) {
+class Enemy extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, texture, frame, pointValue, attackPower = -400) {
         super(scene, x, y, texture, frame);
+        
+        //These have to be first for physics stuff to work
         scene.add.existing(this);
+        scene.physics.add.existing(this); //Assigns this sprite a physics body
+        //remove gravity
+        this.body.allowGravity = false;
+        console.log(this);
+
         this.points = pointValue;
-        // eventually we can make move speed a var
-        //change it based on difficulty?
+        this.attackPower = attackPower;
         this.moveSpeed = Phaser.Math.Between(4,10);
+        this.setCircle(20); //Testing collision box resizing/changing
+        this.setBodySize(200, 50, this.center)
+    
     }
-    update(){
+    update(time, delta){
+        /* Converts delta from milliseconds to seconds. For me it's easier
+        to read, but might not match up with how physics object uses delta.
+        Let me know if physics seems weird
+        - Santiago */
+        delta /= 1000
         //moving left
         this.x -= this.moveSpeed;
         //wrap edges
-        if(this.x <= 0 - this.width){
-            this.reset();
+        if(this.x <= 0 - this.width && this.active == true){
+            this.destroyEnemy();
         }
     }
-    reset(){
-        this.x = game.config.width;
-        // changes the postion at every reset
-        this.y = Phaser.Math.Between(150,game.config.height- 180);
-        //changes speed every reset
-        this.moveSpeed = Phaser.Math.Between(1,10);
+    destroyEnemy(){
+        this.destroy();
     }
 }
