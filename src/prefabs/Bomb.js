@@ -14,7 +14,9 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
         this.body.allowGravity = false
         this.body.allowDrag = false
         this.body.allowRotation = false
+        this.lifespan = 5
     }
 
-
+    //ADD LATER:
+    //  Lifespan. After x seconds a bomb will be removed from the scene (to save memory)
 }
