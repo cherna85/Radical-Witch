@@ -40,33 +40,28 @@ class Play extends Phaser.Scene {
         this.groupBombs = this.physics.add.group();
         this.groupEnemies.defaults = {};
 
-        this.groupExplosions = this.physics.add.staticGroup();
-        this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.2))
-        this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.5))
+        this.groupExplosions = this.physics.add.group();
+        /* Experiment showed that simply having two explosions in group at once causes problems */
+        //this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.2))
+        //this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.5))
 
         /*(Below) - last argument is the context to call the function. Might be possible to call a func inside
         one of the two objects instead - Santiago*/
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
         //For some reason, explosion does not affect player (even when I made a func in this scene)
-        this.physics.add.overlap(this.groupExplosions, this.plrWtich, this.plrWtich.blastJump, null, this.plrWtich);
+        this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
     }
     
 
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
-        this.plrWtich.update(time, delta);
-
-        //moves the ship
         if(!this.gameOver){
+            this.plrWtich.update(time, delta);
+
             this.enemy01.update();
             this.enemy02.update();
 
-            //The crash here seems to be caused by a bomb hitting two enemies at the same time
-            //My guess is that the collide function is called for the bomb and one enemy first, creating an explosion, then destroying the bomb right afterwards
-            //Then the func is called for the same bomb with the 2nd enemy, but that bomb is gone now. The resulting explosion is undefined because it was given bomb's
-            //x and y coords after it was destroyed
-            //Test: moving explosion spawn to the bomb class will allow only one explosion to be created
 
             //Conclusion: This method of iterating has problems if a child is removed but there is still a child remaining.
             this.groupExplosions.children.iterate(function (child) {
@@ -97,12 +92,16 @@ class Play extends Phaser.Scene {
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
 
-        let explosion = new Explosion(this, 150, 150);
-        this.groupExplosions.add(explosion);
         // Even if unassociated with the bomb, the explosion still causes issues with update
         // Perhaps it is something to do with the fact that there are two of them
-
         enemy.destroy();
         bomb.explode();
+    }
+
+    // When player and explosion touch, send player upwards
+    plrBlastJump(player, explosion){
+        console.log("Player caught in blast!");
+        explosion.disableBody();
+        player.blastJump();
     }
 }
