@@ -18,8 +18,10 @@ class Play extends Phaser.Scene {
         // Buttons
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
-
+        
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
+        //reset gameover setting 
+        this.gameOver = false;
 
         // Physics groups & collisions - Santiago
         this.groupEnemies = this.physics.add.group();
