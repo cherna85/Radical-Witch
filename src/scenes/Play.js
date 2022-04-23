@@ -36,6 +36,9 @@ class Play extends Phaser.Scene {
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
         this.groupExplosions = this.physics.add.group();
+        this.groupExplosions.runChildUpdate = true;
+        // Even using this instead of a loop, the double explosion bug still happens
+
         /* Experiment showed that simply having two explosions in group at once causes problems */
         //this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.2))
         //this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.5))
@@ -61,16 +64,9 @@ class Play extends Phaser.Scene {
     update(time, delta) {
         if(!this.gameOver){
             this.plrWtich.update(time, delta);
-
-            //Conclusion: This method of iterating has problems if a child is removed but there is still a child remaining.
-            this.groupExplosions.children.iterate(function (child) {
-                child.update(time, delta);
-            });
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
         }
-        
-        
     }
 
     enemySpawn(){
