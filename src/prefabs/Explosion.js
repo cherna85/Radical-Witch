@@ -1,0 +1,21 @@
+class Explosion extends Phaser.Physics.Arcade.Sprite {
+      constructor(scene, x, y, texture, frame) {
+          super(scene, x, y, texture, frame)
+  
+          scene.add.existing(this);
+          scene.physics.add.existing(this);
+          //scene.groupExplosions.add(this); //Will be static group
+
+          //this.body = new Phaser.Physics.Arcade.StaticBody(scene, this)
+          this.setCircle(128, -128, -128)
+          this.lifespan = 0.2 //Duration in seconds
+          //When animation is added, can switch to calls based on animation frames
+      }
+
+      update(time, delta){
+            this.lifespan -= (delta/1000)
+            if(this.lifespan <= 0){
+                  this.destroy()
+            }
+      }
+  }

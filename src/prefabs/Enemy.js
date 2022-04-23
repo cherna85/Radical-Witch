@@ -11,7 +11,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         this.points = pointValue;
         this.attackPower = attackPower;
-        this.moveSpeed = Phaser.Math.Between(4,10);
+        this.moveSpeed = 2; //Phaser.Math.Between(4,10);
         this.setCircle(20); //Testing collision box resizing/changing
         this.setBodySize(200, 50, this.center)
     
