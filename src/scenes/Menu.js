@@ -14,7 +14,7 @@ class Menu extends Phaser.Scene {
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
         //set up text can be changed to be images
-        this.playbutton = this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',  ).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',  ).setOrigin(0.5);
         this.playbutton = this.add.text(game.config.width/2, game.config.height/2 , 'Play',  {backgroundColor: '#D5B0ED'}).setOrigin(0.5);
         this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Tutorial').setOrigin(0.5);
         this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Options').setOrigin(0.5);

@@ -28,10 +28,9 @@ class Play extends Phaser.Scene {
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
-        let spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
+        this.spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
             this.enemySpawn();
         },  loop: true });
-
 
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
@@ -56,7 +55,8 @@ class Play extends Phaser.Scene {
             align: 'left'
         }
         this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
-    }
+        this.endscreen = 0
+    } 
     
 
     //Time = time passed since game launch
@@ -66,6 +66,24 @@ class Play extends Phaser.Scene {
             this.plrWtich.update(time, delta);
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
+        }
+        if(this.plrWtich.y > game.config.height){
+            this.gameOver = true;
+            this.spawn.paused = true;
+            this.groupEnemies.runChildUpdate = false;
+            this.endscreen++;
+            //prints text
+            if(this.endscreen == 1){
+                this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Press Z to Restart',  {color: '#F0FF5B'}).setOrigin(0.5);
+                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Press X for MainMenu' ,{color: '#F0FF5B'}).setOrigin(0.5);
+            }   
+        }
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyBomb)){  
+            this.scene.restart();     
+        }
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyCancel)){  
+            this.scene.start("menuScene");     
         }
     }
 
