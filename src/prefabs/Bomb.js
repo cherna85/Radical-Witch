@@ -18,6 +18,19 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
         this.lifespan = 5
     }
 
-    //ADD LATER:
-    //  Lifespan. After x seconds a bomb will be removed from the scene (to save memory)
+
+    update(time, delta){
+        this.lifespan -= (delta/1000)
+        // Lifespan. After x seconds a bomb will be removed from the scene to save memory
+        if(this.lifespan <= 0){
+              this.destroy()
+        }
+    }
+
+    explode(){
+        let explosion = new Explosion(this.scene, this.x, this.y);
+        this.scene.groupExplosions.add(explosion);
+
+        this.destroy();
+    }
 }

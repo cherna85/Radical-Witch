@@ -15,24 +15,21 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // Buttons
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
-        
-        let placeholderConfig = {
-            fontFamily: 'Courier',
-            fonstSize: '28px',
-            color: '#F0FF5B',
-            align: 'left'
-        }
-        this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
+
 
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
 
-        this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
+        this.enemy01 = new Enemy(this, game.config.width, Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
+        this.enemy02 = new Enemy(this, game.config.width + 40, Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
 
-        
-        enemyGroup = this.physics.add.group();
-        enemyGroup.defaults = {};
+        // Physics groups & collisions - Santiago
+        this.groupEnemies = this.physics.add.group();
+        this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
+        this.groupEnemies.runChildUpdate = true;
+
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
         let spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
@@ -42,32 +39,61 @@ class Play extends Phaser.Scene {
 
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
+        this.groupExplosions = this.physics.add.group();
+        /* Experiment showed that simply having two explosions in group at once causes problems */
+        //this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.2))
+        //this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.5))
 
         /*(Below) - last argument is the context to call the function. Might be possible to call a func inside
         one of the two objects instead - Santiago*/
-        this.physics.add.overlap(this.groupBombs, enemyGroup, this.bombHitsEnemy, null, this);
+        this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
+        this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
+
+        // UI
+        let placeholderConfig = {
+            fontFamily: 'Courier',
+            fonstSize: '28px',
+            color: '#F0FF5B',
+            align: 'left'
+        }
+        this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
     }
     
 
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
-        this.plrWtich.update(time, delta);
+        if(!this.gameOver){
+            this.plrWtich.update(time, delta);
 
-        //moves the ship
-         if(!this.gameOver){
-            enemyGroup.runChildUpdate = true;
-        //this.enemySpawn(3);
-        }   
+            //Conclusion: This method of iterating has problems if a child is removed but there is still a child remaining.
+            this.groupExplosions.children.iterate(function (child) {
+                child.update(time, delta);
+            });
+            //console.log(this.groupExplosions.getLength())
+            //Members are removed from the group when they are destroyed. So wtf?
+        }
+        
+        
     }
 
     enemySpawn(){
-        enemyGroup.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0));
+        this.groupEnemies.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0));
     }
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
-        enemy.disableBody(true, true);
-        bomb.disableBody(true, true);
+
+        // Even if unassociated with the bomb, the explosion still causes issues with update
+        // Perhaps it is something to do with the fact that there are two of them
+        enemy.destroy();
+        bomb.explode();
+    }
+
+    // When player and explosion touch, send player upwards
+    plrBlastJump(player, explosion){
+        console.log("Player caught in blast!");
+        explosion.disableBody();
+        player.blastJump();
     }
 }

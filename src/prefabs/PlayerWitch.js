@@ -30,8 +30,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             this.throwBomb()
         }
-        if(Phaser.Input.Keyboard.JustDown(keyCancel)){
-            this.setVelocityY(this.blastPower);
+        if(Phaser.Input.Keyboard.JustDown(keyCancel)){ //Remove later
+            this.blastJump()
         }
     }
 
@@ -46,5 +46,9 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         else{
             console.log("Cant throw bomb right now");
         }
+    }
+
+    blastJump(){
+        this.setVelocityY(this.blastPower);
     }
 }
