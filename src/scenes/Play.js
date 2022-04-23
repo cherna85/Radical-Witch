@@ -41,7 +41,7 @@ class Play extends Phaser.Scene {
         this.groupEnemies.defaults = {};
 
         this.groupExplosions = this.physics.add.staticGroup();
-        this.groupExplosions.create(new Explosion(this, 100, 200))
+        this.groupExplosions.add(new Explosion(this, 100, 200))
 
         /*(Below) - last argument is the context to call the function. Might be possible to call a func inside
         one of the two objects instead - Santiago*/
