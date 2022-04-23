@@ -28,6 +28,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
     destroyEnemy(){
+        console.log("bye")
         this.destroy();
     }
 }
