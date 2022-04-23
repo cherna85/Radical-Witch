@@ -37,6 +37,7 @@ class Play extends Phaser.Scene {
         this.groupBombs.defaults = {};
         this.groupExplosions = this.physics.add.group();
         this.groupExplosions.runChildUpdate = true;
+        this.groupExplosions.defaults = {};
         // Even using this instead of a loop, the double explosion bug still happens
 
         /* Experiment showed that simply having two explosions in group at once causes problems */
