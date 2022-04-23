@@ -41,7 +41,8 @@ class Play extends Phaser.Scene {
         this.groupEnemies.defaults = {};
 
         this.groupExplosions = this.physics.add.staticGroup();
-        this.groupExplosions.add(new Explosion(this, 100, 200))
+        this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.2))
+        this.groupExplosions.add(new Explosion(this, 100, 200, null, 0, 0.5))
 
         /*(Below) - last argument is the context to call the function. Might be possible to call a func inside
         one of the two objects instead - Santiago*/
@@ -66,6 +67,8 @@ class Play extends Phaser.Scene {
             //Then the func is called for the same bomb with the 2nd enemy, but that bomb is gone now. The resulting explosion is undefined because it was given bomb's
             //x and y coords after it was destroyed
             //Test: moving explosion spawn to the bomb class will allow only one explosion to be created
+
+            //Conclusion: This method of iterating has problems if a child is removed but there is still a child remaining.
             this.groupExplosions.children.iterate(function (child) {
                 child.update(time, delta);
             });
@@ -94,8 +97,12 @@ class Play extends Phaser.Scene {
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
 
+        let explosion = new Explosion(this, 150, 150);
+        this.groupExplosions.add(explosion);
+        // Even if unassociated with the bomb, the explosion still causes issues with update
+        // Perhaps it is something to do with the fact that there are two of them
+
         enemy.destroy();
-        if(bomb != null)
-            bomb.explode();
+        bomb.explode();
     }
 }
