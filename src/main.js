@@ -13,6 +13,7 @@ let config = {
 }
 // for selecting menu
 let sceneSelect = 'playScene';
+let enemyGroup;
 
 //reserve keyboard vars
 let keyBomb, keyDown, keyLeft, keyRight, keyCancel, keyUp;

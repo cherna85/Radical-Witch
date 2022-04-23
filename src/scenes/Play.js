@@ -30,17 +30,22 @@ class Play extends Phaser.Scene {
 
         this.enemy01 = new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
 
-        // Physics groups & collisions - Santiago
-        this.groupEnemies = this.physics.add.group();
-        this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
-        this.groupEnemies.add(this.enemy01);
         
+        enemyGroup = this.physics.add.group();
+        enemyGroup.defaults = {};
+        //number of seconds it takes to spawn a new enemy
+        let frequency = 1;
+        let spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
+            this.enemySpawn();
+        },  loop: true });
+
+
         this.groupBombs = this.physics.add.group();
-        this.groupEnemies.defaults = {};
+        this.groupBombs.defaults = {};
 
         /*(Below) - last argument is the context to call the function. Might be possible to call a func inside
         one of the two objects instead - Santiago*/
-        this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
+        this.physics.add.overlap(this.groupBombs, enemyGroup, this.bombHitsEnemy, null, this);
     }
     
 
@@ -50,28 +55,14 @@ class Play extends Phaser.Scene {
         this.plrWtich.update(time, delta);
 
         //moves the ship
-        if(!this.gameOver){
-            this.enemy01.update();
-        }
-        if(this.checkCollision(this.plrWtich, this.enemy01) && this.enemy01.active == true){
-            this.enemy01.destroyEnemy();
-        }
-        
+         if(!this.gameOver){
+            enemyGroup.runChildUpdate = true;
+        //this.enemySpawn(3);
+        }   
     }
-    //temp
-    checkCollision(witch, enemy){
-        //AABB checking
-        if(witch.x < enemy.x + enemy.width && 
-            witch.x + witch.width > enemy.x &&
-            witch.y < enemy.y + enemy.height &&
-            witch.height + witch.y > enemy.y){
-                return true;
-            }else {
-                return false;
-            }
-    }
-    enemySpawner(){
-        //pass
+
+    enemySpawn(){
+        enemyGroup.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0));
     }
 
     bombHitsEnemy(bomb, enemy){
