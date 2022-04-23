@@ -33,6 +33,9 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         if(Phaser.Input.Keyboard.JustDown(keyCancel)){ //Remove later
             this.blastJump()
         }
+        if(Phaser.Input.Keyboard.JustDown(keyDown)){ //Remove later
+            this.dive();
+        }
     }
 
     // Create bomb prefab and set its velocity
@@ -50,5 +53,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
 
     blastJump(){
         this.setVelocityY(this.blastPower);
+    }
+    dive(){
+        this.setVelocityY(-this.blastPower);
     }
 }
