@@ -19,11 +19,7 @@ class Play extends Phaser.Scene {
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
-
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
-
-        this.enemy01 = new Enemy(this, game.config.width, Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
-        this.enemy02 = new Enemy(this, game.config.width + 40, Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0);
 
         // Physics groups & collisions - Santiago
         this.groupEnemies = this.physics.add.group();
