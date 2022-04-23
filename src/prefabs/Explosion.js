@@ -7,7 +7,8 @@ class Explosion extends Phaser.Physics.Arcade.Sprite {
           //scene.groupExplosions.add(this); //Will be static group
 
           //this.body = new Phaser.Physics.Arcade.StaticBody(scene, this)
-          this.setCircle(64, -64, -64)
+          this.setSize(96, 96)
+          this.setCircle(48)
           this.lifespan = lifespan //Duration in seconds
           this.body.allowGravity = false;
           //When animation is added, can switch to calls based on animation frames

@@ -3,7 +3,7 @@ Main player character
 - Santiago
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, blastPower = -400, bombSprite, throwCooldown = 1, throwForce = 400) {
+    constructor(scene, x, y, texture, frame, blastPower = -200, bombSprite, throwCooldown = 1, throwForce = 400) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -15,8 +15,11 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldownTimer = 0
         this.throwForce = throwForce
         this.bombSprite = bombSprite
-        this.setCircle(20); //Testing collision box resizing/changing
-        this.setBodySize(200, 50, this.center)
+        
+        this.setSize(44, 44)
+        this.setCircle(22); //Testing collision box resizing/changing
+        //Circle creation based on top-left of previous collision box. Great...
+        //Setting size to radius * 2 gets it centered
     }
 
     update(time, delta){
