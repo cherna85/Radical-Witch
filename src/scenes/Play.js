@@ -35,7 +35,7 @@ class Play extends Phaser.Scene {
         enemyGroup = this.physics.add.group();
         enemyGroup.defaults = {};
         //number of seconds it takes to spawn a new enemy
-        let frequency = 2;
+        let frequency = 1;
         let spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
             this.enemySpawn();
         },  loop: true });
