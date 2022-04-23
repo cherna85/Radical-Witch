@@ -9,7 +9,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.allowGravity = false;
         this.points = pointValue;
         this.attackPower = attackPower;
-        this.moveSpeed = Phaser.Math.Between(3,5);
+        this.moveSpeed = Phaser.Math.Between(4,7);
     }
     update(time, delta){
         /* Converts delta from milliseconds to seconds. For me it's easier
