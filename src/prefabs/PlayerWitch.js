@@ -3,7 +3,7 @@ Main player character
 - Santiago
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, blastPower = -700, bombSprite, throwCooldown = 0.5, throwForce = 450) {
+    constructor(scene, x, y, texture, frame, bombSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -40,9 +40,6 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             this.throwBomb()
         }
-        if(Phaser.Input.Keyboard.JustDown(keyCancel)){ //Remove later
-            this.blastJump()
-        }
 
         // DIVE: Triples (Or whatever) falling speed
         if(keyDown.isDown && !this.stunned){
@@ -74,7 +71,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         if(this.throwCooldownTimer <= 0){
             this.throwCooldownTimer = this.throwCooldown;
 
-            let bombInstance = new Bomb(this.scene, this.x, this.y, this.bombSprite);
+            let bombInstance = new Bomb(this.scene, this.x, this.y, this.bombSprite, 0);
 
             let throwVecX = Math.cos(this.throwAngle) * this.throwForce;
             let throwVecY = Math.sin(this.throwAngle) * this.throwForce;
