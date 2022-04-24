@@ -16,6 +16,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwForce = throwForce
         this.bombSprite = bombSprite
         this.maxFallSpeed = 100
+        this.fallSpeedDefault = 100
 
         this.setSize(44, 44)
         this.setCircle(22); //Testing collision box resizing/changing
@@ -37,8 +38,13 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         if(Phaser.Input.Keyboard.JustDown(keyCancel)){ //Remove later
             this.blastJump()
         }
-        if(Phaser.Input.Keyboard.JustDown(keyDown)){
-            this.dive();
+
+        // DIVE: Triples (Or whatever) falling speed
+        if(keyDown.isDown){
+            this.maxFallSpeed = this.fallSpeedDefault * 3;
+        }
+        else{
+            this.maxFallSpeed = this.fallSpeedDefault;
         }
 
         //Falling speed limit
