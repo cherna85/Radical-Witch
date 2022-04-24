@@ -17,6 +17,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
         this.body.allowDrag = false
         this.body.allowRotation = false
         this.lifespan = 5
+        this.sfxExplosion = scene.sound.add('sfx_explosion');
     }
 
 
@@ -31,6 +32,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
     explode(){
         let explosion = new Explosion(this.scene, this.x, this.y);
         this.scene.groupExplosions.add(explosion);
+        this.sfxExplosion.play();
 
         this.destroy();
     }

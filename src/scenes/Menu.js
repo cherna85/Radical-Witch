@@ -2,7 +2,10 @@ class Menu extends Phaser.Scene {
     constructor(){
         super("menuScene");
         }
-
+    preload(){
+        //load audio
+        this.load.audio('sfx_explosion', './assets/Explosion1.wav');
+    }
     create() {
         //temp text
         this.add.text(20, 20, "Rad Witch Menu");
