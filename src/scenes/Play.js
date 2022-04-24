@@ -162,6 +162,7 @@ class Play extends Phaser.Scene {
     stunned(player,enemy){
        if(!this.stunEffect){
            this.stunEffect = true;
+           this.plrWtich.stunned = true;
             console.log("stunned");
             keyCancel.enabled = false;
             keyDown.enabled = false;
@@ -173,7 +174,7 @@ class Play extends Phaser.Scene {
                 keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
                 this.stunEffect = false;
-
+                this.plrWtich.stunned = false;
             } });
 
 
