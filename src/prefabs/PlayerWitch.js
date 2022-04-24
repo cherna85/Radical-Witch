@@ -57,4 +57,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     dive(){
         this.setVelocityY(-this.blastPower);
     }
+    KnockBack(){
+        this.setVelocityY(this.blastPower/4);
+    }
 }
