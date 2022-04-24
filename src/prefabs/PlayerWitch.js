@@ -11,12 +11,15 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this); //Assigns this sprite a physics body
         
         this.blastPower = blastPower;
+        this.stunned = false;
 
         this.throwAngle = Math.PI/3; //Needs to be in radians. Positive = rotate clockwise
         this.throwCooldown = throwCooldown;
         this.throwCooldownTimer = 0;
         this.throwForce = throwForce;
         this.bombSprite = bombSprite;
+
+        this.hMoveSpeed = 100; //Horizontal movement
         this.maxFallSpeed = 100;
         this.fallSpeedDefault = 100;
 
@@ -52,6 +55,16 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         //Falling speed limit
         if(this.body.velocity.y > this.maxFallSpeed){
             this.setVelocityY(this.maxFallSpeed);
+        }
+
+        if(keyLeft.isDown && this.x > 0){
+            this.setVelocityX(-this.hMoveSpeed);
+        }
+        else if(keyRight.isDown && this.x < config.width){
+            this.setVelocityX(this.hMoveSpeed);
+        }
+        else{
+            this.setVelocityX(0);
         }
     }
 
