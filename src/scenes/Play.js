@@ -10,12 +10,15 @@ class Play extends Phaser.Scene {
 
     preload() {
         //Load assets here
-        this.load.image('witchPH', './assets/rocket.png');
-        this.load.image('enemy', './assets/spaceship.png');
+        this.load.image('witchPH', './assets/simpleWitch.png');
+        this.load.image('enemy', './assets/simpleGhost.png');
+        this.load.image('background', './assets/simpleforeground.png');
+
     }
 
     create() {
         // Buttons
+        this.background = this.add.tileSprite(0,0,960,540, 'background').setOrigin(0,0);
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -24,8 +27,8 @@ class Play extends Phaser.Scene {
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
 
-        this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
-        //reset gameover setting 
+        this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH',);
+        //reset gameover setting zzx
         this.gameOver = false;
 
         // Physics groups & collisions - Santiago
@@ -83,6 +86,7 @@ class Play extends Phaser.Scene {
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
         }
+        this.background.tilePositionX -=4;
         if(this.plrWtich.y > game.config.height){
             this.gameOver = true;
             this.spawn.paused = true;
