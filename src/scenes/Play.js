@@ -89,7 +89,7 @@ class Play extends Phaser.Scene {
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
         }
-        this.background.tilePositionX -=4;
+        this.background.tilePositionX +=4;
         if(this.plrWtich.y > game.config.height){
             this.gameOver = true;
             this.spawn.paused = true;
