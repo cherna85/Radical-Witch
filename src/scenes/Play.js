@@ -35,6 +35,7 @@ class Play extends Phaser.Scene {
             this.enemySpawn();
         },  loop: true });
 
+
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
         this.groupExplosions = this.physics.add.group();
@@ -49,6 +50,7 @@ class Play extends Phaser.Scene {
         one of the two objects instead - Santiago*/
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
+        this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
 
         // UI
         let placeholderConfig = {
@@ -58,7 +60,13 @@ class Play extends Phaser.Scene {
             align: 'left'
         }
         this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
-        this.endscreen = 0
+        this.endscreen = 0;
+        // stunned effect 
+        this.stunEffect = false;
+        //hides text off screen
+        // text is gonna follow the player for now
+        this.stunText = this.add.text(game.config.width + 400, 0, "Stunned", placeholderConfig);
+
     } 
     
 
@@ -88,6 +96,10 @@ class Play extends Phaser.Scene {
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyCancel)){  
             this.scene.start("menuScene");     
         }
+        if(this.stunEffect){
+             this.stunText.x = this.plrWtich.x -25;
+             this.stunText.y = this.plrWtich.y - 25;
+        }
     }
 
     enemySpawn(){
@@ -108,5 +120,29 @@ class Play extends Phaser.Scene {
         console.log("Player caught in blast!");
         explosion.disableBody();
         player.blastJump();
+    }
+    stunned(player,enemy){
+       if(!this.stunEffect){
+           this.stunEffect = true;
+           
+            console.log("stunned");
+            keyCancel.enabled = false;
+            keyDown = false;
+            keyBomb.enabled = false;
+            this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
+                console.log("unstunned");
+                keyCancel.enabled = true;
+                keyDown = true;
+                keyBomb.enabled = true;;
+                this.stunText.x = game.config.width + 400;
+                this.stunEffect = false;
+
+            } });
+
+
+            //added stuff decide if we wanna keep this
+            player.KnockBack();
+            enemy.destroy();
+       }
     }
 }
