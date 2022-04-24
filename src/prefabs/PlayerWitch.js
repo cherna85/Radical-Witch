@@ -3,7 +3,7 @@ Main player character
 - Santiago
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, blastPower = -700, bombSprite, throwCooldown = 0.5, throwForce = 400) {
+    constructor(scene, x, y, texture, frame, blastPower = -700, bombSprite, throwCooldown = 0.5, throwForce = 450) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -11,12 +11,14 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this); //Assigns this sprite a physics body
         
         this.blastPower = blastPower;
-        this.throwCooldown = throwCooldown
-        this.throwCooldownTimer = 0
-        this.throwForce = throwForce
-        this.bombSprite = bombSprite
-        this.maxFallSpeed = 100
-        this.fallSpeedDefault = 100
+
+        this.throwAngle = Math.PI/3; //Needs to be in radians. Positive = rotate clockwise
+        this.throwCooldown = throwCooldown;
+        this.throwCooldownTimer = 0;
+        this.throwForce = throwForce;
+        this.bombSprite = bombSprite;
+        this.maxFallSpeed = 100;
+        this.fallSpeedDefault = 100;
 
         this.setSize(44, 44)
         this.setCircle(22); //Testing collision box resizing/changing
@@ -60,7 +62,11 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
             this.throwCooldownTimer = this.throwCooldown;
 
             let bombInstance = new Bomb(this.scene, this.x, this.y, this.bombSprite);
-            bombInstance.setVelocity(this.throwForce, this.throwForce);
+
+            let throwVecX = Math.cos(this.throwAngle) * this.throwForce;
+            let throwVecY = Math.sin(this.throwAngle) * this.throwForce;
+
+            bombInstance.setVelocity(throwVecX, throwVecY);
         }
         else{
             console.log("Cant throw bomb right now");
