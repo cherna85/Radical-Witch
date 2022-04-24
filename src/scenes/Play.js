@@ -27,7 +27,7 @@ class Play extends Phaser.Scene {
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
 
-        this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH',);
+        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH',);
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -35,6 +35,8 @@ class Play extends Phaser.Scene {
         this.groupEnemies = this.physics.add.group();
         this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemies.runChildUpdate = true;
+
+        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 5).setOrigin(0,0));
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
@@ -138,7 +140,7 @@ class Play extends Phaser.Scene {
     }
 
     enemySpawn(){
-        this.groupEnemies.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0, 30).setOrigin(0,0));
+        this.groupEnemies.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0).setOrigin(0,0));
     }
 
     bombHitsEnemy(bomb, enemy){

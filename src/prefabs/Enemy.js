@@ -1,5 +1,5 @@
 class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, pointValue, attackPower = -400) {
+    constructor(scene, x, y, texture, frame, pointValue, speed) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -8,8 +8,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         //remove gravity
         this.body.allowGravity = false;
         this.points = pointValue;
-        this.attackPower = attackPower;
-        this.moveSpeed = Phaser.Math.Between(4,7);
+        if(speed == undefined){
+            this.moveSpeed = Phaser.Math.Between(4,7);
+        }
+        else{
+            this.moveSpeed = speed
+        }
     }
     update(time, delta){
         /* Converts delta from milliseconds to seconds. For me it's easier
