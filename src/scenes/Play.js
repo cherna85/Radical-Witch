@@ -19,6 +19,10 @@ class Play extends Phaser.Scene {
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        // end screen selection zxz
+        keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+
 
         this.plrWtich = new PlayerWitch(this, 100, 100, 'witchPH');
         //reset gameover setting 
@@ -86,16 +90,42 @@ class Play extends Phaser.Scene {
             //prints text
             if(this.endscreen == 1){
                 this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
-                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Press Z to Restart',  {color: '#F0FF5B'}).setOrigin(0.5);
-                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Press X for MainMenu' ,{color: '#F0FF5B'}).setOrigin(0.5);
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Restart',  {color: '#F0FF5B', backgroundColor: '#D5B0ED'}).setOrigin(0.5);
+                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Main Menu' ,{color: '#F0FF5B'}).setOrigin(0.5);
             }   
         }
-        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyBomb)){  
-            this.scene.restart();     
+        if(this.gameOver){
+            if (Phaser.Input.Keyboard.JustDown(keyDown)) {
+                if(sceneSelect == 'playScene'){
+                    this.restartbutton.setBackgroundColor('#000000');
+                    this.MainMenubutton.setBackgroundColor('#D5B0ED');
+                    sceneSelect = 'menuScene';
+                }
+                else if(sceneSelect == 'menuScene'){
+                    this.MainMenubutton.setBackgroundColor('#000000');
+                    this.restartbutton.setBackgroundColor('#D5B0ED');
+                    sceneSelect = 'playScene';
+                }  
+              }
+            if (Phaser.Input.Keyboard.JustDown(keyUp)) {
+                if(sceneSelect == 'playScene'){
+                    this.restartbutton.setBackgroundColor('#000000');
+                    this.MainMenubutton.setBackgroundColor('#D5B0ED');
+                    sceneSelect = 'menuScene';
+                }
+                else if(sceneSelect == 'menuScene'){
+                    this.MainMenubutton.setBackgroundColor('#000000');
+                    this.restartbutton.setBackgroundColor('#D5B0ED');
+                    sceneSelect = 'playScene';
+                }  
+            }
+            if (Phaser.Input.Keyboard.JustDown(keyBomb)) {
+                console.log('selecting');
+                this.scene.start(sceneSelect);    
+            }
+
         }
-        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyCancel)){  
-            this.scene.start("menuScene");     
-        }
+        // the text will follow player
         if(this.stunEffect){
              this.stunText.x = this.plrWtich.x -25;
              this.stunText.y = this.plrWtich.y - 25;
@@ -124,16 +154,15 @@ class Play extends Phaser.Scene {
     stunned(player,enemy){
        if(!this.stunEffect){
            this.stunEffect = true;
-           
             console.log("stunned");
             keyCancel.enabled = false;
-            keyDown = false;
+            keyDown.enabled = false;
             keyBomb.enabled = false;
             this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
                 console.log("unstunned");
                 keyCancel.enabled = true;
-                keyDown = true;
-                keyBomb.enabled = true;;
+                keyDown.enabled = true;
+                keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
                 this.stunEffect = false;
 
