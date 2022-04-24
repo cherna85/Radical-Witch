@@ -14,7 +14,7 @@ class Play extends Phaser.Scene {
         this.load.image('enemy', './assets/simpleGhost.png');
         this.load.image('background', './assets/simpleforeground.png');
         this.load.image('bomb', './assets/simpleBomb.png');
-        //this.load.image('')
+        this.load.image('explosion', './assets/simpleExplosion.png');
     }
 
     create() {
@@ -29,7 +29,7 @@ class Play extends Phaser.Scene {
         keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
 
-        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH', 0, 'bomb');
+        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH', 0, 'bomb', 'explosion');
         //reset gameover setting zzx
         this.gameOver = false;
 

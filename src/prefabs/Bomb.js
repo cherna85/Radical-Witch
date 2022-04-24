@@ -4,8 +4,9 @@ Projectile created by player. Will be able to collide with enemies and defeat th
 */
 
 class Bomb extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame) {
+    constructor(scene, x, y, texture, frame, blastSprite) {
         super(scene, x, y, texture, frame)
+        this.blastSprite = blastSprite
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -29,7 +30,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
     }
 
     explode(){
-        let explosion = new Explosion(this.scene, this.x, this.y);
+        let explosion = new Explosion(this.scene, this.x, this.y, this.blastSprite, 0);
         this.scene.groupExplosions.add(explosion);
 
         this.destroy();
