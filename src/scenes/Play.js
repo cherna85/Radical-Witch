@@ -10,7 +10,7 @@ class Play extends Phaser.Scene {
 
     preload() {
         //Load assets here
-        this.load.image('witchPH', './assets/simpleWitch.png');
+        this.load.image('witchPH', './assets/WitchPC_preview.png');
         this.load.image('enemy', './assets/simpleGhost.png');
         this.load.image('background', './assets/simpleforeground.png');
         this.load.image('bomb', './assets/simpleBomb.png');

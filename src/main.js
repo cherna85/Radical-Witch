@@ -1,11 +1,11 @@
 let config = {
     type: Phaser.AUTO,
-    width: 960, // 16 x 9 aspect ratio. Can be scaled up by 2 for fullscreen or divided by 3 to get a good pixel art size
-    height: 540,
+    width: 400, // 16 x 9 aspect ratio. Can be scaled up by 2 for fullscreen or divided by 3 to get a good pixel art size
+    height: 225,
     physics: {
         default: 'arcade',
         arcade: {
-              gravity: { y: 800 },
+              gravity: { y: 0 },
               debug: false
         }
   },
