@@ -40,11 +40,23 @@ class Play extends Phaser.Scene {
         this.groupEnemies.runChildUpdate = true;
 
         this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 10).setOrigin(0,0));
+        //creating bottom level spawners 
+        this.groupEnemieslow = this.physics.add.group();
+        this.groupEnemieslow.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
+        this.groupEnemieslow.runChildUpdate = true;
+
+        this.groupEnemieslow.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10).setOrigin(0,0));
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
         this.spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
-            this.enemySpawn();
+            this.enemySpawn(this.groupEnemies, 150, game.config.height-130);
+        },  loop: true });
+
+        frequency = 2;
+        this.spawnLow = this.time.addEvent({ delay: frequency*1000, callback: () =>{
+            // this is the lower set of spawners 
+            this.enemySpawn(this.groupEnemieslow,game.config.height-125, game.config.height-35);
         },  loop: true });
 
 
@@ -62,8 +74,10 @@ class Play extends Phaser.Scene {
         /*(Below) - last argument is the context to call the function. Might be possible to call a func inside
         one of the two objects instead - Santiago*/
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
+        this.physics.add.overlap(this.groupBombs, this.groupEnemieslow, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
 
         // UI
         let placeholderConfig = {
@@ -97,6 +111,8 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
             this.spawn.paused = true;
             this.groupEnemies.runChildUpdate = false;
+            this.spawnLow.paused = true;
+            this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++;
             //prints text
             if(this.endscreen == 1){
@@ -149,8 +165,8 @@ class Play extends Phaser.Scene {
         }
     }
 
-    enemySpawn(){
-        this.groupEnemies.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 10).setOrigin(0,0));
+    enemySpawn( group, yLow, yHigh){
+        group.add(new Enemy(this, game.config.width,Phaser.Math.Between(yLow,yHigh),'enemy',0, 10).setOrigin(0,0));
     }
 
     bombHitsEnemy(bomb, enemy){
