@@ -24,6 +24,8 @@ class Menu extends Phaser.Scene {
         this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 +96 , 'Credit').setOrigin(0.5);
 
         // get any data of a highscore 
+        // this line of code taken from 
+        //https://phaserjs.com/saving-high-score
         highscore = localStorage.getItem(localStorageName) == null ? 0 :
             localStorage.getItem(localStorageName);
         this.add.text(80,60, 'Highscore: ' + highscore, ).setOrigin(0.5);
