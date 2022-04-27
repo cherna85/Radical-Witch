@@ -62,7 +62,7 @@ class Play extends Phaser.Scene {
         this.groupEnemieslow.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10).setOrigin(0,0));
 
         //number of seconds it takes to spawn a new enemy
-        let frequency = 1;
+        let frequency = 0.1;
         this.spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
             this.enemySpawn(this.groupEnemies, 150, game.config.height-130);
         },  loop: true });
@@ -90,8 +90,10 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.groupBombs, this.groupEnemieslow, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+        //this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
+        //this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+        this.physics.add.overlap(this.groupExplosions, this.groupEnemies, this.explosionHitsEnemy, null, this);
+        this.physics.add.overlap(this.groupExplosions, this.groupEnemieslow, this.explosionHitsEnemy, null, this);
 
         // UI
         let placeholderConfig = {
@@ -190,13 +192,20 @@ class Play extends Phaser.Scene {
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
+        // Even if unassociated with the bomb, the explosion still causes issues with update
+        // Perhaps it is something to do with the fact that there are two of them
+
+        //As long as a collision between this bomb and multiple enemies still happens at the same time, the bomb will create an explosion
+        //and then create another one even though the bomb is already destroyed
+
+        bomb.explode();
+    }
+
+    explosionHitsEnemy(explosion, enemy){
         // adding points to player based on enemies they destroyed
         this.p1Score += enemy.points;
         this.score.text = this.p1Score;
-        // Even if unassociated with the bomb, the explosion still causes issues with update
-        // Perhaps it is something to do with the fact that there are two of them
         enemy.destroy();
-        bomb.explode();
     }
 
     // When player and explosion touch, send player upwards
