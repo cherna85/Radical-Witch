@@ -22,7 +22,11 @@ class Menu extends Phaser.Scene {
         this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Tutorial').setOrigin(0.5);
         this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Options').setOrigin(0.5);
         this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 +96 , 'Credit').setOrigin(0.5);
-       
+
+        // get any data of a highscore 
+        highscore = localStorage.getItem(localStorageName) == null ? 0 :
+            localStorage.getItem(localStorageName);
+        this.add.text(80,60, 'Highscore: ' + highscore, ).setOrigin(0.5);
     }
     update(){
         if (Phaser.Input.Keyboard.JustDown(keyDown)) {

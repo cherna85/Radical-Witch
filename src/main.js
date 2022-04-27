@@ -15,6 +15,9 @@ let config = {
 let sceneSelect = 'playScene';
 let enemyGroup;
 
+let localStorageName = "Radical Witch"
+let highscore = 0;
+
 //reserve keyboard vars
 let keyBomb, keyDown, keyLeft, keyRight, keyCancel, keyUp;
 

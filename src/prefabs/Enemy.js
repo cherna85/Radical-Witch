@@ -1,5 +1,5 @@
 class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, pointValue, speed) {
+    constructor(scene, x, y, texture, frame, pointValue = 10, speed) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work

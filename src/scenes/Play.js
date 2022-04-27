@@ -27,7 +27,8 @@ class Play extends Phaser.Scene {
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
+        // initialize score
+        this.p1Score = 0;
 
         this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH', 0, 'bomb', 'explosion');
         //reset gameover setting zzx
@@ -38,7 +39,7 @@ class Play extends Phaser.Scene {
         this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemies.runChildUpdate = true;
 
-        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 5).setOrigin(0,0));
+        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 10).setOrigin(0,0));
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
@@ -72,6 +73,7 @@ class Play extends Phaser.Scene {
             align: 'left'
         }
         this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
+        this.score = this.add.text(40, 40, this.p1Score, placeholderConfig );
         this.endscreen = 0;
         // stunned effect 
         this.stunEffect = false;
@@ -99,8 +101,14 @@ class Play extends Phaser.Scene {
             //prints text
             if(this.endscreen == 1){
                 this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
-                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Restart',  {color: '#F0FF5B', backgroundColor: '#D5B0ED'}).setOrigin(0.5);
-                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Main Menu' ,{color: '#F0FF5B'}).setOrigin(0.5);
+                // add hiscore and save to local storage
+                if(highscore < this.p1Score){
+                    highscore =  this.p1Score;
+                    localStorage.setItem(localStorageName, highscore);
+                } 
+                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, {color: '#F0FF5B'}).setOrigin(0.5);
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart',  {color: '#F0FF5B', backgroundColor: '#D5B0ED'}).setOrigin(0.5);
+                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +86 , 'Main Menu' ,{color: '#F0FF5B'}).setOrigin(0.5);
             }   
         }
         if(this.gameOver){
@@ -142,12 +150,14 @@ class Play extends Phaser.Scene {
     }
 
     enemySpawn(){
-        this.groupEnemies.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 0).setOrigin(0,0));
+        this.groupEnemies.add(new Enemy(this, game.config.width,Phaser.Math.Between(150,game.config.height-80),  'enemy', 10).setOrigin(0,0));
     }
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
-
+        // adding points to player based on enemies they destroyed
+        this.p1Score += enemy.points;
+        this.score.text = this.p1Score;
         // Even if unassociated with the bomb, the explosion still causes issues with update
         // Perhaps it is something to do with the fact that there are two of them
         enemy.destroy();
