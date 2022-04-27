@@ -10,16 +10,30 @@ class Play extends Phaser.Scene {
 
     preload() {
         //Load assets here
+        //load player assets
         this.load.image('witchPH', './assets/simpleWitch.png');
         this.load.image('enemy', './assets/simpleGhost.png');
-        this.load.image('background', './assets/simpleforeground.png');
         this.load.image('bomb', './assets/simpleBomb.png');
         this.load.image('explosion', './assets/simpleExplosion.png');
+        //load parrallax assets
+        this.load.image('backgroundSky', './assets/backgroundSky.png');
+        this.load.image('moon', './assets/backgroundMoon.png');
+        this.load.image('city', './assets/backgroundCity.png');
+        this.load.image('critters', './assets/backgroundCritters.png');
+        this.load.image('trees', './assets/backgroundTrees.png');
+        this.load.image('path', './assets/backgroundPath.png');
+        
     }
 
     create() {
+        // create background
+        this.backgroundSky = this.add.tileSprite(0, 0, 960, 540, 'backgroundSky').setOrigin(0,0);
+        this.bgMoon = this.add.tileSprite(0, 0, 960, 540, 'moon').setOrigin(0,0);
+        this.bgCity = this.add.tileSprite(0, 0, 960, 540, 'city').setOrigin(0,0);
+        this.bgCritters = this.add.tileSprite(0, 0, 960, 540, 'critters').setOrigin(0,0);
+        this.bgTrees = this.add.tileSprite(0, 0, 960, 540, 'trees').setOrigin(0,0);
+        this.bgPath = this.add.tileSprite(0, 0, 960, 540, 'path').setOrigin(0,0);
         // Buttons
-        this.background = this.add.tileSprite(0,0,960,540, 'background').setOrigin(0,0);
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -92,7 +106,12 @@ class Play extends Phaser.Scene {
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
         }
-        this.background.tilePositionX +=4;
+        //scroll background
+        this.bgMoon.tilePositionX += 0.15;
+        this.bgCity.tilePositionX += 0.25;
+        this.bgCritters.tilePositionX += 2;
+        this.bgTrees.tilePositionX += 4;
+        this.bgPath.tilePositionX += 6;
         if(this.plrWtich.y > game.config.height){
             this.gameOver = true;
             this.spawn.paused = true;
