@@ -3,7 +3,7 @@ Main player character
 - Santiago
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450) {
+    constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450, aimAssistRng = 32) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -17,6 +17,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldown = throwCooldown;
         this.throwCooldownTimer = 0;
         this.throwForce = throwForce;
+        this.aimAssistRng = aimAssistRng; //Distance threshold to trigger aim assist in pixels
+
         this.bombSprite = bombSprite;
         this.blastSprite = blastSprite;
 
@@ -24,7 +26,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.maxFallSpeed = 100;
         this.fallSpeedDefault = 100;
 
-        this.setSize(44, 44)
+        this.setSize(44, 44);
         this.setCircle(22); //Testing collision box resizing/changing
         //Circle creation based on top-left of previous collision box. Great...
         //Setting size to radius * 2 gets it centered
@@ -69,6 +71,41 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     // Create bomb prefab and set its velocity
     // Might want to throw at a steeper angle, or factor in the player's falling speed
     throwBomb(){
+
+        //Checking for proximity
+        //For aim assist, need a nearby enemy's exact position
+        //Something like get_overlapping_bodies would be excellent: Loop through them and choose closest one
+        //Get vector from witch position to body position...
+
+        //Use collider to add specific enemies to a list.
+        //Then clear that list when update is called in witch.
+        //Hopefully the witch update() is called after collider update() [probably same as play scene]
+            //Oh yea, the play scene itself controls witch's update func.
+        /*
+        Get list of all enemies
+        target pos
+        target dist
+        For each enemy
+            dist = vector from this to enemy.length
+            if dist < target dist && dist < aimAssistRange
+                target pos = this enemy.position
+                target dist = dist
+        Use angle of vector from this.pos to target pos
+        */
+
+        let enemyList = this.scene.groupEnemies.children.getArray();
+        let selfPos = new Phaser.Math.Vector2(this.x, this.y);
+        let targetPos = new Phaser.Math.Vector2(0, 0);
+        let targetDist = Infinity;
+        for(let enemy of enemyList){
+            let enemyPos = new Phaser.Math.Vector2(enemy.x, enemy.y);
+            let distance = selfPos.distance(enemyPos);
+            if(distance < targetDist && distance < this.aimAssistRng){
+                console.log("Enemy within range.");
+            }
+        }
+        //It works, I just made the detection range too short (Should be around 54 or higher)
+
         if(this.throwCooldownTimer <= 0){
             this.throwCooldownTimer = this.throwCooldown;
 
