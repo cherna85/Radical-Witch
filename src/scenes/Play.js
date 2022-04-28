@@ -230,6 +230,7 @@ class Play extends Phaser.Scene {
             keyCancel.enabled = false;
             keyDown.enabled = false;
             keyBomb.enabled = false;
+            player.setTexture('witchStunned', 0);
             this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
                 console.log("unstunned");
                 keyCancel.enabled = true;
@@ -238,6 +239,7 @@ class Play extends Phaser.Scene {
                 this.stunText.x = game.config.width + 400;
                 this.stunEffect = false;
                 this.plrWtich.stunned = false;
+                this.plrWtich.setTexture('witchFlying', 0);
             } });
 
 
