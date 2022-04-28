@@ -34,7 +34,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         //But setOffset changes the box's center being it's top-left, and moves it according to top-left of sprite
         //Wtf
         this.setOffset(17, 14);
-        //this.setCircle(11); //Testing collision box resizing/changing
+        this.setCircle(11); //Testing collision box resizing/changing
         
         this.setScale(2, 2);
         //Circle creation based on top-left of previous collision box. Great...
