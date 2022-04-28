@@ -48,6 +48,9 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         - Santiago */
         delta /= 1000
         this.throwCooldownTimer -= delta
+        if(this.throwCooldownTimer <= 0 && !this.stunned){
+            this.setTexture('witchFlying');
+        }
 
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             this.throwBomb()
@@ -89,6 +92,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
             let throwVecY = Math.sin(this.throwAngle) * this.throwForce;
 
             bombInstance.setVelocity(throwVecX, throwVecY);
+            this.setTexture('witchThrow', 0);
         }
         else{
             console.log("Cant throw bomb right now");
