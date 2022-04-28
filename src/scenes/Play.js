@@ -56,7 +56,7 @@ class Play extends Phaser.Scene {
         // creates a floor to collide with 
         this.floor = new Floor(this,480,game.config.height-20);
 
-        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH', 0, 'bomb', 'explosion');
+        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
         //reset gameover setting zzx
         this.gameOver = false;
 
