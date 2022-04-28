@@ -48,10 +48,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         - Santiago */
         delta /= 1000
         this.throwCooldownTimer -= delta
-        if(this.throwCooldownTimer <= 0 && !this.stunned){
-            this.setTexture('witchFlying');
-        }
 
+        
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             this.throwBomb()
         }
@@ -78,6 +76,19 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         else{
             this.setVelocityX(0);
         }
+
+
+        /* Animation state junk - Santiago */
+        if(!this.stunned){
+            if(this.body.velocity.y >= 0 && this.throwCooldownTimer <= 0){
+                if(keyDown.isDown){
+                    this.setTexture('witchDive');
+                }
+                else{
+                    this.setTexture('witchFlying');
+                }
+            }
+        }
     }
 
     // Create bomb prefab and set its velocity
@@ -102,6 +113,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     /*Need blasts upwards to be snappy, but overall falling speed to be slow*/
     blastJump(){
         this.setVelocityY(this.blastPower);
+        this.setTexture('witchAscend')
     }
     dive(){
         this.setVelocityY(-this.blastPower);
