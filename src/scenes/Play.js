@@ -43,6 +43,8 @@ class Play extends Phaser.Scene {
         keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         // initialize score
         this.p1Score = 0;
+        // creates a floor to collide with 
+        this.floor = new Floor(this,480,game.config.height-20);
 
         this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH', 0, 'bomb', 'explosion');
         //reset gameover setting zzx
@@ -59,18 +61,18 @@ class Play extends Phaser.Scene {
         this.groupEnemieslow.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemieslow.runChildUpdate = true;
 
-        this.groupEnemieslow.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10).setOrigin(0,0));
+        this.groupEnemieslow.add(new Enemy(this,  900, game.config.height-75, 'enemy', 0, 10).setOrigin(0,0));
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
         this.spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
-            this.enemySpawn(this.groupEnemies, 150, game.config.height-130);
+            this.enemySpawn(this.groupEnemies, 150, game.config.height-145);
         },  loop: true });
 
         frequency = 2;
         this.spawnLow = this.time.addEvent({ delay: frequency*1000, callback: () =>{
             // this is the lower set of spawners 
-            this.enemySpawn(this.groupEnemieslow,game.config.height-125, game.config.height-35);
+            this.enemySpawn(this.groupEnemieslow,game.config.height-140, game.config.height-75);
         },  loop: true });
 
 
@@ -92,6 +94,10 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+
+        //makes the floor a solid object and then ends game when player collides with it
+        this.physics.add.collider(this.plrWtich,this.floor);
+        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this);
 
         // UI
         let placeholderConfig = {
@@ -119,32 +125,12 @@ class Play extends Phaser.Scene {
             this.plrWtich.update(time, delta);
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
-        }
-        //scroll background
-        this.bgMoon.tilePositionX += 0.15;
-        this.bgCity.tilePositionX += 0.25;
-        this.bgCritters.tilePositionX += 2;
-        this.bgTrees.tilePositionX += 4;
-        this.bgPath.tilePositionX += 6;
-        if(this.plrWtich.y > game.config.height){
-            this.gameOver = true;
-            this.spawn.paused = true;
-            this.groupEnemies.runChildUpdate = false;
-            this.spawnLow.paused = true;
-            this.groupEnemieslow.runChildUpdate = false;
-            this.endscreen++;
-            //prints text
-            if(this.endscreen == 1){
-                this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
-                // add hiscore and save to local storage
-                if(highscore < this.p1Score){
-                    highscore =  this.p1Score;
-                    localStorage.setItem(localStorageName, highscore);
-                } 
-                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, {color: '#F0FF5B'}).setOrigin(0.5);
-                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart',  {color: '#F0FF5B', backgroundColor: '#D5B0ED'}).setOrigin(0.5);
-                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +86 , 'Main Menu' ,{color: '#F0FF5B'}).setOrigin(0.5);
-            }   
+            //scroll background
+            this.bgMoon.tilePositionX += 0.15;
+            this.bgCity.tilePositionX += 0.25;
+            this.bgCritters.tilePositionX += 2;
+            this.bgTrees.tilePositionX += 4;
+            this.bgPath.tilePositionX += 6;
         }
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -184,6 +170,26 @@ class Play extends Phaser.Scene {
         }
     }
 
+    gameEnd(){
+            this.gameOver = true;
+            this.spawn.paused = true;
+            this.groupEnemies.runChildUpdate = false;
+            this.spawnLow.paused = true;
+            this.groupEnemieslow.runChildUpdate = false;
+            this.endscreen++;
+            //prints text
+            if(this.endscreen == 1){
+                this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
+                // add highscore and save to local storage
+                if(highscore < this.p1Score){
+                    highscore =  this.p1Score;
+                    localStorage.setItem(localStorageName, highscore);
+                } 
+                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, {color: '#F0FF5B'}).setOrigin(0.5);
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart',  {color: '#F0FF5B', backgroundColor: '#D5B0ED'}).setOrigin(0.5);
+                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +86 , 'Main Menu' ,{color: '#F0FF5B'}).setOrigin(0.5);
+            }   
+    }
     enemySpawn( group, yLow, yHigh){
         group.add(new Enemy(this, game.config.width,Phaser.Math.Between(yLow,yHigh),'enemy',0, 10).setOrigin(0,0));
     }
@@ -210,6 +216,7 @@ class Play extends Phaser.Scene {
            this.stunEffect = true;
            this.plrWtich.stunned = true;
             console.log("stunned");
+            //removes controls 
             keyCancel.enabled = false;
             keyDown.enabled = false;
             keyBomb.enabled = false;
