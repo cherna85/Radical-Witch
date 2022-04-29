@@ -175,8 +175,13 @@ class Play extends Phaser.Scene {
         }
         // the text will follow player
         if(this.stunEffect){
-             this.stunText.x = this.plrWtich.x -25;
-             this.stunText.y = this.plrWtich.y - 25;
+             this.stunText.x = this.plrWtich.x -40;
+             this.stunText.y = this.plrWtich.y - 55;
+            //prevents players from "sliding"
+            //when stunned 
+            if(!keyLeft.enabled){
+                this.plrWtich.stationary()
+            }
         }
     }
 
@@ -186,7 +191,8 @@ class Play extends Phaser.Scene {
             this.groupEnemies.runChildUpdate = false;
             this.spawnLow.paused = true;
             this.groupEnemieslow.runChildUpdate = false;
-            this.endscreen++;
+            this.endscreen++; // prevents endscreen from generating multiple times
+            this.plrWtich.stationary();
             //prints text
             if(this.endscreen == 1){
                 this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
@@ -230,11 +236,20 @@ class Play extends Phaser.Scene {
             keyCancel.enabled = false;
             keyDown.enabled = false;
             keyBomb.enabled = false;
+            keyLeft.enabled = false;
+            keyRight.enabled = false;
             player.setTexture('witchStunned', 0);
+            //regains player controls
+            this.regainControls = this.time.addEvent({ delay: 500, callback: () =>{
+                console.log("Move!");
+                keyDown.enabled = true;
+                keyLeft.enabled = true;
+                keyRight.enabled = true;
+            } });
             this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
                 console.log("unstunned");
-                keyBomb.enabled = true;
                 keyCancel.enabled = true;
+                keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
                 this.stunEffect = false;
                 this.plrWtich.stunned = false;

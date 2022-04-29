@@ -121,4 +121,9 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     KnockBack(){
         this.setVelocityY(this.blastPower/4);
     }
+    //prevents players from sliding when game ends
+    //or stunned
+    stationary(){
+        this.setVelocityX(0);
+    }
 }
