@@ -21,6 +21,10 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldown = throwCooldown;
         this.throwCooldownTimer = 0;
         this.throwForce = throwForce;
+        this.aimAssistRng = 135; //Distance threshold to trigger aim assist in pixels
+        this.minAim = -0.175; //In Radians
+        this.maxAim = 1.92;
+
         this.bombSprite = bombSprite;
         this.blastSprite = blastSprite;
 
@@ -95,12 +99,54 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     // Might want to throw at a steeper angle, or factor in the player's falling speed
     throwBomb(){
         if(this.throwCooldownTimer <= 0){
+
+            let enemyList = this.scene.groupEnemies.children.getArray();
+            //Adding (17, 14) to position to account for hitbox offset - Santiago
+            let selfPos = new Phaser.Math.Vector2(this.x + 17, this.y + 14);
+            let targetPos = new Phaser.Math.Vector2(0, 0);
+            let targetDist = Infinity;
+            for(let enemy of enemyList){
+                let enemyPos = new Phaser.Math.Vector2(enemy.x, enemy.y);
+                let distance = selfPos.distance(enemyPos);
+                if(distance < Infinity && distance < this.aimAssistRng){
+                    targetDist = distance;
+                    targetPos = enemyPos;
+                }
+            }
+            //It works, I just made the detection range too short (Should be around 54 or higher)
+
+            /* Alternate method (Or rather, more like an optional expansion)
+                On overlap, add enemies to a list in player class (must be enemy class)
+                When throw is called, will look through this list for closest target
+                Witch will target pos of whichever enemy is closest
+                To prevent enemies from persisting in list, the list is cleared at end of player update
+                (Player update called after overlap funcs - throw button check must come first)
+            */
+
             this.throwCooldownTimer = this.throwCooldown;
 
             let bombInstance = new Bomb(this.scene, this.x, this.y, this.bombSprite, 0, this.blastSprite);
 
             let throwVecX = Math.cos(this.throwAngle) * this.throwForce;
             let throwVecY = Math.sin(this.throwAngle) * this.throwForce;
+            if(targetDist != Infinity){ //Within aim-assist range.
+                //(Below) Create vector towards enemy position
+                let aimAssistVec = ((targetPos.subtract(selfPos)).normalize()).setLength(this.throwForce * 1.5);
+                let assistAngle = aimAssistVec.angle(); //Angle from x-axis in radians
+                
+                //Use normal throw if angle is not within range.
+                //If want to simply clamp value instead, use clamp() function
+                if(assistAngle > this.maxAim || assistAngle < this.minAim){
+                    assistAngle = this.throwAngle;
+                    aimAssistVec.setLength(this.throwForce);
+                }
+
+                aimAssistVec.setAngle(assistAngle);
+
+                throwVecX = aimAssistVec.x;
+                throwVecY = aimAssistVec.y;
+                console.log(aimAssistVec.x + ", " + aimAssistVec.y);
+            }
 
             bombInstance.setVelocity(throwVecX, throwVecY);
             this.setTexture('witchThrow', 0);
@@ -125,5 +171,10 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     //or stunned
     stationary(){
         this.setVelocityX(0);
+    }
+
+    clamp(number, max, min){
+        console.log("Clamped the throw angle");
+        return Math.min(Math.max(number, min), max);
     }
 }

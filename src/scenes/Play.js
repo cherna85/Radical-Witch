@@ -65,13 +65,13 @@ class Play extends Phaser.Scene {
         this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemies.runChildUpdate = true;
 
-        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 10).setOrigin(0,0));
+        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 10));
         //creating bottom level spawners 
         this.groupEnemieslow = this.physics.add.group();
         this.groupEnemieslow.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemieslow.runChildUpdate = true;
 
-        this.groupEnemieslow.add(new Enemy(this,  900, game.config.height-75, 'enemy', 0, 10).setOrigin(0,0));
+        this.groupEnemies.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10));
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1;
@@ -82,7 +82,7 @@ class Play extends Phaser.Scene {
         frequency = 2;
         this.spawnLow = this.time.addEvent({ delay: frequency*1000, callback: () =>{
             // this is the lower set of spawners 
-            this.enemySpawn(this.groupEnemieslow,game.config.height-140, game.config.height-75);
+            this.enemySpawn(this.groupEnemies,game.config.height-125, game.config.height-35);
         },  loop: true });
 
 
@@ -214,7 +214,7 @@ class Play extends Phaser.Scene {
             }   
     }
     enemySpawn( group, yLow, yHigh){
-        group.add(new Enemy(this, game.config.width,Phaser.Math.Between(yLow,yHigh),'enemy',0, 10).setOrigin(0,0));
+        group.add(new Enemy(this, game.config.width,Phaser.Math.Between(yLow,yHigh),'enemy',0, 10));
     }
 
     bombHitsEnemy(bomb, enemy){
