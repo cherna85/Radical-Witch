@@ -112,7 +112,7 @@ class Play extends Phaser.Scene {
         // UI
         let placeholderConfig = {
             fontFamily: 'Courier',
-            fonstSize: '28px',
+            fontSize: '16px',
             color: '#F0FF5B',
             align: 'left'
         }
@@ -124,6 +124,7 @@ class Play extends Phaser.Scene {
         //hides text off screen
         // text is gonna follow the player for now
         this.stunText = this.add.text(game.config.width + 400, 0, "Stunned", placeholderConfig);
+        this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  {color: '#F0FF5B' ,fontSize: '32px'});
 
     } 
     
@@ -182,6 +183,12 @@ class Play extends Phaser.Scene {
             if(!keyLeft.enabled){
                 this.plrWtich.stationary()
             }
+        }
+        if(this.plrWtich.y <0){
+            this.OutofBoundsText.x = this.plrWtich.x -40;
+        }
+        else{
+            this.OutofBoundsText.x = -200;
         }
     }
 
