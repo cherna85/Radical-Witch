@@ -220,18 +220,24 @@ class Play extends Phaser.Scene {
             keyCancel.enabled = false;
             keyDown.enabled = false;
             keyBomb.enabled = false;
+            keyLeft.enabled = false;
+            keyRight.enabled = false;
+            //player gains controls of movements 
+            this.gainControl = this.time.addEvent({ delay: 750, callback: () =>{
+                console.log("you can move!");
+                keyDown.enabled = true;
+                keyLeft.enabled = true;
+                keyRight.enabled = true;
+            } });
             this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
                 console.log("unstunned");
-                keyCancel.enabled = true;
-                keyDown.enabled = true;
                 keyBomb.enabled = true;
+                keyCancel.enabled = true;
                 this.stunText.x = game.config.width + 400;
                 this.stunEffect = false;
                 this.plrWtich.stunned = false;
             } });
-
-
-            //added stuff decide if we wanna keep this
+            //Knockback
             player.KnockBack();
             enemy.destroy();
        }
