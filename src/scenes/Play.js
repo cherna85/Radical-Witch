@@ -228,7 +228,9 @@ class Play extends Phaser.Scene {
         player.blastJump();
     }
     stunned(player,enemy){
-       if(!this.stunEffect){
+        // Blast boost attack implementation
+        // stun implmentation
+       if(!this.stunEffect && this.plrWtich.body.velocity.y > 0){
            this.stunEffect = true;
            this.plrWtich.stunned = true;
             console.log("stunned");
@@ -246,6 +248,7 @@ class Play extends Phaser.Scene {
                 keyLeft.enabled = true;
                 keyRight.enabled = true;
             } });
+            //unstun the player 
             this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
                 console.log("unstunned");
                 keyCancel.enabled = true;
@@ -257,7 +260,7 @@ class Play extends Phaser.Scene {
             } });
             //Knockback
             player.KnockBack();
-            enemy.destroy();
        }
+       enemy.destroy();
     }
 }
