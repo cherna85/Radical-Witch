@@ -1,6 +1,10 @@
 /*
 Main player character
 - Santiago
+
+
+Placeholder sprite is 56 x 56
+New sprite is 50 x 44, with it being 3 pixels to left so that the 6 pixels are outside the 44 circle
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450) {
@@ -24,8 +28,15 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.maxFallSpeed = 100;
         this.fallSpeedDefault = 100;
 
-        this.setSize(44, 44)
-        this.setCircle(22); //Testing collision box resizing/changing
+        
+        this.setSize(22, 22); // Creates a new box at the sprite's center.
+        //Ok, so setSize creates a new box at the sprite's cetner with the box's center being its origin.
+        //But setOffset changes the box's center being it's top-left, and moves it according to top-left of sprite
+        //Wtf
+        this.setOffset(17, 14);
+        this.setCircle(11); //Testing collision box resizing/changing
+        
+        this.setScale(2, 2);
         //Circle creation based on top-left of previous collision box. Great...
         //Setting size to radius * 2 gets it centered
     }
@@ -38,6 +49,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         delta /= 1000
         this.throwCooldownTimer -= delta
 
+        
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             this.throwBomb()
         }
@@ -64,6 +76,19 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         else{
             this.setVelocityX(0);
         }
+
+
+        /* Animation state junk - Santiago */
+        if(!this.stunned){
+            if(this.body.velocity.y >= 0 && this.throwCooldownTimer <= 0){
+                if(keyDown.isDown){
+                    this.setTexture('witchDive');
+                }
+                else{
+                    this.setTexture('witchFlying');
+                }
+            }
+        }
     }
 
     // Create bomb prefab and set its velocity
@@ -78,6 +103,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
             let throwVecY = Math.sin(this.throwAngle) * this.throwForce;
 
             bombInstance.setVelocity(throwVecX, throwVecY);
+            this.setTexture('witchThrow', 0);
         }
         else{
             console.log("Cant throw bomb right now");
@@ -87,6 +113,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     /*Need blasts upwards to be snappy, but overall falling speed to be slow*/
     blastJump(){
         this.setVelocityY(this.blastPower);
+        this.setTexture('witchAscend')
     }
     dive(){
         this.setVelocityY(-this.blastPower);

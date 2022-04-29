@@ -15,6 +15,17 @@ class Play extends Phaser.Scene {
         this.load.image('enemy', './assets/simpleGhost.png');
         this.load.image('bomb', './assets/simpleBomb.png');
         this.load.image('explosion', './assets/simpleExplosion.png');
+
+        //Load new player assets
+        let playerPath = './assets/playerAnims/';
+        let playerFrames = {frameWidth: 50, frameHeight: 44, startFrame: 0, endFrame: 0};
+        //Currently not animated, but loading as spritesheets removes some work later
+        this.load.spritesheet('witchFlying', playerPath + 'witchPC_flying.png', playerFrames);
+        this.load.spritesheet('witchThrow', playerPath + 'witchPC_throw.png', playerFrames);
+        this.load.spritesheet('witchDive', playerPath + 'witchPC_dive.png', playerFrames);
+        this.load.spritesheet('witchAscend', playerPath + 'witchPC_ascend.png', playerFrames);
+        this.load.spritesheet('witchStunned', playerPath + 'witchPC_stunned.png', playerFrames);
+
         //load parrallax assets
         this.load.image('backgroundSky', './assets/backgroundSky.png');
         this.load.image('moon', './assets/backgroundMoon.png');
@@ -22,7 +33,6 @@ class Play extends Phaser.Scene {
         this.load.image('critters', './assets/backgroundCritters.png');
         this.load.image('trees', './assets/backgroundTrees.png');
         this.load.image('path', './assets/backgroundPath.png');
-        
     }
 
     create() {
@@ -46,7 +56,7 @@ class Play extends Phaser.Scene {
         // creates a floor to collide with 
         this.floor = new Floor(this,480,game.config.height-20);
 
-        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchPH', 0, 'bomb', 'explosion');
+        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -220,15 +230,7 @@ class Play extends Phaser.Scene {
             keyCancel.enabled = false;
             keyDown.enabled = false;
             keyBomb.enabled = false;
-            keyLeft.enabled = false;
-            keyRight.enabled = false;
-            //player gains controls of movements 
-            this.gainControl = this.time.addEvent({ delay: 750, callback: () =>{
-                console.log("you can move!");
-                keyDown.enabled = true;
-                keyLeft.enabled = true;
-                keyRight.enabled = true;
-            } });
+            player.setTexture('witchStunned', 0);
             this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
                 console.log("unstunned");
                 keyBomb.enabled = true;
@@ -236,6 +238,7 @@ class Play extends Phaser.Scene {
                 this.stunText.x = game.config.width + 400;
                 this.stunEffect = false;
                 this.plrWtich.stunned = false;
+                this.plrWtich.setTexture('witchFlying', 0);
             } });
             //Knockback
             player.KnockBack();
