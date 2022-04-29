@@ -3,7 +3,7 @@ Main player character
 - Santiago
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450, aimAssistRng = 130) {
+    constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450, aimAssistRng = 135) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -18,6 +18,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldownTimer = 0;
         this.throwForce = throwForce;
         this.aimAssistRng = aimAssistRng; //Distance threshold to trigger aim assist in pixels
+        this.minAim = -0.175; //In Radians
+        this.maxAim = 1.92;
 
         this.bombSprite = bombSprite;
         this.blastSprite = blastSprite;
@@ -111,7 +113,18 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
             let throwVecY = Math.sin(this.throwAngle) * this.throwForce;
             if(targetDist != Infinity){ //Within aim-assist range.
                 //(Below) Create vector towards enemy position
-                let aimAssistVec = ((targetPos.subtract(selfPos)).normalize()).setLength(this.throwForce);
+                let aimAssistVec = ((targetPos.subtract(selfPos)).normalize()).setLength(this.throwForce * 1.5);
+                let assistAngle = aimAssistVec.angle(); //Angle from x-axis in radians
+                
+                //Use normal throw if angle is not within range.
+                //If want to simply clamp value instead, use clamp() function
+                if(assistAngle > this.maxAim || assistAngle < this.minAim){
+                    assistAngle = this.throwAngle;
+                    aimAssistVec.setLength(this.throwForce);
+                }
+
+                aimAssistVec.setAngle(assistAngle);
+
                 throwVecX = aimAssistVec.x;
                 throwVecY = aimAssistVec.y;
                 console.log(aimAssistVec.x + ", " + aimAssistVec.y);
@@ -133,5 +146,10 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     }
     KnockBack(){
         this.setVelocityY(this.blastPower/4);
+    }
+
+    clamp(number, max, min){
+        console.log("Clamped the throw angle");
+        return Math.min(Math.max(number, min), max);
     }
 }
