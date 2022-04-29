@@ -3,7 +3,7 @@ Main player character
 - Santiago
 */
 class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450, aimAssistRng = 135) {
+    constructor(scene, x, y, texture, frame, bombSprite, blastSprite, blastPower = -700, throwCooldown = 0.5, throwForce = 450) {
         super(scene, x, y, texture, frame);
         
         //These have to be first for physics stuff to work
@@ -17,7 +17,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldown = throwCooldown;
         this.throwCooldownTimer = 0;
         this.throwForce = throwForce;
-        this.aimAssistRng = aimAssistRng; //Distance threshold to trigger aim assist in pixels
+        this.aimAssistRng = 135; //Distance threshold to trigger aim assist in pixels
         this.minAim = -0.175; //In Radians
         this.maxAim = 1.92;
 
@@ -27,8 +27,6 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.hMoveSpeed = 100; //Horizontal movement
         this.maxFallSpeed = 100;
         this.fallSpeedDefault = 100;
-
-        this.testUpdate = false;
 
         this.setSize(44, 44);
         this.setCircle(22); //Testing collision box resizing/changing
@@ -70,12 +68,6 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         else{
             this.setVelocityX(0);
         }
-
-        if(this.testUpdate == true){
-            console.log("Player update");
-        }
-
-        this.testUpdate = false;
     }
 
     // Create bomb prefab and set its velocity
