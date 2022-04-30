@@ -14,6 +14,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
 
         this.setSize(16, 16)
         this.setCircle(8)
+        this.setScale(1.5, 1.5);
         this.body.allowGravity = false
         this.body.allowDrag = false
         this.body.allowRotation = false

@@ -13,7 +13,6 @@ class Play extends Phaser.Scene {
         //load player assets
         this.load.image('witchPH', './assets/simpleWitch.png');
         this.load.image('enemy', './assets/simpleGhost.png');
-        this.load.image('bomb', './assets/simpleBomb.png');
         this.load.image('explosion', './assets/simpleExplosion.png');
 
         //Load new player assets
@@ -25,6 +24,10 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('witchDive', playerPath + 'witchPC_dive.png', playerFrames);
         this.load.spritesheet('witchAscend', playerPath + 'witchPC_ascend.png', playerFrames);
         this.load.spritesheet('witchStunned', playerPath + 'witchPC_stunned.png', playerFrames);
+        this.load.spritesheet('witchFaceplant', playerPath + 'witchPC_faceplant.png', playerFrames);
+
+        this.load.spritesheet('vfxBarrier', playerPath + 'vfx_rush_barrier.png', playerFrames);
+        this.load.spritesheet('bomb', playerPath + 'bomb_big.png', playerFrames);
 
         //load parrallax assets
         this.load.image('backgroundSky', './assets/backgroundSky.png');
@@ -43,6 +46,8 @@ class Play extends Phaser.Scene {
         this.bgCritters = this.add.tileSprite(0, 0, 960, 540, 'critters').setOrigin(0,0);
         this.bgTrees = this.add.tileSprite(0, 0, 960, 540, 'trees').setOrigin(0,0);
         this.bgPath = this.add.tileSprite(0, 0, 960, 540, 'path').setOrigin(0,0);
+        this.bgPathScroll = 6;
+
         // Buttons
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
@@ -57,6 +62,7 @@ class Play extends Phaser.Scene {
         this.floor = new Floor(this,480,game.config.height-20);
 
         this.plrWtich = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
+        this.rushBarrier = new RushBarrier(this, 100, 50, 'vfxBarrier', 0, this.plrWtich);
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -142,6 +148,7 @@ class Play extends Phaser.Scene {
     update(time, delta) {
         if(!this.gameOver){
             this.plrWtich.update(time, delta);
+            this.rushBarrier.update();
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
             //scroll background
@@ -149,7 +156,7 @@ class Play extends Phaser.Scene {
             this.bgCity.tilePositionX += 0.25;
             this.bgCritters.tilePositionX += 2;
             this.bgTrees.tilePositionX += 4;
-            this.bgPath.tilePositionX += 6;
+            this.bgPath.tilePositionX += this.bgPathScroll;
         }
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -189,7 +196,7 @@ class Play extends Phaser.Scene {
             //prevents players from "sliding"
             //when stunned 
             if(!keyLeft.enabled){
-                this.plrWtich.stationary()
+                this.plrWtich.setVelocityX(0);
             }
         }
         if(this.plrWtich.y <0){
@@ -222,6 +229,10 @@ class Play extends Phaser.Scene {
                     fill: true
                 }
             }
+
+            this.plrWtich.faceplantSlide(this.endscreen, this.bgPathScroll);
+            this.plrWtich.setTexture('witchFaceplant');
+
             //prints text
             if(this.endscreen == 1){
 

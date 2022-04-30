@@ -31,6 +31,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.hMoveSpeed = 100; //Horizontal movement
         this.maxFallSpeed = 100;
         this.fallSpeedDefault = 100;
+        this.setDrag(0);
 
         
         this.setSize(22, 22); // Creates a new box at the sprite's center.
@@ -169,8 +170,14 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     }
     //prevents players from sliding when game ends
     //or stunned
-    stationary(){
-        this.setVelocityX(0);
+    faceplantSlide(endscreen, groundScrollSpeed){
+        if(endscreen == 1){
+            console.log("Player faceplanted")
+
+            //By using groundScrollSpeed, this should hopefully scale with how 'fast' the player is moving
+            this.setVelocityX(groundScrollSpeed * 60);
+            this.setDragX(300);
+        }
     }
 
     clamp(number, max, min){
