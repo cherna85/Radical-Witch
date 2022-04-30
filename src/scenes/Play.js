@@ -291,7 +291,7 @@ class Play extends Phaser.Scene {
             keyRight.enabled = false;
             player.setTexture('witchStunned', 0);
             //regains player controls
-            this.regainControls = this.time.addEvent({ delay: 1000, callback: () =>{
+            this.regainControls = this.time.addEvent({ delay: 750, callback: () =>{
                 console.log("unstunned");
                 keyDown.enabled = true;
                 keyLeft.enabled = true;
@@ -301,11 +301,14 @@ class Play extends Phaser.Scene {
                 this.stunText.x = game.config.width + 400;
                 this.plrWtich.stunned = false;
                 this.plrWtich.setTexture('witchFlying', 0);
+                this.immunityVisual();
             } });
             //unstun the player 
             this.stunImmune = this.time.addEvent({ delay: 2000, callback: () =>{
                 console.log("not immune");
                 this.stunEffect = false;
+                this.vis.paused = true;
+                this.invis.paused = false;
             } });
             //Knockback
             player.KnockBack();
@@ -315,5 +318,14 @@ class Play extends Phaser.Scene {
             this.p1Score += enemy.points;
             this.score.text = this.p1Score;
        }
+    }
+    immunityVisual(){
+        this.vis = this.time.addEvent({delay: 300, callback: () =>{
+            this.plrWtich.alpha= 0.5;
+        }, loop: true });
+        this.invis = this.time.addEvent({delay: 600, callback: () =>{
+            this.plrWtich.alpha= 1;
+        }, loop: true });
+        this.plrWtich.alpha= 1;
     }
 }
