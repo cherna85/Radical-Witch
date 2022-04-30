@@ -10,10 +10,9 @@ class Play extends Phaser.Scene {
 
     preload() {
         //Load assets here
-        //load player assets
         this.load.image('witchPH', './assets/simpleWitch.png');
         this.load.image('enemy', './assets/simpleGhost.png');
-        this.load.image('explosion', './assets/simpleExplosion.png');
+        this.load.spritesheet('explosion', './assets/vfx_explosion.png', {frameWidth: 150, frameHeight: 180, startFrame: 0, endFrame: 10});
 
         //Load new player assets
         let playerPath = './assets/playerAnims/';
@@ -47,6 +46,13 @@ class Play extends Phaser.Scene {
         this.bgTrees = this.add.tileSprite(0, 0, 960, 540, 'trees').setOrigin(0,0);
         this.bgPath = this.add.tileSprite(0, 0, 960, 540, 'path').setOrigin(0,0);
         this.bgPathScroll = 6;
+
+        //Explosion animation
+        this.anims.create({
+            key: 'explode',
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 10, first: 0}),
+            frameRate: 10
+        });
 
         // Buttons
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -273,7 +279,7 @@ class Play extends Phaser.Scene {
     stunned(player,enemy){
         // Blast boost attack implementation
         // stun implmentation
-       if(!this.stunEffect && this.plrWtich.body.velocity.y > 0){
+       if(!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver){
            this.stunEffect = true;
            this.plrWtich.stunned = true;
             console.log("stunned");
