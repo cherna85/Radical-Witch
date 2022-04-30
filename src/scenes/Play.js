@@ -214,7 +214,6 @@ class Play extends Phaser.Scene {
             this.spawnLow.paused = true;
             this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++; // prevents endscreen from generating multiple times
-            this.plrWtich.stationary();
             let PlayConfig = {
                 fontFamily:  'font1', 
                 fontSize: '36px',
