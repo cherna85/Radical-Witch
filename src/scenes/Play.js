@@ -304,15 +304,16 @@ class Play extends Phaser.Scene {
             } });
             //unstun the player 
             this.stunImmune = this.time.addEvent({ delay: 2000, callback: () =>{
+                console.log("not immune");
                 this.stunEffect = false;
             } });
             //Knockback
             player.KnockBack();
-       }
+      }
        else if(this.plrWtich.body.velocity.y < 0 && !this.stunEffect){
+            enemy.destroy();
             this.p1Score += enemy.points;
             this.score.text = this.p1Score;
        }
-       enemy.destroy();
     }
 }
