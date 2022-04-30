@@ -12,6 +12,7 @@ class Explosion extends Phaser.Physics.Arcade.Sprite {
           this.setOffset(28, 58)
           this.lifespan = lifespan //Duration in seconds
           this.body.allowGravity = false;
+          this.move = 0;
           //When animation is added, can switch to calls based on animation frames
           
           // Play explosion animation. On completion, delete object
@@ -23,6 +24,7 @@ class Explosion extends Phaser.Physics.Arcade.Sprite {
 
       update(time, delta){
             this.lifespan -= (delta/1000)
+            this.x -= this.move;
             if(this.lifespan <= 0){
                   //Disables further overlap interactions after [lifespan] seconds
                   this.body.setEnable(false);
