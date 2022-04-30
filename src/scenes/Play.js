@@ -190,7 +190,7 @@ class Play extends Phaser.Scene {
 
         }
         // the text will follow player
-        if(this.stunEffect){
+        if(this.stunEffect && !keyBomb.enabled ){
              this.stunText.x = this.plrWtich.x -40;
              this.stunText.y = this.plrWtich.y - 55;
             //prevents players from "sliding"
@@ -285,21 +285,20 @@ class Play extends Phaser.Scene {
             keyRight.enabled = false;
             player.setTexture('witchStunned', 0);
             //regains player controls
-            this.regainControls = this.time.addEvent({ delay: 500, callback: () =>{
-                console.log("Move!");
+            this.regainControls = this.time.addEvent({ delay: 1000, callback: () =>{
+                console.log("unstunned");
                 keyDown.enabled = true;
                 keyLeft.enabled = true;
                 keyRight.enabled = true;
-            } });
-            //unstun the player 
-            this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
-                console.log("unstunned");
                 keyCancel.enabled = true;
                 keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
-                this.stunEffect = false;
                 this.plrWtich.stunned = false;
                 this.plrWtich.setTexture('witchFlying', 0);
+            } });
+            //unstun the player 
+            this.stunImmune = this.time.addEvent({ delay: 2000, callback: () =>{
+                this.stunEffect = false;
             } });
             //Knockback
             player.KnockBack();
