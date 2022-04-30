@@ -278,6 +278,10 @@ class Play extends Phaser.Scene {
             //Knockback
             player.KnockBack();
        }
+       else if(this.plrWtich.body.velocity.y < 0 && !this.stunEffect){
+            this.p1Score += enemy.points;
+            this.score.text = this.p1Score;
+       }
        enemy.destroy();
     }
 }
