@@ -13,7 +13,6 @@ class Play extends Phaser.Scene {
         //load player assets
         this.load.image('witchPH', './assets/simpleWitch.png');
         this.load.image('enemy', './assets/simpleGhost.png');
-        this.load.image('bomb', './assets/simpleBomb.png');
         this.load.image('explosion', './assets/simpleExplosion.png');
 
         //Load new player assets
@@ -26,7 +25,9 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('witchAscend', playerPath + 'witchPC_ascend.png', playerFrames);
         this.load.spritesheet('witchStunned', playerPath + 'witchPC_stunned.png', playerFrames);
         this.load.spritesheet('witchFaceplant', playerPath + 'witchPC_faceplant.png', playerFrames);
+
         this.load.spritesheet('vfxBarrier', playerPath + 'vfx_rush_barrier.png', playerFrames);
+        this.load.spritesheet('bomb', playerPath + 'bomb_big.png', playerFrames);
 
         //load parrallax assets
         this.load.image('backgroundSky', './assets/backgroundSky.png');
