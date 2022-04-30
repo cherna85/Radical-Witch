@@ -116,21 +116,29 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this);
 
         // UI
-        let placeholderConfig = {
-            fontFamily: 'Courier',
+        let PlayConfig = {
+            fontFamily:  'font1', 
             fontSize: '16px',
-            color: '#F0FF5B',
-            align: 'left'
+            backgroundColor: null,
+            color: '#FFFFFF',
+            shadow: {
+                offsetX: 0,
+                offsetY: 0,
+                color: '#FEC093',
+                blur: 20,
+                stroke: true,
+                fill: true
+            }
         }
-        this.add.text(20, 20, "Radical Witch play scene", placeholderConfig);
-        this.score = this.add.text(40, 40, this.p1Score, placeholderConfig );
+        this.score = this.add.text(20, 20, this.p1Score, PlayConfig );
         this.endscreen = 0;
         // stunned effect 
         this.stunEffect = false;
         //hides text off screen
         // text is gonna follow the player for now
-        this.stunText = this.add.text(game.config.width + 400, 0, "Stunned", placeholderConfig);
-        this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  {color: '#F0FF5B' ,fontSize: '32px'});
+        this.stunText = this.add.text(game.config.width + 400, 0, "Stunned", PlayConfig);
+        PlayConfig.fontSize = '32px';
+        this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  PlayConfig);
 
     } 
     
@@ -153,25 +161,25 @@ class Play extends Phaser.Scene {
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
                 if(sceneSelect == 'playScene'){
-                    this.restartbutton.setBackgroundColor('#000000');
-                    this.MainMenubutton.setBackgroundColor('#D5B0ED');
+                    this.restartbutton.setColor('#FFFFFF');
+                    this.MainMenubutton.setColor('#FF994F');
                     sceneSelect = 'menuScene';
                 }
                 else if(sceneSelect == 'menuScene'){
-                    this.MainMenubutton.setBackgroundColor('#000000');
-                    this.restartbutton.setBackgroundColor('#D5B0ED');
+                    this.MainMenubutton.setColor('#FFFFFF');
+                    this.restartbutton.setColor('#FF994F');
                     sceneSelect = 'playScene';
                 }  
               }
             if (Phaser.Input.Keyboard.JustDown(keyUp)) {
                 if(sceneSelect == 'playScene'){
-                    this.restartbutton.setBackgroundColor('#000000');
-                    this.MainMenubutton.setBackgroundColor('#D5B0ED');
+                    this.restartbutton.setColor('#FFFFFF');
+                    this.MainMenubutton.setColor('#FF994F');
                     sceneSelect = 'menuScene';
                 }
                 else if(sceneSelect == 'menuScene'){
-                    this.MainMenubutton.setBackgroundColor('#000000');
-                    this.restartbutton.setBackgroundColor('#D5B0ED');
+                    this.MainMenubutton.setColor('#FFFFFF');
+                    this.restartbutton.setColor('#FF994F');
                     sceneSelect = 'playScene';
                 }  
             }
@@ -206,21 +214,39 @@ class Play extends Phaser.Scene {
             this.spawnLow.paused = true;
             this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++; // prevents endscreen from generating multiple times
+            let PlayConfig = {
+                fontFamily:  'font1', 
+                fontSize: '36px',
+                backgroundColor: null,
+                color: '#FF994F',
+                shadow: {
+                    offsetX: 0,
+                    offsetY: 0,
+                    color: '#FEC093',
+                    blur: 20,
+                    stroke: true,
+                    fill: true
+                }
+            }
 
             this.plrWtich.faceplantSlide(this.endscreen, this.bgPathScroll);
             this.plrWtich.setTexture('witchFaceplant');
 
             //prints text
             if(this.endscreen == 1){
-                this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
+
+                this.add.text(game.config.width/2, game.config.height/2 -32 , 'GAMEOVER',  PlayConfig).setOrigin(0.5);
                 // add highscore and save to local storage
                 if(highscore < this.p1Score){
                     highscore =  this.p1Score;
                     localStorage.setItem(localStorageName, highscore);
                 } 
-                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, {color: '#F0FF5B'}).setOrigin(0.5);
-                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart',  {color: '#F0FF5B', backgroundColor: '#D5B0ED'}).setOrigin(0.5);
-                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +86 , 'Main Menu' ,{color: '#F0FF5B'}).setOrigin(0.5);
+                PlayConfig.color =  '#FFFFFF';
+                PlayConfig.fontSize = '16px'
+                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
+                PlayConfig.shadow.blur = 0;
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart', PlayConfig).setOrigin(0.5);
+                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
             }   
     }
     enemySpawn( group, yLow, yHigh){

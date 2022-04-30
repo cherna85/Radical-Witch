@@ -8,7 +8,21 @@ class Menu extends Phaser.Scene {
     }
     create() {
         //temp text
-        this.add.text(20, 20, "Rad Witch Menu");
+        let MenuConfig = {
+            //font from https://fonts.google.com/specimen/Press+Start+2P
+            fontFamily:  'font1', 
+            fontSize: '64px',
+            backgroundColor: null,
+            color: '#FF994F',
+            shadow: {
+                offsetX: 0,
+                offsetY: 0,
+                color: '#FEC093',
+                blur: 20,
+                stroke: true,
+                fill: true
+            },
+        }
         //settinng players cursor
         sceneSelect = 'playScene';
         
@@ -17,18 +31,26 @@ class Menu extends Phaser.Scene {
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
         //set up text can be changed to be images
-        this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',  ).setOrigin(0.5);
-        this.playbutton = this.add.text(game.config.width/2, game.config.height/2 , 'Play',  {backgroundColor: '#D5B0ED'}).setOrigin(0.5);
-        this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Tutorial').setOrigin(0.5);
-        this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Options').setOrigin(0.5);
-        this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 +96 , 'Credit').setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - 98 , 'Radical Witch',MenuConfig ).setOrigin(0.5);
+        MenuConfig.color =  '#FFFFFF';
+        MenuConfig.fontSize = '20px';
+        this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',MenuConfig  ).setOrigin(0.5);
+        MenuConfig.fontSize = '16px';
+        MenuConfig.color =  '#FF994F';
+        MenuConfig.shadow.blur =  0;
+        this.playbutton = this.add.text(game.config.width/2, game.config.height/2 , 'Play', MenuConfig).setOrigin(0.5);
+        MenuConfig.color =  '#FFFFFF';
+        this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Tutorial', MenuConfig).setOrigin(0.5);
+        this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Options',MenuConfig).setOrigin(0.5);
+        this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 +96 , 'Credit', MenuConfig).setOrigin(0.5);
 
         // get any data of a highscore 
         // this line of code taken from 
         //https://phaserjs.com/saving-high-score
         highscore = localStorage.getItem(localStorageName) == null ? 0 :
             localStorage.getItem(localStorageName);
-        this.add.text(80,60, 'Highscore: ' + highscore, ).setOrigin(0.5);
+        //Display Highscore
+        this.add.text(150,40, 'Highscore: ' + highscore, MenuConfig ).setOrigin(0.5);
     }
     update(){
         if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -65,8 +87,8 @@ class Menu extends Phaser.Scene {
 
     }
     updateMenu(current, next, scene){
-        current.setBackgroundColor('#000000');
-        next.setBackgroundColor('#D5B0ED');
+        current.setColor('#FFFFFF');
+        next.setColor('#FF994F');
         sceneSelect = scene;
     }
 }
