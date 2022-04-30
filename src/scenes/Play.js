@@ -76,6 +76,7 @@ class Play extends Phaser.Scene {
 
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
+        this.groupBombs.runChildUpdate = true;
         this.groupExplosions = this.physics.add.group();
         this.groupExplosions.runChildUpdate = true;
         this.groupExplosions.defaults = {};
