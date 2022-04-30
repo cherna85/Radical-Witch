@@ -25,6 +25,8 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('witchDive', playerPath + 'witchPC_dive.png', playerFrames);
         this.load.spritesheet('witchAscend', playerPath + 'witchPC_ascend.png', playerFrames);
         this.load.spritesheet('witchStunned', playerPath + 'witchPC_stunned.png', playerFrames);
+        this.load.spritesheet('witchFaceplant', playerPath + 'witchPC_faceplant.png', playerFrames);
+        this.load.spritesheet('vfxBarrier', playerPath + 'vfx_rush_barrier.png', playerFrames);
 
         //load parrallax assets
         this.load.image('backgroundSky', './assets/backgroundSky.png');
@@ -57,6 +59,7 @@ class Play extends Phaser.Scene {
         this.floor = new Floor(this,480,game.config.height-20);
 
         this.plrWtich = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
+        this.rushBarrier = new RushBarrier(this, 100, 50, 'vfxBarrier', 0, this.plrWtich);
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -134,6 +137,7 @@ class Play extends Phaser.Scene {
     update(time, delta) {
         if(!this.gameOver){
             this.plrWtich.update(time, delta);
+            this.rushBarrier.update();
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
             //scroll background
