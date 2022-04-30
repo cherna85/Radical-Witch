@@ -186,7 +186,7 @@ class Play extends Phaser.Scene {
             //prevents players from "sliding"
             //when stunned 
             if(!keyLeft.enabled){
-                this.plrWtich.stationary()
+                this.plrWtich.setVelocityX(0);
             }
         }
         if(this.plrWtich.y <0){
@@ -204,7 +204,10 @@ class Play extends Phaser.Scene {
             this.spawnLow.paused = true;
             this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++; // prevents endscreen from generating multiple times
-            this.plrWtich.stationary();
+
+            this.plrWtich.faceplantSlide(this.endscreen, 6);
+            this.plrWtich.setTexture('witchFaceplant');
+
             //prints text
             if(this.endscreen == 1){
                 this.add.text(game.config.width/2, game.config.height/2  , 'GAMEOVER',  {color: '#F0FF5B' }).setOrigin(0.5);
