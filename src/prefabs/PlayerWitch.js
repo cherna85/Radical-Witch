@@ -173,8 +173,10 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     faceplantSlide(endscreen, groundScrollSpeed){
         if(endscreen == 1){
             console.log("Player faceplanted")
-            this.setVelocityX(400);
-            this.setDragX(400);
+
+            //By using groundScrollSpeed, this should hopefully scale with how 'fast' the player is moving
+            this.setVelocityX(groundScrollSpeed * 60);
+            this.setDragX(300);
         }
     }
 

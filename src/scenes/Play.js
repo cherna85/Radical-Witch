@@ -46,6 +46,8 @@ class Play extends Phaser.Scene {
         this.bgCritters = this.add.tileSprite(0, 0, 960, 540, 'critters').setOrigin(0,0);
         this.bgTrees = this.add.tileSprite(0, 0, 960, 540, 'trees').setOrigin(0,0);
         this.bgPath = this.add.tileSprite(0, 0, 960, 540, 'path').setOrigin(0,0);
+        this.bgPathScroll = 6;
+
         // Buttons
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
@@ -146,7 +148,7 @@ class Play extends Phaser.Scene {
             this.bgCity.tilePositionX += 0.25;
             this.bgCritters.tilePositionX += 2;
             this.bgTrees.tilePositionX += 4;
-            this.bgPath.tilePositionX += 6;
+            this.bgPath.tilePositionX += this.bgPathScroll;
         }
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -205,7 +207,7 @@ class Play extends Phaser.Scene {
             this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++; // prevents endscreen from generating multiple times
 
-            this.plrWtich.faceplantSlide(this.endscreen, 6);
+            this.plrWtich.faceplantSlide(this.endscreen, this.bgPathScroll);
             this.plrWtich.setTexture('witchFaceplant');
 
             //prints text
