@@ -34,6 +34,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
     explode(){
         let explosion = new Explosion(this.scene, this.x, this.y, this.blastSprite, 0);
         this.scene.groupExplosions.add(explosion);
+        explosion.move = this.scene.bgPathScroll / 2;
         this.sfxExplosion.play();
 
         this.destroy();

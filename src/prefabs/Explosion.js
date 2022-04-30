@@ -9,15 +9,25 @@ class Explosion extends Phaser.Physics.Arcade.Sprite {
           //this.body = new Phaser.Physics.Arcade.StaticBody(scene, this)
           this.setSize(96, 96)
           this.setCircle(48)
+          this.setOffset(28, 58)
           this.lifespan = lifespan //Duration in seconds
           this.body.allowGravity = false;
+          this.move = 0;
           //When animation is added, can switch to calls based on animation frames
+          
+          // Play explosion animation. On completion, delete object
+          this.anims.play('explode');
+          this.on('animationComplete', () => { 
+            this.destroy();
+      });
       }
 
       update(time, delta){
             this.lifespan -= (delta/1000)
+            this.x -= this.move;
             if(this.lifespan <= 0){
-                  this.destroy()
+                  //Disables further overlap interactions after [lifespan] seconds
+                  this.body.setEnable(false);
             }
       }
   }
