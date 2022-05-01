@@ -9,10 +9,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.allowGravity = false;
         this.points = pointValue;
         if(speed == undefined){
-            this.moveSpeed = Phaser.Math.Between(4,9);
+            this.moveSpeed = Phaser.Math.Between(speedLow,speedHigh);
         }
         else{
-            this.moveSpeed = speed
+            this.moveSpeed = speed;
         }
         //add sprite animation    minor guidence provided by Annika Kennedy(classmate)
         this.anims.create({
