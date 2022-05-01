@@ -329,8 +329,8 @@ class Play extends Phaser.Scene {
             player.setTexture('witchStunned', 0);
 
             //Player is unstunned (regain control)
-            //Base stun duration is 0.5 seconds, and increases by 0.1 second for every 10 points
-            this.regainControls = this.time.addEvent({ delay: 500 + this.p1Score * 10, callback: () =>{
+            //Base stun duration is 0.5 seconds, and increases by 0.05 second for every 10 points
+            this.regainControls = this.time.addEvent({ delay: 750 + this.p1Score * 5, callback: () =>{
                 console.log("Unstunned after " + ((500 + this.p1Score * 10) / 100) + " seconds.");
 
                 this.stunText.x = game.config.width + 400;
@@ -341,7 +341,7 @@ class Play extends Phaser.Scene {
             } });
             //Player becomes vulnerable to stuns again, some time after regaining control
             //Current: Have 1.5 seconds of stun immunity (base delay - base delay of regainControls)
-            this.stunImmune = this.time.addEvent({ delay: 2000 + this.p1Score * 10, callback: () =>{
+            this.stunImmune = this.time.addEvent({ delay: 2250 + this.p1Score * 5, callback: () =>{
                 console.log("not immune");
                 this.stunEffect = false;
                 this.vis.paused = true;
