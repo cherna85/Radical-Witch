@@ -55,12 +55,12 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldownTimer -= delta;
         this.blastJumping -= delta;
         
-        if(Phaser.Input.Keyboard.JustDown(keyBomb)){
+        if(Phaser.Input.Keyboard.JustDown(keyBomb) && !this.stunned){
             this.throwBomb()
         }
 
         // DIVE: Triples (Or whatever) falling speed
-        if(keyDown.isDown ){
+        if(keyDown.isDown && !this.stunned){
             this.maxFallSpeed = this.fallSpeedDefault * 3;
         }
         else{
@@ -72,10 +72,11 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityY(this.maxFallSpeed);
         }
 
-        if(keyLeft.isDown && this.x > 0 ){
+        //Horizontal movement
+        if(keyLeft.isDown && this.x > 0 && !this.stunned){
             this.setVelocityX(-this.hMoveSpeed);
         }
-        else if(keyRight.isDown && this.x < config.width ){
+        else if(keyRight.isDown && this.x < config.width && !this.stunned){
             this.setVelocityX(this.hMoveSpeed);
         }
         else{

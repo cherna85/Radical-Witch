@@ -321,12 +321,6 @@ class Play extends Phaser.Scene {
        if(!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver){
             console.log("stunned");
             //PLayer is stunned (loses controls)
-            keyCancel.enabled = false;
-            keyDown.enabled = false;
-            keyBomb.enabled = false;
-            keyLeft.enabled = false;
-            keyRight.enabled = false;
-
             this.stunEffect = true;
             this.plrWtich.stunned = true;
             player.setTexture('witchStunned', 0);
@@ -334,13 +328,8 @@ class Play extends Phaser.Scene {
             //Player is unstunned (regain control)
             //Base stun duration is 0.5 seconds, and increases by 0.1 second for every 10 points
             this.regainControls = this.time.addEvent({ delay: 500 + this.p1Score * 10, callback: () =>{
-                console.log("Unstunned after " + ((1000 + this.p1Score * 10) / 100) + " seconds.");
+                console.log("Unstunned after " + ((500 + this.p1Score * 10) / 100) + " seconds.");
 
-                keyDown.enabled = true;
-                keyLeft.enabled = true;
-                keyRight.enabled = true;
-                keyCancel.enabled = true;
-                keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
 
                 this.plrWtich.stunned = false;
