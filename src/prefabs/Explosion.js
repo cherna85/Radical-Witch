@@ -17,13 +17,13 @@ class Explosion extends Phaser.Physics.Arcade.Sprite {
           
           // Play explosion animation. On completion, delete object
           this.anims.play('explode');
-          this.on('animationComplete', () => { 
+          this.on('animationComplete', () => {
             this.destroy();
-      });
+            });
       }
 
       update(time, delta){
-            this.lifespan -= (delta/1000)
+            this.lifespan -= (delta/1000);
             this.x -= this.move;
             if(this.lifespan <= 0){
                   //Disables further overlap interactions after [lifespan] seconds

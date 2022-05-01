@@ -86,7 +86,7 @@ class Play extends Phaser.Scene {
         this.groupEnemies.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10));
 
         //number of seconds it takes to spawn a new enemy
-        let frequency = 1;
+        let frequency = 1.0;
         this.spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
             this.enemySpawn(this.groupEnemies, 150, game.config.height-145);
         },  loop: true });
@@ -100,6 +100,7 @@ class Play extends Phaser.Scene {
 
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
+        this.groupBombs.runChildUpdate = true;
         this.groupExplosions = this.physics.add.group();
         this.groupExplosions.runChildUpdate = true;
         this.groupExplosions.defaults = {};
@@ -116,6 +117,8 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+        this.physics.add.overlap(this.groupExplosions, this.groupEnemies, this.explosionHitsEnemy, null, this);
+        this.physics.add.overlap(this.groupExplosions, this.groupEnemieslow, this.explosionHitsEnemy, null, this);
 
         //makes the floor a solid object and then ends game when player collides with it
         this.physics.add.collider(this.plrWtich,this.floor);
@@ -261,20 +264,23 @@ class Play extends Phaser.Scene {
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
+        bomb.explode();
+    }
+
+    explosionHitsEnemy(explosion, enemy){
         // adding points to player based on enemies they destroyed
         this.p1Score += enemy.points;
         this.score.text = this.p1Score;
-        // Even if unassociated with the bomb, the explosion still causes issues with update
-        // Perhaps it is something to do with the fact that there are two of them
         enemy.destroy();
-        bomb.explode();
     }
 
     // When player and explosion touch, send player upwards
     plrBlastJump(player, explosion){
-        console.log("Player caught in blast!");
-        explosion.disableBody();
-        player.blastJump();
+        //Player can only blast jump again after 0.75 seconds
+        if(player.blastJumping < -0.75){
+            console.log("Player caught in blast!");
+            player.blastJump();
+        }
     }
     stunned(player,enemy){
         // Blast boost attack implementation

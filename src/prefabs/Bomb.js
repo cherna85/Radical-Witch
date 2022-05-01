@@ -20,23 +20,27 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
         this.body.allowRotation = false
         this.lifespan = 5
         this.sfxExplosion = scene.sound.add('sfx_explosion');
+        this.queuedForDestroy = false;
     }
 
 
     update(time, delta){
-        this.lifespan -= (delta/1000)
+        this.lifespan -= (delta/1000);
         // Lifespan. After x seconds a bomb will be removed from the scene to save memory
-        if(this.lifespan <= 0){
-              this.destroy()
+        if(this.lifespan <= 0 || this.queuedForDestroy){
+            //console.log("Destroying bomb");
+            this.destroy();
         }
     }
 
     explode(){
-        let explosion = new Explosion(this.scene, this.x, this.y, this.blastSprite, 0);
-        this.scene.groupExplosions.add(explosion);
-        explosion.move = this.scene.bgPathScroll / 2;
-        this.sfxExplosion.play();
-
-        this.destroy();
+        if(!this.queuedForDestroy){
+            let explosion = new Explosion(this.scene, this.x, this.y, this.blastSprite, 0);
+            this.scene.groupExplosions.add(explosion);
+            explosion.move = this.scene.bgPathScroll / 2;
+            this.sfxExplosion.play();
+            //console.log("Bomb is queued for destruction");
+            this.queuedForDestroy = true;
+        }
     }
 }

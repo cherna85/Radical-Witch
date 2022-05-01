@@ -15,6 +15,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this); //Assigns this sprite a physics body
         
         this.blastPower = blastPower;
+        this.blastJumping = 0;
         this.stunned = false;
 
         this.throwAngle = Math.PI/3; //Needs to be in radians. Positive = rotate clockwise
@@ -52,8 +53,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         Let me know if physics seems weird
         - Santiago */
         delta /= 1000
-        this.throwCooldownTimer -= delta
-
+        this.throwCooldownTimer -= delta;
+        this.blastJumping -= delta;
         
         if(Phaser.Input.Keyboard.JustDown(keyBomb)){
             this.throwBomb()
@@ -161,6 +162,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     blastJump(){
         this.setVelocityY(this.blastPower);
         this.setTexture('witchAscend')
+        this.blastJumping = 0;
     }
     dive(){
         this.setVelocityY(-this.blastPower);
