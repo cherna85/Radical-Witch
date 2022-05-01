@@ -282,7 +282,7 @@ class Play extends Phaser.Scene {
 
             //prints text
             if(this.endscreen == 1){
-
+                this.cameras.main.shake( 300,0.02);
                 this.add.text(game.config.width/2, game.config.height/2 -32 , 'GAMEOVER',  PlayConfig).setOrigin(0.5);
                 // add highscore and save to local storage
                 PlayConfig.fontFamily = "PressStart2P"
@@ -308,6 +308,7 @@ class Play extends Phaser.Scene {
         this.p1Score += enemy.points;
         this.score.text = this.p1Score;
         enemy.destroy();
+        this.cameras.main.shake( 100,0.02);
         bomb.explode();
     }
 
