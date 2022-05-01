@@ -27,7 +27,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
         this.lifespan -= (delta/1000);
         // Lifespan. After x seconds a bomb will be removed from the scene to save memory
         if(this.lifespan <= 0 || this.queuedForDestroy){
-            console.log("Destroying bomb");
+            //console.log("Destroying bomb");
             this.destroy();
         }
     }
@@ -37,7 +37,7 @@ class Bomb extends Phaser.Physics.Arcade.Sprite {
             let explosion = new Explosion(this.scene, this.x, this.y, this.blastSprite, 0);
             this.scene.groupExplosions.add(explosion);
             this.sfxExplosion.play();
-            console.log("Bomb is queued for destruction");
+            //console.log("Bomb is queued for destruction");
             this.queuedForDestroy = true;
         }
     }

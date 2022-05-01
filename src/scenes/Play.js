@@ -193,12 +193,6 @@ class Play extends Phaser.Scene {
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
-        // Even if unassociated with the bomb, the explosion still causes issues with update
-        // Perhaps it is something to do with the fact that there are two of them
-
-        //As long as a collision between this bomb and multiple enemies still happens at the same time, the bomb will create an explosion
-        //and then create another one even though the bomb is already destroyed
-
         bomb.explode();
     }
 
