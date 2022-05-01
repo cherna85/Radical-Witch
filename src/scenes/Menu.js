@@ -3,7 +3,7 @@ class Menu extends Phaser.Scene {
         super("menuScene");
         }
     preload(){
-        this.load.image('menuSplash', './assets/MenuSplash.png');
+        this.load.image('menuSplash', './assets/witchSplash-1.png');
         //load audio
         this.load.audio('sfx_explosion', './assets/Explosion1.wav');
     }

@@ -14,6 +14,18 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         else{
             this.moveSpeed = speed
         }
+        //add sprite animation    minor guidence provided by Annika Kennedy(classmate)
+        this.anims.create({
+            key: 'ghostMove',
+            frames: this.anims.generateFrameNumbers('ghostMove', {start: 0, end: 3, 
+            first: 0}),
+            frameRate: 6,
+            repeat: -1
+         });
+         this.anims.play('ghostMove');
+
+         
+
     }
     update(time, delta){
         /* Converts delta from milliseconds to seconds. For me it's easier

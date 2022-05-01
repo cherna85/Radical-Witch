@@ -11,8 +11,10 @@ class Play extends Phaser.Scene {
     preload() {
         //Load assets here
         this.load.image('witchPH', './assets/simpleWitch.png');
-        this.load.image('enemy', './assets/simpleGhost.png');
+        //this.load.image('enemy', './assets/simpleGhost.png');
         this.load.spritesheet('explosion', './assets/vfx_explosion.png', {frameWidth: 150, frameHeight: 180, startFrame: 0, endFrame: 10});
+        this.load.spritesheet('ghostMove', './assets/slimeGhost.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 3});
+        this.load.spritesheet('ghostDie', './assets/slimeDie.png', {frameWidth: 64, frameHeight: 32, startFrame:0, endFrame: 6});
 
         //Load new player assets
         let playerPath = './assets/playerAnims/';
