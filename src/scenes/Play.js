@@ -297,6 +297,9 @@ class Play extends Phaser.Scene {
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
+        this.p1Score += enemy.points;
+        this.score.text = this.p1Score;
+        enemy.destroy();
         bomb.explode();
     }
 
