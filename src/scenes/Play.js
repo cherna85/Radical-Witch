@@ -117,10 +117,10 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
 
+        this.physics.add.overlap(this.groupBombs, this.floor, this.bombHitsFloor, null, this);
         //makes the floor a solid object and then ends game when player collides with it
         this.physics.add.collider(this.plrWtich,this.floor);
-        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this);
-
+        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
         // UI
         let PlayConfig = {
             fontFamily:  'font1', 
@@ -291,7 +291,7 @@ class Play extends Phaser.Scene {
             keyRight.enabled = false;
             player.setTexture('witchStunned', 0);
             //regains player controls
-            this.regainControls = this.time.addEvent({ delay: 750, callback: () =>{
+            this.regainControls = this.time.addEvent({ delay: this.p1Score*10, callback: () =>{
                 console.log("unstunned");
                 keyDown.enabled = true;
                 keyLeft.enabled = true;
@@ -304,7 +304,7 @@ class Play extends Phaser.Scene {
                 this.immunityVisual();
             } });
             //unstun the player 
-            this.stunImmune = this.time.addEvent({ delay: 2000, callback: () =>{
+            this.stunImmune = this.time.addEvent({ delay: this.p1Score*20, callback: () =>{
                 console.log("not immune");
                 this.stunEffect = false;
                 this.vis.paused = true;
@@ -327,5 +327,8 @@ class Play extends Phaser.Scene {
             this.plrWtich.alpha= 1;
         }, loop: true });
         this.plrWtich.alpha= 1;
+    }
+    bombHitsFloor(floor, bomb){
+            bomb.destroy();
     }
 }
