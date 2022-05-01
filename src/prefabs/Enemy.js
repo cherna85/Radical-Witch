@@ -9,7 +9,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.allowGravity = false;
         this.points = pointValue;
         if(speed == undefined){
-            this.moveSpeed = Phaser.Math.Between(4,7);
+            this.moveSpeed = Phaser.Math.Between(4,9);
         }
         else{
             this.moveSpeed = speed
@@ -31,4 +31,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     destroyEnemy(){
         this.destroy();
     }
+    // updateSpeed(){
+    //     speedLow+=1;
+    //     speedHigh+=1;
+    // }
 }
