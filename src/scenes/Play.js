@@ -91,8 +91,8 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.groupBombs, this.groupEnemieslow, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
-        //this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
-        //this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemies, this.explosionHitsEnemy, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemieslow, this.explosionHitsEnemy, null, this);
 
