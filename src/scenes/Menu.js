@@ -10,16 +10,16 @@ class Menu extends Phaser.Scene {
         //temp text
         let MenuConfig = {
             //font from https://fonts.google.com/specimen/Press+Start+2P
-            //https://www.1001fonts.com/sortelo-font.html
-            fontFamily:  'PressStart2p', 
-            fontSize: '64px',
+            //
+            fontFamily:  'Sortelo', 
+            fontSize: '112px',
             backgroundColor: null,
             color: '#FF994F',
             shadow: {
                 offsetX: 0,
                 offsetY: 0,
                 color: '#FEC093',
-                blur: 20,
+                blur: 10,
                 stroke: true,
                 fill: true
             },
@@ -33,6 +33,7 @@ class Menu extends Phaser.Scene {
 
         //set up text can be changed to be images
         this.add.text(game.config.width/2, game.config.height/2 - 98 , 'Radical Witch',MenuConfig ).setOrigin(0.5);
+        MenuConfig.fontFamily = 'PressStart2P'
         MenuConfig.color =  '#FFFFFF';
         MenuConfig.fontSize = '20px';
         this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',MenuConfig  ).setOrigin(0.5);
