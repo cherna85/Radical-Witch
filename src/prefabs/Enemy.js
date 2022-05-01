@@ -25,8 +25,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
          this.anims.play('ghostMove');
         
 
-        //  let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
-        
+        this.setSize(64, 32);
 
     }
     update(time, delta){
