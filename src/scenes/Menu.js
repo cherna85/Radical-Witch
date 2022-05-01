@@ -3,9 +3,15 @@ class Menu extends Phaser.Scene {
         super("menuScene");
         }
     preload(){
+        // load splash art background
         this.load.image('menuSplash', './assets/witchSplash-1.png');
         //load audio
-        this.load.audio('sfx_explosion', './assets/Explosion1.wav');
+        this.load.audio('sfx_explosion', './assets/sfx/explosion3.wav');
+        this.load.audio('sfx_button', './assets/sfx/explosion3.wav');
+        //this.load.audio('sfx_blastUp', './assets/sfx/rocket1.wav');
+        this.load.audio('sfx_stun', './assets/sfx/stun2.wav');
+        this.load.audio('sfx_fail', './assets/sfx/fail3.wav');
+        this.load.audio('sfx_mist', './assets/sfx/owo_ghost1.wav');
     }
     create() {
         this.menuSplash = this.add.tileSprite(0, 0, 960, 540, 'menuSplash').setOrigin(0,0);
@@ -91,6 +97,7 @@ class Menu extends Phaser.Scene {
             }  
         }
         if (Phaser.Input.Keyboard.JustDown(keyBomb)) {
+            this.sound.play('sfx_button');
             this.scene.start(sceneSelect);    
           }
 

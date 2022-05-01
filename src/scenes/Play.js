@@ -295,6 +295,7 @@ class Play extends Phaser.Scene {
                 this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
                 PlayConfig.shadow.blur = 0;
                 this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
+                this.sound.play('sfx_fail');
             }   
     }
     enemySpawn( group, yLow, yHigh){
@@ -314,6 +315,7 @@ class Play extends Phaser.Scene {
         this.p1Score += enemy.points;
         this.score.text = this.p1Score;
         enemy.destroy();
+        this.sound.play('sfx_mist');
         let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
         die.anims.play('ghostDie');
         die.on('animationcomplete', () => {         //callback after aim completes                
@@ -338,6 +340,7 @@ class Play extends Phaser.Scene {
             //PLayer is stunned (loses controls)
             this.stunEffect = true;
             this.plrWtich.stunned = true;
+            this.sound.play('sfx_stun');
             player.setTexture('witchStunned', 0);
 
             //Player is unstunned (regain control)
@@ -364,6 +367,7 @@ class Play extends Phaser.Scene {
       }
        else if(this.plrWtich.body.velocity.y < 0 && !this.stunEffect){
             enemy.destroy();
+            this.sound.play('sfx_mist');
             let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
             die.anims.play('ghostDie');
             die.on('animationcomplete', () => {         //callback after aim completes                
