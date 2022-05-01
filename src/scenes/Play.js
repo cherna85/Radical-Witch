@@ -120,13 +120,13 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.groupExplosions, this.groupEnemies, this.explosionHitsEnemy, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemieslow, this.explosionHitsEnemy, null, this);
 
+        this.physics.add.overlap(this.groupBombs, this.floor, this.bombHitsFloor, null, this);
         //makes the floor a solid object and then ends game when player collides with it
         this.physics.add.collider(this.plrWtich,this.floor);
-        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this);
-
+        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
         // UI
         let PlayConfig = {
-            fontFamily:  'font1', 
+            fontFamily:  'PressStart2P', 
             fontSize: '16px',
             backgroundColor: null,
             color: '#FFFFFF',
@@ -196,8 +196,12 @@ class Play extends Phaser.Scene {
                 console.log('selecting');
                 this.scene.start(sceneSelect);    
             }
-
         }
+        // implements speedup
+        // if(this.p1Score %50 == 0){
+        //     console.log("hewwwooo")
+            
+        // }
         // the text will follow player
         if(this.stunEffect && !keyBomb.enabled ){
              this.stunText.x = this.plrWtich.x -40;
@@ -224,8 +228,8 @@ class Play extends Phaser.Scene {
             this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++; // prevents endscreen from generating multiple times
             let PlayConfig = {
-                fontFamily:  'font1', 
-                fontSize: '36px',
+                fontFamily:  'Sortelo', 
+                fontSize: '96px',
                 backgroundColor: null,
                 color: '#FF994F',
                 shadow: {
@@ -246,6 +250,7 @@ class Play extends Phaser.Scene {
 
                 this.add.text(game.config.width/2, game.config.height/2 -32 , 'GAMEOVER',  PlayConfig).setOrigin(0.5);
                 // add highscore and save to local storage
+                PlayConfig.fontFamily = "PressStart2P"
                 if(highscore < this.p1Score){
                     highscore =  this.p1Score;
                     localStorage.setItem(localStorageName, highscore);
@@ -297,7 +302,7 @@ class Play extends Phaser.Scene {
             keyRight.enabled = false;
             player.setTexture('witchStunned', 0);
             //regains player controls
-            this.regainControls = this.time.addEvent({ delay: 750, callback: () =>{
+            this.regainControls = this.time.addEvent({ delay: this.p1Score*10, callback: () =>{
                 console.log("unstunned");
                 keyDown.enabled = true;
                 keyLeft.enabled = true;
@@ -310,7 +315,7 @@ class Play extends Phaser.Scene {
                 this.immunityVisual();
             } });
             //unstun the player 
-            this.stunImmune = this.time.addEvent({ delay: 2000, callback: () =>{
+            this.stunImmune = this.time.addEvent({ delay: this.p1Score*20, callback: () =>{
                 console.log("not immune");
                 this.stunEffect = false;
                 this.vis.paused = true;
@@ -333,5 +338,8 @@ class Play extends Phaser.Scene {
             this.plrWtich.alpha= 1;
         }, loop: true });
         this.plrWtich.alpha= 1;
+    }
+    bombHitsFloor(floor, bomb){
+            bomb.destroy();
     }
 }
