@@ -366,6 +366,11 @@ class Play extends Phaser.Scene {
       }
        else if(this.plrWtich.body.velocity.y < 0 && !this.stunEffect){
             enemy.destroy();
+            let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
+            die.anims.play('ghostDie');
+            die.on('animationcomplete', () => {         //callback after aim completes                
+                die.destroy();
+            });
             this.p1Score += enemy.points;
             this.score.text = this.p1Score;
        }
