@@ -22,6 +22,11 @@ class Menu extends Phaser.Scene {
                 blur: 10,
                 stroke: true,
                 fill: true
+            }, padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
             },
         }
         //settinng players cursor
@@ -39,8 +44,8 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',MenuConfig  ).setOrigin(0.5);
         MenuConfig.fontSize = '16px';
         MenuConfig.color =  '#FF994F';
-        MenuConfig.shadow.blur =  0;
         this.playbutton = this.add.text(game.config.width/2, game.config.height/2 , 'Play', MenuConfig).setOrigin(0.5);
+        MenuConfig.shadow.blur =  0;
         MenuConfig.color =  '#FFFFFF';
         this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Tutorial', MenuConfig).setOrigin(0.5);
         this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Options',MenuConfig).setOrigin(0.5);
@@ -90,7 +95,9 @@ class Menu extends Phaser.Scene {
     }
     updateMenu(current, next, scene){
         current.setColor('#FFFFFF');
+        current.setShadowBlur(0);
         next.setColor('#FF994F');
+        next.setShadowBlur(10);
         sceneSelect = scene;
     }
 }
