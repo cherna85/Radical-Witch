@@ -18,7 +18,7 @@ class Play extends Phaser.Scene {
 
         //Load new player assets
         let playerPath = './assets/playerAnims/';
-        let playerFrames = {frameWidth: 50, frameHeight: 44, startFrame: 0, endFrame: 0};
+        let playerFrames = {frameWidth: 112, frameHeight: 88, startFrame: 0, endFrame: 0};
         //Currently not animated, but loading as spritesheets removes some work later
         this.load.spritesheet('witchFlying', playerPath + 'witchPC_flying.png', playerFrames);
         this.load.spritesheet('witchThrow', playerPath + 'witchPC_throw.png', playerFrames);
@@ -303,6 +303,9 @@ class Play extends Phaser.Scene {
 
     bombHitsEnemy(bomb, enemy){
         console.log("A bomb hit an enemy!");
+        this.p1Score += enemy.points;
+        this.score.text = this.p1Score;
+        enemy.destroy();
         bomb.explode();
     }
 
@@ -331,31 +334,26 @@ class Play extends Phaser.Scene {
         // Blast boost attack implementation
         // stun implmentation
        if(!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver){
-           this.stunEffect = true;
-           this.plrWtich.stunned = true;
             console.log("stunned");
-            //removes controls 
-            keyCancel.enabled = false;
-            keyDown.enabled = false;
-            keyBomb.enabled = false;
-            keyLeft.enabled = false;
-            keyRight.enabled = false;
+            //PLayer is stunned (loses controls)
+            this.stunEffect = true;
+            this.plrWtich.stunned = true;
             player.setTexture('witchStunned', 0);
-            //regains player controls
-            this.regainControls = this.time.addEvent({ delay: this.p1Score*10, callback: () =>{
-                console.log("unstunned");
-                keyDown.enabled = true;
-                keyLeft.enabled = true;
-                keyRight.enabled = true;
-                keyCancel.enabled = true;
-                keyBomb.enabled = true;
+
+            //Player is unstunned (regain control)
+            //Base stun duration is 0.5 seconds, and increases by 0.05 second for every 10 points
+            this.regainControls = this.time.addEvent({ delay: 750 + this.p1Score * 5, callback: () =>{
+                console.log("Unstunned after " + ((500 + this.p1Score * 10) / 100) + " seconds.");
+
                 this.stunText.x = game.config.width + 400;
+
                 this.plrWtich.stunned = false;
                 this.plrWtich.setTexture('witchFlying', 0);
                 this.immunityVisual();
             } });
-            //unstun the player 
-            this.stunImmune = this.time.addEvent({ delay: this.p1Score*20, callback: () =>{
+            //Player becomes vulnerable to stuns again, some time after regaining control
+            //Current: Have 1.5 seconds of stun immunity (base delay - base delay of regainControls)
+            this.stunImmune = this.time.addEvent({ delay: 2250 + this.p1Score * 5, callback: () =>{
                 console.log("not immune");
                 this.stunEffect = false;
                 this.vis.paused = true;
