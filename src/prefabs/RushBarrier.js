@@ -8,7 +8,6 @@ class RushBarrier extends Phaser.Physics.Arcade.Sprite {
             this.body.allowGravity = false;
             this.body.allowDrag = false;
             this.body.allowRotation = false;
-            this.setScale(2, 2);
       }
 
       update(){

@@ -18,7 +18,7 @@ class Play extends Phaser.Scene {
 
         //Load new player assets
         let playerPath = './assets/playerAnims/';
-        let playerFrames = {frameWidth: 50, frameHeight: 44, startFrame: 0, endFrame: 0};
+        let playerFrames = {frameWidth: 112, frameHeight: 88, startFrame: 0, endFrame: 0};
         //Currently not animated, but loading as spritesheets removes some work later
         this.load.spritesheet('witchFlying', playerPath + 'witchPC_flying.png', playerFrames);
         this.load.spritesheet('witchThrow', playerPath + 'witchPC_throw.png', playerFrames);
