@@ -24,7 +24,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
          });
          this.anims.play('ghostMove');
 
-         
+        this.setSize(64, 32);
 
     }
     update(time, delta){
