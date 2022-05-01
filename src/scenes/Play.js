@@ -62,8 +62,10 @@ class Play extends Phaser.Scene {
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        // initialize score
+        // initialize score and speeds
         this.p1Score = 0;
+        speedLow = 4;
+        speedHigh = 7;
         // creates a floor to collide with 
         this.floor = new Floor(this,480,game.config.height-20);
 
@@ -148,7 +150,7 @@ class Play extends Phaser.Scene {
         this.stunText = this.add.text(game.config.width + 400, 0, "Stunned", PlayConfig);
         PlayConfig.fontSize = '32px';
         this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  PlayConfig);
-
+        this.speedUpdate = false;
     } 
     
 
@@ -198,11 +200,17 @@ class Play extends Phaser.Scene {
             }
         }
         // implements speedup
-        // if(this.p1Score %50 == 0){
-        //     console.log("hewwwooo")
-            
-        // }
-        // the text will follow player
+        if(this.p1Score %50 == 0 && this.speedUpdate ){
+            speedHigh = (speedHigh <15) ? speedHigh+=1:15;
+            console.log("gotta go faster");
+            speedLow = (speedLow <12) ? speedLow+=1:12;
+            this.speedUpdate = false;
+            this.plrWtich.hMoveSpeed = (this.plrWtich.hMoveSpeed < 300) ? this.plrWtich.hMoveSpeed+=50:300; 
+        }
+        else if (this.p1Score %50 != 0 && !this.speedUpdate ){
+            this.speedUpdate = true;
+        }
+        //the text will follow player
         if(this.stunEffect && !keyBomb.enabled ){
              this.stunText.x = this.plrWtich.x -40;
              this.stunText.y = this.plrWtich.y - 55;

@@ -18,6 +18,7 @@ let enemyGroup;
 let localStorageName = "Radical Witch"
 let highscore = 0;
 
+let speedLow ,speedHigh;
 //reserve keyboard vars
 let keyBomb, keyDown, keyLeft, keyRight, keyCancel, keyUp;
 
