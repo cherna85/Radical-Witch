@@ -144,10 +144,15 @@ class Play extends Phaser.Scene {
                 offsetX: 0,
                 offsetY: 0,
                 color: '#FEC093',
-                blur: 20,
+                blur: 10,
                 stroke: true,
                 fill: true
-            }
+            }, padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+            },
         }
         this.score = this.add.text(20, 20, this.p1Score, PlayConfig );
         this.endscreen = 0;
@@ -181,24 +186,32 @@ class Play extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
                 if(sceneSelect == 'playScene'){
                     this.restartbutton.setColor('#FFFFFF');
+                    this.restartbutton.setShadowBlur(0);
                     this.MainMenubutton.setColor('#FF994F');
+                    this.MainMenubutton.setShadowBlur(10);
                     sceneSelect = 'menuScene';
                 }
                 else if(sceneSelect == 'menuScene'){
                     this.MainMenubutton.setColor('#FFFFFF');
+                    this.MainMenubutton.setShadowBlur(0);
                     this.restartbutton.setColor('#FF994F');
+                    this.restartbutton.setShadowBlur(10);
                     sceneSelect = 'playScene';
                 }  
               }
             if (Phaser.Input.Keyboard.JustDown(keyUp)) {
                 if(sceneSelect == 'playScene'){
                     this.restartbutton.setColor('#FFFFFF');
+                    this.restartbutton.setShadowBlur(0);
                     this.MainMenubutton.setColor('#FF994F');
+                    this.MainMenubutton.setShadowBlur(10);
                     sceneSelect = 'menuScene';
                 }
                 else if(sceneSelect == 'menuScene'){
                     this.MainMenubutton.setColor('#FFFFFF');
+                    this.MainMenubutton.setShadowBlur(0);
                     this.restartbutton.setColor('#FF994F');
+                    this.restartbutton.setShadowBlur(10);
                     sceneSelect = 'playScene';
                 }  
             }
@@ -252,10 +265,15 @@ class Play extends Phaser.Scene {
                     offsetX: 0,
                     offsetY: 0,
                     color: '#FEC093',
-                    blur: 20,
+                    blur: 10,
                     stroke: true,
                     fill: true
-                }
+                }, padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                },
             }
 
             this.plrWtich.faceplantSlide(this.endscreen, this.bgPathScroll);
@@ -270,12 +288,12 @@ class Play extends Phaser.Scene {
                 if(highscore < this.p1Score){
                     highscore =  this.p1Score;
                     localStorage.setItem(localStorageName, highscore);
-                } 
+                }
+                 PlayConfig.fontSize = '16px';
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart', PlayConfig).setOrigin(0.5);
                 PlayConfig.color =  '#FFFFFF';
-                PlayConfig.fontSize = '16px'
                 this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
                 PlayConfig.shadow.blur = 0;
-                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart', PlayConfig).setOrigin(0.5);
                 this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
             }   
     }
