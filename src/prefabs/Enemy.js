@@ -14,7 +14,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         else{
             this.moveSpeed = speed;
         }
-        //add sprite animation    minor guidence provided by Annika Kennedy(classmate)
+        //add sprite animation   
         this.anims.create({
             key: 'ghostMove',
             frames: this.anims.generateFrameNumbers('ghostMove', {start: 0, end: 3, 
@@ -23,8 +23,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             repeat: -1
          });
          this.anims.play('ghostMove');
+        
 
-         
+        //  let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
+        
 
     }
     update(time, delta){
@@ -40,7 +42,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.destroyEnemy();
         }
     }
-    destroyEnemy(){
+    destroyEnemy(){      
         this.destroy();
     }
     // updateSpeed(){

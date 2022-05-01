@@ -60,6 +60,12 @@ class Play extends Phaser.Scene {
         keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        // animation config
+         this.anims.create({
+            key: 'ghostDie',
+            frames: this.anims.generateFrameNumbers('ghostDie', {start: 0, end: 6, first: 0}),
+            frameRate: 8,
+         })
         // end screen selection zxz
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -287,6 +293,12 @@ class Play extends Phaser.Scene {
         this.p1Score += enemy.points;
         this.score.text = this.p1Score;
         enemy.destroy();
+        let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
+        die.anims.play('ghostDie');
+        die.on('animationcomplete', () => {         //callback after aim completes                
+            die.destroy();
+        });
+        
     }
 
     // When player and explosion touch, send player upwards
