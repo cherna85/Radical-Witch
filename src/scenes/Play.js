@@ -319,31 +319,37 @@ class Play extends Phaser.Scene {
         // Blast boost attack implementation
         // stun implmentation
        if(!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver){
-           this.stunEffect = true;
-           this.plrWtich.stunned = true;
             console.log("stunned");
-            //removes controls 
+            //PLayer is stunned (loses controls)
             keyCancel.enabled = false;
             keyDown.enabled = false;
             keyBomb.enabled = false;
             keyLeft.enabled = false;
             keyRight.enabled = false;
+
+            this.stunEffect = true;
+            this.plrWtich.stunned = true;
             player.setTexture('witchStunned', 0);
-            //regains player controls
-            this.regainControls = this.time.addEvent({ delay: this.p1Score*10, callback: () =>{
-                console.log("unstunned");
+
+            //Player is unstunned (regain control)
+            //Base stun duration is 0.5 seconds, and increases by 0.1 second for every 10 points
+            this.regainControls = this.time.addEvent({ delay: 500 + this.p1Score * 10, callback: () =>{
+                console.log("Unstunned after " + ((1000 + this.p1Score * 10) / 100) + " seconds.");
+
                 keyDown.enabled = true;
                 keyLeft.enabled = true;
                 keyRight.enabled = true;
                 keyCancel.enabled = true;
                 keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
+
                 this.plrWtich.stunned = false;
                 this.plrWtich.setTexture('witchFlying', 0);
                 this.immunityVisual();
             } });
-            //unstun the player 
-            this.stunImmune = this.time.addEvent({ delay: this.p1Score*20, callback: () =>{
+            //Player becomes vulnerable to stuns again, some time after regaining control
+            //Current: Have 1.5 seconds of stun immunity (base delay - base delay of regainControls)
+            this.stunImmune = this.time.addEvent({ delay: 2000 + this.p1Score * 10, callback: () =>{
                 console.log("not immune");
                 this.stunEffect = false;
                 this.vis.paused = true;
