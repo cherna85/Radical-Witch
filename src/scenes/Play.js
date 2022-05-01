@@ -176,11 +176,11 @@ class Play extends Phaser.Scene {
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
             //scroll background
-            this.bgMoon.tilePositionX += 0.15;
-            this.bgCity.tilePositionX += 0.25;
-            this.bgCritters.tilePositionX += 2;
-            this.bgTrees.tilePositionX += 4;
-            this.bgPath.tilePositionX += this.bgPathScroll;
+            this.bgMoon.tilePositionX += this.bgPathScroll - 5.85;
+            this.bgCity.tilePositionX += this.bgPathScroll - 5.75;
+            this.bgCritters.tilePositionX += this.bgPathScroll - 4; // starts
+            this.bgTrees.tilePositionX += this.bgPathScroll - 2; //starts as 4
+            this.bgPath.tilePositionX += this.bgPathScroll; // starts at 6
         }
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -227,8 +227,9 @@ class Play extends Phaser.Scene {
             speedLow = (speedLow <12) ? speedLow+=1:12;
             this.speedUpdate = false;
             this.plrWtich.hMoveSpeed = (this.plrWtich.hMoveSpeed < 300) ? this.plrWtich.hMoveSpeed+=50:300; 
+            this.bgPathScroll +=1
         }
-        else if (this.p1Score %50 != 0 && !this.speedUpdate ){
+        if (this.p1Score %50 != 0 && !this.speedUpdate ){
             this.speedUpdate = true;
         }
         //the text will follow player
