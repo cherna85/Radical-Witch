@@ -3,10 +3,12 @@ class Menu extends Phaser.Scene {
         super("menuScene");
         }
     preload(){
+        this.load.image('menuSplash', './assets/MenuSplash.png');
         //load audio
         this.load.audio('sfx_explosion', './assets/Explosion1.wav');
     }
     create() {
+        this.menuSplash = this.add.tileSprite(0, 0, 960, 540, 'menuSplash').setOrigin(0,0);
         //temp text
         let MenuConfig = {
             //font from https://fonts.google.com/specimen/Press+Start+2P
