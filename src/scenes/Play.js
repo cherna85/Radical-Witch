@@ -196,7 +196,7 @@ class Play extends Phaser.Scene {
 
         }
         // the text will follow player
-        if(this.stunEffect){
+        if(this.stunEffect && !keyBomb.enabled ){
              this.stunText.x = this.plrWtich.x -40;
              this.stunText.y = this.plrWtich.y - 55;
             //prevents players from "sliding"
@@ -291,29 +291,41 @@ class Play extends Phaser.Scene {
             keyRight.enabled = false;
             player.setTexture('witchStunned', 0);
             //regains player controls
-            this.regainControls = this.time.addEvent({ delay: 500, callback: () =>{
-                console.log("Move!");
+            this.regainControls = this.time.addEvent({ delay: 750, callback: () =>{
+                console.log("unstunned");
                 keyDown.enabled = true;
                 keyLeft.enabled = true;
                 keyRight.enabled = true;
-            } });
-            //unstun the player 
-            this.stun = this.time.addEvent({ delay: 1500, callback: () =>{
-                console.log("unstunned");
                 keyCancel.enabled = true;
                 keyBomb.enabled = true;
                 this.stunText.x = game.config.width + 400;
-                this.stunEffect = false;
                 this.plrWtich.stunned = false;
                 this.plrWtich.setTexture('witchFlying', 0);
+                this.immunityVisual();
+            } });
+            //unstun the player 
+            this.stunImmune = this.time.addEvent({ delay: 2000, callback: () =>{
+                console.log("not immune");
+                this.stunEffect = false;
+                this.vis.paused = true;
+                this.invis.paused = false;
             } });
             //Knockback
             player.KnockBack();
-       }
+      }
        else if(this.plrWtich.body.velocity.y < 0 && !this.stunEffect){
+            enemy.destroy();
             this.p1Score += enemy.points;
             this.score.text = this.p1Score;
        }
-       enemy.destroy();
+    }
+    immunityVisual(){
+        this.vis = this.time.addEvent({delay: 300, callback: () =>{
+            this.plrWtich.alpha= 0.5;
+        }, loop: true });
+        this.invis = this.time.addEvent({delay: 600, callback: () =>{
+            this.plrWtich.alpha= 1;
+        }, loop: true });
+        this.plrWtich.alpha= 1;
     }
 }
