@@ -282,11 +282,11 @@ class Play extends Phaser.Scene {
                 if(highscore < this.p1Score){
                     highscore =  this.p1Score;
                     localStorage.setItem(localStorageName, highscore);
-                } 
-                PlayConfig.color =  '#FFFFFF';
-                PlayConfig.fontSize = '16px'
-                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
+                }
+                 PlayConfig.fontSize = '16px';
                 this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart', PlayConfig).setOrigin(0.5);
+                PlayConfig.color =  '#FFFFFF';
+                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
                 PlayConfig.shadow.blur = 0;
                 this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
             }   
