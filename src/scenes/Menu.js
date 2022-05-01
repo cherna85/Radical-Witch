@@ -10,7 +10,8 @@ class Menu extends Phaser.Scene {
         //temp text
         let MenuConfig = {
             //font from https://fonts.google.com/specimen/Press+Start+2P
-            fontFamily:  'font1', 
+            //https://www.1001fonts.com/sortelo-font.html
+            fontFamily:  'PressStart2p', 
             fontSize: '64px',
             backgroundColor: null,
             color: '#FF994F',

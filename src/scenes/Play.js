@@ -123,7 +123,7 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
         // UI
         let PlayConfig = {
-            fontFamily:  'font1', 
+            fontFamily:  'PressStart2P', 
             fontSize: '16px',
             backgroundColor: null,
             color: '#FFFFFF',
@@ -221,7 +221,7 @@ class Play extends Phaser.Scene {
             this.groupEnemieslow.runChildUpdate = false;
             this.endscreen++; // prevents endscreen from generating multiple times
             let PlayConfig = {
-                fontFamily:  'font1', 
+                fontFamily:  'SorteloItalic', 
                 fontSize: '36px',
                 backgroundColor: null,
                 color: '#FF994F',
