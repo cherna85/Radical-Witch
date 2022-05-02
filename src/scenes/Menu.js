@@ -12,12 +12,15 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_stun', './assets/sfx/stun2.wav');
         this.load.audio('sfx_fail', './assets/sfx/fail3.wav');
         this.load.audio('sfx_mist', './assets/sfx/owo_ghost1.wav');
-        this.load.audio('bg_music', './assets/RadicalWitch')
+        this.load.audio('bg_music', './assets/RadicalWitchMainMenu.wav');
     }
     create() {
-        // var radicalMusic = this.sound.add('bg_music'); 
-        // radicalMusic.setLoop(true);
-        // radicalMusic.play();
+
+
+        this.game.sound.stopAll();
+        var radicalMusic = this.sound.add('bg_music', {volume: 0.5}); 
+        radicalMusic.setLoop(true);
+        radicalMusic.play();
         this.menuSplash = this.add.tileSprite(0, 0, 960, 540, 'menuSplash').setOrigin(0,0);
         //temp text
         let MenuConfig = {

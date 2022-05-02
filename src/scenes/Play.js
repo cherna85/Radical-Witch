@@ -303,6 +303,7 @@ class Play extends Phaser.Scene {
                 PlayConfig.shadow.blur = 0;
                 this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
                 this.sound.play('sfx_fail');
+                //radicalMusic.pause();
             }   
     }
     enemySpawn( group, yLow, yHigh){
