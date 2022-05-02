@@ -147,14 +147,14 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
 
                 throwVecX = aimAssistVec.x;
                 throwVecY = aimAssistVec.y;
-                console.log(aimAssistVec.x + ", " + aimAssistVec.y);
+                //console.log(aimAssistVec.x + ", " + aimAssistVec.y);
             }
 
             bombInstance.setVelocity(throwVecX, throwVecY);
             this.setTexture('witchThrow', 0);
         }
         else{
-            console.log("Cant throw bomb right now");
+           // console.log("Cant throw bomb right now");
         }
     }
 
@@ -174,7 +174,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     //or stunned
     faceplantSlide(endscreen, groundScrollSpeed){
         if(endscreen == 1){
-            console.log("Player faceplanted")
+            //console.log("Player faceplanted")
 
             //By using groundScrollSpeed, this should hopefully scale with how 'fast' the player is moving
             this.setVelocityX(groundScrollSpeed * 60);
@@ -183,7 +183,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     }
 
     clamp(number, max, min){
-        console.log("Clamped the throw angle");
+        //console.log("Clamped the throw angle");
         return Math.min(Math.max(number, min), max);
     }
 }
