@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
     preload() {
         //Load assets here
         this.load.image('witchPH', './assets/simpleWitch.png');
+        this.load.image('poof', './assets/vfx_poof.png');
         //this.load.image('enemy', './assets/simpleGhost.png');
         this.load.spritesheet('explosion', './assets/vfx_explosion.png', {frameWidth: 150, frameHeight: 180, startFrame: 0, endFrame: 10});
         this.load.spritesheet('ghostMove', './assets/slimeGhost.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 3});
@@ -49,6 +50,12 @@ class Play extends Phaser.Scene {
         this.bgPath = this.add.tileSprite(0, 0, 960, 540, 'path').setOrigin(0,0);
         this.bgPathScroll = 6;
 
+        //particles
+        let particles = this.add.particles('poof');
+        this.emitter = particles.createEmitter();
+
+
+
         //Explosion animation
         this.anims.create({
             key: 'explode',
@@ -64,7 +71,6 @@ class Play extends Phaser.Scene {
          this.anims.create({
             key: 'ghostDie',
             frames: this.anims.generateFrameNumbers('ghostDie', {start: 0, end: 6, first: 0}),
-            frameRate: 8,
          })
         // end screen selection zxz
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -389,6 +395,13 @@ class Play extends Phaser.Scene {
         this.plrWtich.alpha= 1;
     }
     bombHitsFloor(floor, bomb){
+        this.emitter.setPosition(bomb.x, bomb.y);
+        this.emitter.setSpeed(250);
+        this.emitter.start(false, 2000, 100, 100);
             bomb.destroy();
+            this.stop = this.time.addEvent({ delay: 100 , callback: () =>{
+                  this.emitter.stop();
+             } });
+           
     }
 }
