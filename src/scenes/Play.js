@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
     preload() {
         //Load assets here
         this.load.image('witchPH', './assets/simpleWitch.png');
+        this.load.image('poof', './assets/vfx_poof.png');
         //this.load.image('enemy', './assets/simpleGhost.png');
         this.load.spritesheet('explosion', './assets/vfx_explosion.png', {frameWidth: 150, frameHeight: 180, startFrame: 0, endFrame: 10});
         this.load.spritesheet('ghostMove', './assets/slimeGhost.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 3});
@@ -49,6 +50,12 @@ class Play extends Phaser.Scene {
         this.bgPath = this.add.tileSprite(0, 0, 960, 540, 'path').setOrigin(0,0);
         this.bgPathScroll = 6;
 
+        //particles
+        let particles = this.add.particles('poof');
+        this.emitter = particles.createEmitter();
+
+
+
         //Explosion animation
         this.anims.create({
             key: 'explode',
@@ -64,7 +71,6 @@ class Play extends Phaser.Scene {
          this.anims.create({
             key: 'ghostDie',
             frames: this.anims.generateFrameNumbers('ghostDie', {start: 0, end: 6, first: 0}),
-            frameRate: 8,
          })
         // end screen selection zxz
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -159,7 +165,7 @@ class Play extends Phaser.Scene {
         // stunned effect 
         this.stunEffect = false;
         //hides text off screen
-        // text is gonna follow the player for now
+        // text follows the player when needed
         this.stunText = this.add.text(game.config.width + 400, 0, "Stunned", PlayConfig);
         PlayConfig.fontSize = '32px';
         this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  PlayConfig);
@@ -176,11 +182,11 @@ class Play extends Phaser.Scene {
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
             //scroll background
-            this.bgMoon.tilePositionX += 0.15;
-            this.bgCity.tilePositionX += 0.25;
-            this.bgCritters.tilePositionX += 2;
-            this.bgTrees.tilePositionX += 4;
-            this.bgPath.tilePositionX += this.bgPathScroll;
+            this.bgMoon.tilePositionX += this.bgPathScroll - 5.85; // starts 0.15
+            this.bgCity.tilePositionX += this.bgPathScroll - 5.75; // starts 0.25
+            this.bgCritters.tilePositionX += this.bgPathScroll - 4; // starts 2
+            this.bgTrees.tilePositionX += this.bgPathScroll - 2; //starts as 4
+            this.bgPath.tilePositionX += this.bgPathScroll; // starts at 6
         }
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -216,31 +222,31 @@ class Play extends Phaser.Scene {
                 }  
             }
             if (Phaser.Input.Keyboard.JustDown(keyBomb)) {
-                console.log('selecting');
+                //console.log('selecting');
                 this.scene.start(sceneSelect);    
             }
         }
         // implements speedup
         if(this.p1Score %50 == 0 && this.speedUpdate ){
             speedHigh = (speedHigh <15) ? speedHigh+=1:15;
-            console.log("gotta go faster");
+            //console.log("gotta go faster");
             speedLow = (speedLow <12) ? speedLow+=1:12;
             this.speedUpdate = false;
             this.plrWtich.hMoveSpeed = (this.plrWtich.hMoveSpeed < 300) ? this.plrWtich.hMoveSpeed+=50:300; 
+            this.bgPathScroll +=1
         }
-        else if (this.p1Score %50 != 0 && !this.speedUpdate ){
+        if (this.p1Score %50 != 0 && !this.speedUpdate ){
             this.speedUpdate = true;
         }
         //the text will follow player
         if(this.stunEffect && !keyBomb.enabled ){
              this.stunText.x = this.plrWtich.x -40;
              this.stunText.y = this.plrWtich.y - 55;
-            //prevents players from "sliding"
-            //when stunned 
             if(!keyLeft.enabled){
                 this.plrWtich.setVelocityX(0);
             }
         }
+        // when out of bounds arrows follow players position
         if(this.plrWtich.y <0){
             this.OutofBoundsText.x = this.plrWtich.x -40;
         }
@@ -281,7 +287,8 @@ class Play extends Phaser.Scene {
 
             //prints text
             if(this.endscreen == 1){
-
+                // camera shake on floor
+                this.cameras.main.shake( 200,0.02);
                 this.add.text(game.config.width/2, game.config.height/2 -32 , 'GAMEOVER',  PlayConfig).setOrigin(0.5);
                 // add highscore and save to local storage
                 PlayConfig.fontFamily = "PressStart2P"
@@ -303,10 +310,11 @@ class Play extends Phaser.Scene {
     }
 
     bombHitsEnemy(bomb, enemy){
-        console.log("A bomb hit an enemy!");
+        //console.log("A bomb hit an enemy!");
         this.p1Score += enemy.points;
         this.score.text = this.p1Score;
         enemy.destroy();
+        this.cameras.main.shake( 100,0.02);
         bomb.explode();
     }
 
@@ -328,7 +336,7 @@ class Play extends Phaser.Scene {
     plrBlastJump(player, explosion){
         //Player can only blast jump again after 0.75 seconds
         if(player.blastJumping < -0.75){
-            console.log("Player caught in blast!");
+            //console.log("Player caught in blast!");
             player.blastJump();
         }
     }
@@ -336,7 +344,7 @@ class Play extends Phaser.Scene {
         // Blast boost attack implementation
         // stun implmentation
        if(!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver){
-            console.log("stunned");
+            //console.log("stunned");
             //PLayer is stunned (loses controls)
             this.stunEffect = true;
             this.plrWtich.stunned = true;
@@ -346,7 +354,7 @@ class Play extends Phaser.Scene {
             //Player is unstunned (regain control)
             //Base stun duration is 0.5 seconds, and increases by 0.05 second for every 10 points
             this.regainControls = this.time.addEvent({ delay: 750 + this.p1Score * 5, callback: () =>{
-                console.log("Unstunned after " + ((500 + this.p1Score * 10) / 100) + " seconds.");
+               // console.log("Unstunned after " + ((500 + this.p1Score * 10) / 100) + " seconds.");
 
                 this.stunText.x = game.config.width + 400;
 
@@ -357,7 +365,7 @@ class Play extends Phaser.Scene {
             //Player becomes vulnerable to stuns again, some time after regaining control
             //Current: Have 1.5 seconds of stun immunity (base delay - base delay of regainControls)
             this.stunImmune = this.time.addEvent({ delay: 2250 + this.p1Score * 5, callback: () =>{
-                console.log("not immune");
+                //console.log("not immune");
                 this.stunEffect = false;
                 this.vis.paused = true;
                 this.invis.paused = false;
@@ -387,6 +395,13 @@ class Play extends Phaser.Scene {
         this.plrWtich.alpha= 1;
     }
     bombHitsFloor(floor, bomb){
+        this.emitter.setPosition(bomb.x, bomb.y);
+        this.emitter.setSpeed(250);
+        this.emitter.start(false, 2000, 100, 100);
             bomb.destroy();
+            this.stop = this.time.addEvent({ delay: 100 , callback: () =>{
+                  this.emitter.stop();
+             } });
+           
     }
 }
