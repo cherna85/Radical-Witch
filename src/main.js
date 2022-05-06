@@ -28,13 +28,16 @@ let config = {
     type: Phaser.AUTO,
     width: 960, // 16 x 9 aspect ratio. Can be scaled up by 2 for fullscreen or divided by 3 to get a good pixel art size
     height: 540,
+    scale: {
+      autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     physics: {
         default: 'arcade',
         arcade: {
               gravity: { y: 800 },
               debug: false
         }
-  },
+    },
     scene: [ Menu, Play, Tutorial, Option, Credit ]
 }
 // for selecting menu
