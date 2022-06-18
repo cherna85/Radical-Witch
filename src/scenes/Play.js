@@ -22,7 +22,7 @@ class Play extends Phaser.Scene {
         let playerFrames = {frameWidth: 112, frameHeight: 88, startFrame: 0, endFrame: 0};
         //Currently not animated, but loading as spritesheets removes some work later
         this.load.spritesheet('witchFlying', playerPath + 'witchPC_flying.png', playerFrames);
-        this.load.spritesheet('witchThrow', playerPath + 'witchPC_throw.png', playerFrames);
+        this.load.spritesheet('witchThrow', playerPath + 'witchPC_throw.png', {frameWidth: 112, frameHeight: 88, startFrame: 0, endFrame: 4});
         this.load.spritesheet('witchDive', playerPath + 'witchPC_dive.png', playerFrames);
         this.load.spritesheet('witchAscend', playerPath + 'witchPC_ascend.png', playerFrames);
         this.load.spritesheet('witchStunned', playerPath + 'witchPC_stunned.png', playerFrames);
@@ -60,6 +60,12 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 10, first: 0}),
+            frameRate: 10
+        });
+
+        this.anims.create({
+            key: 'playerThrow',
+            frames: this.anims.generateFrameNumbers('witchThrow', { start: 0, end: 4, first: 0}),
             frameRate: 10
         });
 
