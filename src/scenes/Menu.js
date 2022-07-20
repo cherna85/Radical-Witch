@@ -15,8 +15,6 @@ class Menu extends Phaser.Scene {
         this.load.audio('bg_music', './assets/RadicalWitchMainMenu.wav');
     }
     create() {
-
-
         this.game.sound.stopAll();
         var radicalMusic = this.sound.add('bg_music', {volume: 0.5}); 
         radicalMusic.setLoop(true);
@@ -68,8 +66,8 @@ class Menu extends Phaser.Scene {
         // get any data of a highscore 
         // this line of code taken from 
         //https://phaserjs.com/saving-high-score
-        highscore = localStorage.getItem(localStorageName) == null ? 0 :
-            localStorage.getItem(localStorageName);
+        highscore = parseInt(localStorage.getItem(localStorageName)) || 0;
+        playedBefore = parseInt(localStorage.getItem('playedBefore')) || 0;
         //Display Highscore
         this.add.text(150,40, 'Highscore: ' + highscore, MenuConfig ).setOrigin(0.5);
     }
@@ -98,7 +96,14 @@ class Menu extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustDown(keyBomb)) {
             this.sound.play('sfx_button');
-            this.scene.start(sceneSelect);    
+
+            if(sceneSelect == "playScene" && playedBefore < 1){
+                this.scene.start("tutorialScene");
+                playedBefore = 1;
+                localStorage.setItem('playedBefore', playedBefore);
+            }
+            else
+                this.scene.start(sceneSelect);    
           }
 
     }

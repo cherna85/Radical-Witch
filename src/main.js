@@ -46,6 +46,7 @@ let enemyGroup;
 
 let localStorageName = "Radical Witch"
 let highscore = 0;
+let playedBefore = 0; //0 = false, 1+ = true
 
 let speedLow ,speedHigh;
 //reserve keyboard vars
