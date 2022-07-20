@@ -38,7 +38,7 @@ let config = {
               debug: false
         }
     },
-    scene: [ Menu, Play, Tutorial, Option, Credit ]
+    scene: [ Menu, Play, Tutorial, Option, Credit, AskTutorial ]
 }
 // for selecting menu
 let sceneSelect = 'playScene';
