@@ -38,6 +38,8 @@ class Tutorial extends Phaser.Scene {
           this.load.image('critters', './assets/backgroundCritters.png');
           this.load.image('trees', './assets/backgroundTrees.png');
           this.load.image('path', './assets/backgroundPath.png');
+
+          this.load.json('tutorialMessages', './assets/TutorialMessages.json');
       }
   
       create() {
@@ -103,20 +105,6 @@ class Tutorial extends Phaser.Scene {
           this.groupEnemieslow.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
           this.groupEnemieslow.runChildUpdate = true;
   
-          this.groupEnemies.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10));
-  
-          //number of seconds it takes to spawn a new enemy
-          let frequency = 1.0;
-          this.spawn = this.time.addEvent({ delay: frequency*1000, callback: () =>{
-              this.enemySpawn(this.groupEnemies, 150, game.config.height-145);
-          },  loop: true });
-  
-          frequency = 2;
-          this.spawnLow = this.time.addEvent({ delay: frequency*1000, callback: () =>{
-              // this is the lower set of spawners 
-              this.enemySpawn(this.groupEnemies,game.config.height-125, game.config.height-35);
-          },  loop: true });
-  
   
           this.groupBombs = this.physics.add.group();
           this.groupBombs.defaults = {};
@@ -165,7 +153,6 @@ class Tutorial extends Phaser.Scene {
               },
           }
           this.score = this.add.text(20, 20, this.p1Score, PlayConfig );
-          this.tutorialText = this.add.text(game.config.width - 20, 20, "Tutorial", PlayConfig).setOrigin(1.0, 0.0);
           this.endscreen = 0;
           // stunned effect 
           this.stunEffect = false;
@@ -175,6 +162,22 @@ class Tutorial extends Phaser.Scene {
           PlayConfig.fontSize = '32px';
           this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  PlayConfig);
           this.speedUpdate = false;
+
+          /*Load JSON file for TUTORIAL*/
+          this.tutorialMsgs = this.cache.json.get('tutorialMessages');
+
+          PlayConfig.fontSize = '16px';
+          this.tutorialText = this.add.text(game.config.width - 20, 20, "Tutorial", PlayConfig).setOrigin(1.0, 0.0);
+          this.tutorialText.text = this.tutorialMsgs[0][0];
+
+          /* Objectives for the tutorial 
+          1st slot is function for enemy spawning behavior, 2nd slot is whether or not to respawn the player
+          3rd and onwards is extra function calls*/
+          this.objectives = {
+            0: [null, null],
+            1: [null, null],
+            2: [null, null, this.enable_bombs]
+          }
       } 
       
   
@@ -232,7 +235,7 @@ class Tutorial extends Phaser.Scene {
               }
           }
           // implements speedup
-          if(this.p1Score %50 == 0 && this.speedUpdate ){
+          /*if(this.p1Score %50 == 0 && this.speedUpdate ){
               speedHigh = (speedHigh <15) ? speedHigh+=1:15;
               //console.log("gotta go faster");
               speedLow = (speedLow <12) ? speedLow+=1:12;
@@ -242,7 +245,7 @@ class Tutorial extends Phaser.Scene {
           }
           if (this.p1Score %50 != 0 && !this.speedUpdate ){
               this.speedUpdate = true;
-          }
+          }*/
           //the text will follow player
           if(this.stunEffect && !keyBomb.enabled ){
                this.stunText.x = this.plrWtich.x -40;
@@ -259,7 +262,8 @@ class Tutorial extends Phaser.Scene {
               this.OutofBoundsText.x = -200;
           }
       }
-  
+
+      /*TUTORIAL: Change this func to a quick respawn rather than game-over*/
       gameEnd(){
               this.gameOver = true;
               this.spawn.paused = true;
@@ -297,18 +301,14 @@ class Tutorial extends Phaser.Scene {
                   this.add.text(game.config.width/2, game.config.height/2 -32 , 'GAMEOVER',  PlayConfig).setOrigin(0.5);
                   // add highscore and save to local storage
                   PlayConfig.fontFamily = "PressStart2P"
-                  if(highscore < this.p1Score){
-                      highscore =  this.p1Score;
-                      localStorage.setItem(localStorageName, highscore);
-                  }
-                   PlayConfig.fontSize = '16px';
+                  
+                  PlayConfig.fontSize = '16px';
                   this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart', PlayConfig).setOrigin(0.5);
                   PlayConfig.color =  '#FFFFFF';
                   this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
                   PlayConfig.shadow.blur = 0;
                   this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
                   this.sound.play('sfx_fail');
-                  //radicalMusic.pause();
               }   
       }
       enemySpawn( group, yLow, yHigh){
@@ -409,5 +409,9 @@ class Tutorial extends Phaser.Scene {
                     this.emitter.stop();
                } });
              
+      }
+
+      enable_bombs(){
+            console.log("This shouldn't be called right away");
       }
   }

@@ -1,0 +1,8 @@
+[
+      ["Welcome to Radical Witch!\nHere's how to play:"],
+      ["Press <- on the keyboard to move left", 0],
+      ["Press -> on the keyboard to move right", 1],
+      ["Good!"],
+      ["Press Z to throw bombs", 2],
+      ["That's the end for now"]
+]
