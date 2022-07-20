@@ -44,6 +44,10 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         
         //Circle creation based on top-left of previous collision box. Great...
         //Setting size to radius * 2 gets it centered
+
+        //TUTORIAL SETTINGS
+        this.canDive = true;
+        this.canThrow = true;
     }
 
     update(time, delta){
@@ -55,12 +59,12 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldownTimer -= delta;
         this.blastJumping -= delta;
         
-        if(Phaser.Input.Keyboard.JustDown(keyBomb) && !this.stunned){
+        if(this.canThrow && Phaser.Input.Keyboard.JustDown(keyBomb) && !this.stunned){
             this.throwBomb()
         }
 
         // DIVE: Triples (Or whatever) falling speed
-        if(keyDown.isDown && !this.stunned){
+        if(this.canDive && keyDown.isDown && !this.stunned){
             this.maxFallSpeed = this.fallSpeedDefault * 3;
         }
         else{
@@ -87,7 +91,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         /* Animation state junk - Santiago */
         if(!this.stunned){
             if(this.body.velocity.y >= 0 && this.throwCooldownTimer <= 0){
-                if(keyDown.isDown){
+                if(this.canDive && keyDown.isDown){
                     this.setTexture('witchDive');
                 }
                 else{
@@ -183,7 +187,6 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     }
 
     clamp(number, max, min){
-        //console.log("Clamped the throw angle");
         return Math.min(Math.max(number, min), max);
     }
 }
