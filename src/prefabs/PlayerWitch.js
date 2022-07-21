@@ -79,9 +79,11 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         //Horizontal movement
         if(keyLeft.isDown && this.x > 0 && !this.stunned){
             this.setVelocityX(-this.hMoveSpeed * 1.2); //Going backwards is slightly faster
+            this.emit('movLeft');
         }
         else if(keyRight.isDown && this.x < config.width && !this.stunned){
             this.setVelocityX(this.hMoveSpeed);
+            this.emit('movRight');
         }
         else{
             this.setVelocityX(0);
