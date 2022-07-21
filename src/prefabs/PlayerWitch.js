@@ -158,6 +158,8 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
 
             bombInstance.setVelocity(throwVecX, throwVecY);
             this.setTexture('witchThrow', 0);
+
+            this.emit('throwBomb');
         }
         else{
            // console.log("Cant throw bomb right now");

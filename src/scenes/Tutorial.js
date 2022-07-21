@@ -192,6 +192,10 @@ class Tutorial extends Phaser.Scene {
             if(this.currObjective == 1)
                 this.objectiveComplete();
         });
+        this.plrWtich.on('throwBomb', () => {
+            if(this.currObjective == 2)
+                this.objectiveComplete();
+        });
     }
 
     /*Called when the player presses the X button and the current objective is complete*/
@@ -208,9 +212,10 @@ class Tutorial extends Phaser.Scene {
             //Adjust enemy spawning pattern
             //Respawn the player
 
-            /*For each extra function in objective array (index 2 onwards)
-                call said function
-            */
+            //Calls any extra functions attached to the objective
+            for(let i = 2; i < this.objectives[this.currObjective].length; i++){
+                this.objectives[this.currObjective][i]();
+            }
         }
     }
 
@@ -464,6 +469,7 @@ class Tutorial extends Phaser.Scene {
 
     }
 
+    //In context *this* is referring to the array, so it doesn't work.
     enableBombs() {
         console.log("This shouldn't be called right away");
         this.plrWtich.canThrow = true;
