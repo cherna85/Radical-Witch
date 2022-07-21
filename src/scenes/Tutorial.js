@@ -176,7 +176,7 @@ class Tutorial extends Phaser.Scene {
           this.objectives = {
             0: [null, null],
             1: [null, null],
-            2: [null, null, this.enable_bombs]
+            2: [null, null, this.enableBombs]
           }
       } 
       
@@ -411,7 +411,17 @@ class Tutorial extends Phaser.Scene {
              
       }
 
-      enable_bombs(){
+      enableBombs(){
             console.log("This shouldn't be called right away");
+            this.plrWtich.canThrow = true;
+      }
+
+      enableDive(){
+            console.log("This shouldn't be called right away");
+            this.plrWtich.canDive = true;
+      }
+
+      changeGravity(yes){
+            this.plrWtich.body.allowGravity = yes;
       }
   }
