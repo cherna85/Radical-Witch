@@ -169,8 +169,9 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     /*Need blasts upwards to be snappy, but overall falling speed to be slow*/
     blastJump(){
         this.setVelocityY(this.blastPower);
-        this.setTexture('witchAscend')
+        this.setTexture('witchAscend');
         this.blastJumping = 0;
+        this.emit('blastJump');
     }
     dive(){
         this.setVelocityY(-this.blastPower);

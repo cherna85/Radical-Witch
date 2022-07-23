@@ -85,12 +85,12 @@ class Tutorial extends Phaser.Scene {
         // creates a floor to collide with 
         this.floor = new Floor(this, 480, game.config.height - 20);
 
-        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
+        this.plrWtich = new PlayerWitch(this, 100, 150, 'witchFlying', 0, 'bomb', 'explosion');
         this.plrWtich.body.allowGravity = false;
         this.plrWtich.body.setVelocityY(0);
         this.plrWtich.canDive = false;
         this.plrWtich.canThrow = false;
-        this.rushBarrier = new RushBarrier(this, 100, 50, 'vfxBarrier', 0, this.plrWtich);
+        this.rushBarrier = new RushBarrier(this, 100, 150, 'vfxBarrier', 0, this.plrWtich);
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -162,6 +162,7 @@ class Tutorial extends Phaser.Scene {
         PlayConfig.fontSize = '32px';
         this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^", PlayConfig);
         this.speedUpdate = false;
+        this.ghostSpawner;
 
         /*Load JSON file for TUTORIAL*/
         this.tutorialMsgs = this.cache.json.get('tutorialMessages');
@@ -172,30 +173,42 @@ class Tutorial extends Phaser.Scene {
 
         /* Objectives for the tutorial 
         1st slot is function for enemy spawning behavior, 2nd slot is whether or not to respawn the player
-        3rd and onwards is extra function calls*/
+        3rd slot is # of times an objective must be repeated
+        4th and onwards is extra function calls*/
         this.objectives = {
-            0: [null, null],
-            1: [null, null],
-            2: [null, null, this.enableBombs]
+            0: [null, false, 0],
+            1: [null, false, 0],
+            2: [null, false, 0, this.enableBombs],
+            3: [this.ghostSpawnLowRandom, null, 3],
+            4: [null, true, 0, this.enableGravity]
         }
-        this.currObjective = -1;
+        this.currObjectiveID = -1;
+        this.objevtiveProgress = 0;
         this.tutCurrLine = 0;
 
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         //Objective listeners
         this.plrWtich.on('movLeft', () => {
-            if(this.currObjective == 0)
+            if(this.currObjectiveID == 0)
                 this.objectiveComplete();
         });
         this.plrWtich.on('movRight', () => {
-            if(this.currObjective == 1)
+            if(this.currObjectiveID == 1)
                 this.objectiveComplete();
         });
         this.plrWtich.on('throwBomb', () => {
-            if(this.currObjective == 2)
+            if(this.currObjectiveID == 2)
                 this.objectiveComplete();
         });
+        this.groupEnemies.on('enemyDefeated', () => {
+            if(this.currObjectiveID == 3)
+                this.objectiveComplete();
+        });
+        this.plrWtich.on('blastJump', () => {
+            if(this.currObjectiveID == 4)
+                this.objectiveComplete();
+        })
     }
 
     /*Called when the player presses the X button and the current objective is complete*/
@@ -207,29 +220,46 @@ class Tutorial extends Phaser.Scene {
         this.tutorialText.text = currentLine[0];
         //There is an objective, so advancing must be locked
         if(currentLine.length > 1){
-            this.currObjective = currentLine[1];
+            this.currObjectiveID = currentLine[1];
+            //Activate enemy spawners
+            if(this.objectives[this.currObjectiveID][0] == null){
+                //Turn off any active enemy spawners
+            }
+            else
+                this.objectives[this.currObjectiveID][0](this); //Turn ON a spawner
             //(ADD LATER)
-            //Adjust enemy spawning pattern
             //Respawn the player
+            this.objectiveProgress = this.objectives[this.currObjectiveID][2];
 
             //Calls any extra functions attached to the objective
-            for(let i = 2; i < this.objectives[this.currObjective].length; i++){
-                this.objectives[this.currObjective][i]();
+            for(let i = 3; i < this.objectives[this.currObjectiveID].length; i++){
+                this.objectives[this.currObjectiveID][i](this);
             }
         }
     }
 
+    ghostSpawnLowRandom(scene) {
+        let frequency = 1;
+        scene.ghostSpawner = scene.time.addEvent({ delay: frequency*1000, startAt: 999, callback: () =>{
+            // this is the lower set of spawners 
+            scene.enemySpawn(scene.groupEnemies, game.config.height/2, game.config.height-125);
+        },  loop: true });
+    }
+
     objectiveComplete() {
-        if(this.currObjective != -1){
-            this.currObjective = -1;
-            //Sounds and visual cues
+        if(this.currObjectiveID != -1){
+            this.objectiveProgress -= 1;
+            if(this.objectiveProgress <= 0){
+                this.currObjectiveID = -1;
+                //Sounds and visual cues
+            }
         }
     }
 
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
-        if (Phaser.Input.Keyboard.JustDown(keyCancel) && this.currObjective == -1)
+        if (Phaser.Input.Keyboard.JustDown(keyCancel) && this.currObjectiveID == -1)
             this.tutorialNextLine();
 
         if (!this.gameOver) {
@@ -365,25 +395,27 @@ class Tutorial extends Phaser.Scene {
 
     bombHitsEnemy(bomb, enemy) {
         //console.log("A bomb hit an enemy!");
-        this.p1Score += enemy.points;
-        this.score.text = this.p1Score;
-        enemy.destroy();
+        this.enemyDefeated(enemy);
         this.cameras.main.shake(100, 0.02);
         bomb.explode();
     }
 
     explosionHitsEnemy(explosion, enemy) {
         // adding points to player based on enemies they destroyed
-        this.p1Score += enemy.points;
-        this.score.text = this.p1Score;
-        enemy.destroy();
+        this.enemyDefeated(enemy);
         this.sound.play('sfx_mist');
         let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0, 0);
         die.anims.play('ghostDie');
         die.on('animationcomplete', () => {         //callback after aim completes                
             die.destroy();
         });
+    }
 
+    enemyDefeated(enemy){
+        this.p1Score += enemy.points;
+        this.score.text = this.p1Score;
+        enemy.destroy();
+        this.groupEnemies.emit('enemyDefeated');
     }
 
     // When player and explosion touch, send player upwards
@@ -432,15 +464,13 @@ class Tutorial extends Phaser.Scene {
             player.KnockBack();
         }
         else if (this.plrWtich.body.velocity.y < 0 && !this.stunEffect) {
-            enemy.destroy();
+            this.enemyDefeated(enemy);
             this.sound.play('sfx_mist');
             let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0, 0);
             die.anims.play('ghostDie');
             die.on('animationcomplete', () => {         //callback after aim completes                
                 die.destroy();
             });
-            this.p1Score += enemy.points;
-            this.score.text = this.p1Score;
         }
     }
     immunityVisual() {
@@ -470,17 +500,21 @@ class Tutorial extends Phaser.Scene {
     }
 
     //In context *this* is referring to the array, so it doesn't work.
-    enableBombs() {
+    enableBombs(scene) {
         console.log("This shouldn't be called right away");
-        this.plrWtich.canThrow = true;
+        scene.plrWtich.canThrow = true;
     }
 
-    enableDive() {
+    enableDive(scene) {
         console.log("This shouldn't be called right away");
-        this.plrWtich.canDive = true;
+        scene.plrWtich.canDive = true;
     }
 
-    changeGravity(yes) {
-        this.plrWtich.body.allowGravity = yes;
+    enableGravity(scene) {
+        scene.plrWtich.body.allowGravity = true;
+    }
+
+    disableGravity(scene) {
+        scene.plrWtich.body.allowGravity = false;
     }
 }

@@ -4,5 +4,16 @@
       ["Press -> on the keyboard to move right", 1],
       ["Good!"],
       ["Press Z to throw bombs", 2],
-      ["That's the end for now"]
+      ["You earn points by throwing bombs at enemies.\nTry to hit 3 of them!", 3],
+      ["Nice!"],
+      ["Your main objective aside from earning points is to stay in\nthe air for as long as possible. If\nyou touch the ground, it's game over!"],
+      ["Explosions will launch you up. Attack this enemy while you're close to it to blast-jump!", 4],
+      ["Well done!"],
+      ["You may have noticed already, but you don’t\n want to touch enemies directly - as they will stun you."],
+      ["There’s one more thing to know about: The Dive.\n While you hold down, your falling speed is increased.\n Try it out now.", 5],
+      ["Sometimes there may be an enemy you need to blast jump on,\n but you can’t reach it in time by falling alone."],
+      ["Try blast jumping off of this enemy by diving and using your movement keys.", 6],
+      ["Excellent"],
+      ["That’s everything you need to know.\n Let’s put those skills to the test."],
+      ["Earn 50 points to finish the tutorial.", 7]
 ]

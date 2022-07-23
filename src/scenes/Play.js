@@ -330,7 +330,7 @@ class Play extends Phaser.Scene {
         die.on('animationcomplete', () => {         //callback after aim completes                
             die.destroy();
         });
-        
+        console.log("Explosion hit enemy");
     }
 
     // When player and explosion touch, send player upwards
