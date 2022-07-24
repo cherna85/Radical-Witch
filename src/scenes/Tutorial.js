@@ -16,6 +16,7 @@ class Tutorial extends Phaser.Scene {
         this.load.spritesheet('explosion', './assets/vfx_explosion.png', { frameWidth: 150, frameHeight: 180, startFrame: 0, endFrame: 10 });
         this.load.spritesheet('ghostMove', './assets/slimeGhost.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 3 });
         this.load.spritesheet('ghostDie', './assets/slimeDie.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 6 });
+        this.load.spritesheet('uiCheckmark', './assets/simpleCheckmark.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
 
         //Load new player assets
         let playerPath = './assets/playerAnims/';
@@ -72,6 +73,7 @@ class Tutorial extends Phaser.Scene {
             key: 'ghostDie',
             frames: this.anims.generateFrameNumbers('ghostDie', { start: 0, end: 6, first: 0 }),
         })
+
         // end screen selection zxz
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -193,8 +195,8 @@ class Tutorial extends Phaser.Scene {
         }
         this.currObjectiveID = -1;
         this.objevtiveProgress = 0;
-        this.objectiveTotal = 0;
-
+        this.objectiveGoal = 0;
+        
         let PlayConfig = {
             fontFamily: 'PressStart2P',
             fontSize: '16px',
@@ -210,6 +212,8 @@ class Tutorial extends Phaser.Scene {
         }
         this.objectiveText = this.add.text(game.config.width - 20, game.config.height/2, "", PlayConfig).setOrigin(1, 0.5);
         this.objectiveText.visible = false;
+        this.checkMark = this.add.sprite(game.config.width - 20, game.config.height/2 + 32, "uiCheckmark", 0).setOrigin(1, 0.5);
+        this.checkMark.visible = false;
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
         Spawner is removed on each new line, so a line that has no spawner...maybe it would be undefined?
@@ -254,6 +258,7 @@ class Tutorial extends Phaser.Scene {
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
         this.objectiveText.visible = false;
+        this.checkMark.visible = false;
         this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
 
@@ -277,8 +282,8 @@ class Tutorial extends Phaser.Scene {
             }
 
             //Set up objective text
-            this.objectiveTotal = currObjArray[2];
-            this.objectiveText.text = (this.objectiveTotal - this.objectiveProgress) + " / " + this.objectiveTotal;
+            this.objectiveGoal = currObjArray[2];
+            this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
             this.objectiveText.visible = true;
         }
     }
@@ -289,10 +294,15 @@ class Tutorial extends Phaser.Scene {
             if(this.objectiveProgress <= 0){
                 this.currObjectiveID = -1;
                 this.objectiveProgress = 0;
+
                 //Sounds and visual cues
+                this.sound.play('sfx_objectiveDone');
+                this.checkMark.visible = true;
+                //Auto-advance line after 1 second
+                this.time.addEvent({delay: 1000, callback: this.tutorialNextLine, callbackScope: this});
             }
 
-            this.objectiveText.text = (this.objectiveTotal - this.objectiveProgress) + " / " + this.objectiveTotal;
+            this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
         }
     }
     tutorialEnd(mainScene){ //Return to main menu
@@ -333,7 +343,7 @@ class Tutorial extends Phaser.Scene {
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
-        if (Phaser.Input.Keyboard.JustDown(keyCancel) && this.currObjectiveID == -1)
+        if (Phaser.Input.Keyboard.JustDown(keyCancel) && !this.objectiveText.visible)
             this.tutorialNextLine();
 
         if (!this.gameOver) {
@@ -427,8 +437,8 @@ class Tutorial extends Phaser.Scene {
             this.sound.play('sfx_fail');        
 
         if(this.currObjectiveID == 7)
-            this.objectiveProgress = this.objectiveTotal;
-            this.objectiveText.text = (this.objectiveTotal - this.objectiveProgress) + " / " + this.objectiveTotal;
+            this.objectiveProgress = this.objectiveGoal;
+            this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
     }
 
     enemySpawn(group, yLow, yHigh, speed = undefined) {
