@@ -85,12 +85,14 @@ class Tutorial extends Phaser.Scene {
         // creates a floor to collide with 
         this.floor = new Floor(this, 480, game.config.height - 20);
 
-        this.plrWtich = new PlayerWitch(this, 100, 150, 'witchFlying', 0, 'bomb', 'explosion');
-        this.plrWtich.body.allowGravity = false;
-        this.plrWtich.body.setVelocityY(0);
-        this.plrWtich.canDive = false;
-        this.plrWtich.canThrow = false;
-        this.rushBarrier = new RushBarrier(this, 100, 150, 'vfxBarrier', 0, this.plrWtich);
+        this.plrSpawnX = 100;
+        this.plrSpawnY = 100;
+        this.plrWitch = new PlayerWitch(this, this.plrSpawnX, this.plrSpawnY, 'witchFlying', 0, 'bomb', 'explosion');
+        this.plrWitch.body.allowGravity = false;
+        this.plrWitch.body.setVelocityY(0);
+        this.plrWitch.canDive = false;
+        this.plrWitch.canThrow = false;
+        this.rushBarrier = new RushBarrier(this, this.plrSpawnX, this.plrSpawnY, 'vfxBarrier', 0, this.plrWitch);
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -99,12 +101,10 @@ class Tutorial extends Phaser.Scene {
         this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemies.runChildUpdate = true;
 
-        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 10));
         //creating bottom level spawners 
         this.groupEnemieslow = this.physics.add.group();
         this.groupEnemieslow.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemieslow.runChildUpdate = true;
-
 
         this.groupBombs = this.physics.add.group();
         this.groupBombs.defaults = {};
@@ -122,16 +122,16 @@ class Tutorial extends Phaser.Scene {
         one of the two objects instead - Santiago*/
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.groupBombs, this.groupEnemieslow, this.bombHitsEnemy, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWitch, this.groupExplosions, this.plrBlastJump, null, this);
+        this.physics.add.overlap(this.plrWitch, this.groupEnemies, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWitch, this.groupEnemieslow, this.stunned, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemies, this.explosionHitsEnemy, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemieslow, this.explosionHitsEnemy, null, this);
 
         this.physics.add.overlap(this.groupBombs, this.floor, this.bombHitsFloor, null, this);
         //makes the floor a solid object and then ends game when player collides with it
-        this.physics.add.collider(this.plrWtich, this.floor);
-        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
+        this.physics.add.collider(this.plrWitch, this.floor);
+        this.physics.add.overlap(this.plrWitch, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
         // UI
         let PlayConfig = {
             fontFamily: 'PressStart2P',
@@ -162,7 +162,7 @@ class Tutorial extends Phaser.Scene {
         PlayConfig.fontSize = '32px';
         this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^", PlayConfig);
         this.speedUpdate = false;
-        this.ghostSpawner;
+        this.ghostSpawner = this.time.addEvent({});
 
         /*Load JSON file for TUTORIAL*/
         this.tutorialMsgs = this.cache.json.get('tutorialMessages');
@@ -180,7 +180,7 @@ class Tutorial extends Phaser.Scene {
             1: [null, false, 0],
             2: [null, false, 0, this.enableBombs],
             3: [this.ghostSpawnLowRandom, null, 3],
-            4: [null, true, 0, this.enableGravity]
+            4: [this.ghostSpawnSingleEasy, true, 0, this.enableGravity]
         }
         this.currObjectiveID = -1;
         this.objevtiveProgress = 0;
@@ -189,15 +189,15 @@ class Tutorial extends Phaser.Scene {
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         //Objective listeners
-        this.plrWtich.on('movLeft', () => {
+        this.plrWitch.on('movLeft', () => {
             if(this.currObjectiveID == 0)
                 this.objectiveComplete();
         });
-        this.plrWtich.on('movRight', () => {
+        this.plrWitch.on('movRight', () => {
             if(this.currObjectiveID == 1)
                 this.objectiveComplete();
         });
-        this.plrWtich.on('throwBomb', () => {
+        this.plrWitch.on('throwBomb', () => {
             if(this.currObjectiveID == 2)
                 this.objectiveComplete();
         });
@@ -205,10 +205,10 @@ class Tutorial extends Phaser.Scene {
             if(this.currObjectiveID == 3)
                 this.objectiveComplete();
         });
-        this.plrWtich.on('blastJump', () => {
+        this.plrWitch.on('blastJump', () => {
             if(this.currObjectiveID == 4)
                 this.objectiveComplete();
-        })
+        });
     }
 
     /*Called when the player presses the X button and the current objective is complete*/
@@ -218,17 +218,19 @@ class Tutorial extends Phaser.Scene {
             return;
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
+        this.ghostSpawner.remove(); //Turn off any active enemy spawners
         //There is an objective, so advancing must be locked
         if(currentLine.length > 1){
             this.currObjectiveID = currentLine[1];
             //Activate enemy spawners
-            if(this.objectives[this.currObjectiveID][0] == null){
-                //Turn off any active enemy spawners
-            }
-            else
+            if(this.objectives[this.currObjectiveID][0] != null)
                 this.objectives[this.currObjectiveID][0](this); //Turn ON a spawner
-            //(ADD LATER)
-            //Respawn the player
+            
+            if(this.objectives[this.currObjectiveID][1]){ //Reset player position?
+                this.plrWitch.x = this.plrSpawnX;
+                this.plrWitch.y = this.plrSpawnY;
+            }
+
             this.objectiveProgress = this.objectives[this.currObjectiveID][2];
 
             //Calls any extra functions attached to the objective
@@ -244,6 +246,10 @@ class Tutorial extends Phaser.Scene {
             // this is the lower set of spawners 
             scene.enemySpawn(scene.groupEnemies, game.config.height/2, game.config.height-125);
         },  loop: true });
+    }
+
+    ghostSpawnSingleEasy(scene) {
+        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
     }
 
     objectiveComplete() {
@@ -263,7 +269,7 @@ class Tutorial extends Phaser.Scene {
             this.tutorialNextLine();
 
         if (!this.gameOver) {
-            this.plrWtich.update(time, delta);
+            this.plrWitch.update(time, delta);
             this.rushBarrier.update();
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
@@ -318,7 +324,7 @@ class Tutorial extends Phaser.Scene {
             //console.log("gotta go faster");
             speedLow = (speedLow <12) ? speedLow+=1:12;
             this.speedUpdate = false;
-            this.plrWtich.hMoveSpeed = (this.plrWtich.hMoveSpeed < 300) ? this.plrWtich.hMoveSpeed+=50:300; 
+            this.plrWitch.hMoveSpeed = (this.plrWitch.hMoveSpeed < 300) ? this.plrWitch.hMoveSpeed+=50:300; 
             this.bgPathScroll +=1
         }
         if (this.p1Score %50 != 0 && !this.speedUpdate ){
@@ -326,15 +332,15 @@ class Tutorial extends Phaser.Scene {
         }*/
         //the text will follow player
         if (this.stunEffect && !keyBomb.enabled) {
-            this.stunText.x = this.plrWtich.x - 40;
-            this.stunText.y = this.plrWtich.y - 55;
+            this.stunText.x = this.plrWitch.x - 40;
+            this.stunText.y = this.plrWitch.y - 55;
             if (!keyLeft.enabled) {
-                this.plrWtich.setVelocityX(0);
+                this.plrWitch.setVelocityX(0);
             }
         }
         // when out of bounds arrows follow players position
-        if (this.plrWtich.y < 0) {
-            this.OutofBoundsText.x = this.plrWtich.x - 40;
+        if (this.plrWitch.y < 0) {
+            this.OutofBoundsText.x = this.plrWitch.x - 40;
         }
         else {
             this.OutofBoundsText.x = -200;
@@ -343,54 +349,16 @@ class Tutorial extends Phaser.Scene {
 
     /*TUTORIAL: Change this func to a quick respawn rather than game-over*/
     gameEnd() {
-        this.gameOver = true;
-        this.spawn.paused = true;
-        this.groupEnemies.runChildUpdate = false;
-        this.spawnLow.paused = true;
-        this.groupEnemieslow.runChildUpdate = false;
-        this.endscreen++; // prevents endscreen from generating multiple times
-        let PlayConfig = {
-            fontFamily: 'Sortelo',
-            fontSize: '96px',
-            backgroundColor: null,
-            color: '#FF994F',
-            shadow: {
-                offsetX: 0,
-                offsetY: 0,
-                color: '#FEC093',
-                blur: 10,
-                stroke: true,
-                fill: true
-            }, padding: {
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10,
-            },
-        }
-
-        this.plrWtich.faceplantSlide(this.endscreen, this.bgPathScroll);
-        this.plrWtich.setTexture('witchFaceplant');
-
-        //prints text
-        if (this.endscreen == 1) {
-            // camera shake on floor
-            this.cameras.main.shake(200, 0.02);
-            this.add.text(game.config.width / 2, game.config.height / 2 - 32, 'GAMEOVER', PlayConfig).setOrigin(0.5);
-            // add highscore and save to local storage
-            PlayConfig.fontFamily = "PressStart2P"
-
-            PlayConfig.fontSize = '16px';
-            this.restartbutton = this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Restart', PlayConfig).setOrigin(0.5);
-            PlayConfig.color = '#FFFFFF';
-            this.add.text(game.config.width / 2, game.config.height / 2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
-            PlayConfig.shadow.blur = 0;
-            this.MainMenubutton = this.add.text(game.config.width / 2, game.config.height / 2 + 98, 'Main Menu', PlayConfig).setOrigin(0.5);
-            this.sound.play('sfx_fail');
-        }
+        this.plrWitch.x = this.plrSpawnX; //Reset player position
+        this.plrWitch.y = this.plrSpawnY;
+        
+        if(this.currObjectiveID != -1) //Call the enemy spawn function again
+            this.objectives[this.currObjectiveID][0](this);
+        this.sound.play('sfx_fail');
     }
-    enemySpawn(group, yLow, yHigh) {
-        group.add(new Enemy(this, game.config.width, Phaser.Math.Between(yLow, yHigh), 'enemy', 0, 10));
+
+    enemySpawn(group, yLow, yHigh, speed = undefined) {
+        group.add(new Enemy(this, game.config.width, Phaser.Math.Between(yLow, yHigh), 'enemy', 0, 10, speed));
     }
 
     bombHitsEnemy(bomb, enemy) {
@@ -429,11 +397,11 @@ class Tutorial extends Phaser.Scene {
     stunned(player, enemy) {
         // Blast boost attack implementation
         // stun implmentation
-        if (!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver) {
+        if (!this.stunEffect && this.plrWitch.body.velocity.y > 0 && !this.gameOver) {
             //console.log("stunned");
             //PLayer is stunned (loses controls)
             this.stunEffect = true;
-            this.plrWtich.stunned = true;
+            this.plrWitch.stunned = true;
             this.sound.play('sfx_stun');
             player.setTexture('witchStunned', 0);
 
@@ -445,8 +413,8 @@ class Tutorial extends Phaser.Scene {
 
                     this.stunText.x = game.config.width + 400;
 
-                    this.plrWtich.stunned = false;
-                    this.plrWtich.setTexture('witchFlying', 0);
+                    this.plrWitch.stunned = false;
+                    this.plrWitch.setTexture('witchFlying', 0);
                     this.immunityVisual();
                 }
             });
@@ -463,7 +431,7 @@ class Tutorial extends Phaser.Scene {
             //Knockback
             player.KnockBack();
         }
-        else if (this.plrWtich.body.velocity.y < 0 && !this.stunEffect) {
+        else if (this.plrWitch.body.velocity.y < 0 && !this.stunEffect) {
             this.enemyDefeated(enemy);
             this.sound.play('sfx_mist');
             let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0, 0);
@@ -476,15 +444,15 @@ class Tutorial extends Phaser.Scene {
     immunityVisual() {
         this.vis = this.time.addEvent({
             delay: 300, callback: () => {
-                this.plrWtich.alpha = 0.5;
+                this.plrWitch.alpha = 0.5;
             }, loop: true
         });
         this.invis = this.time.addEvent({
             delay: 600, callback: () => {
-                this.plrWtich.alpha = 1;
+                this.plrWitch.alpha = 1;
             }, loop: true
         });
-        this.plrWtich.alpha = 1;
+        this.plrWitch.alpha = 1;
     }
     bombHitsFloor(floor, bomb) {
         this.emitter.setPosition(bomb.x, bomb.y);
@@ -502,19 +470,19 @@ class Tutorial extends Phaser.Scene {
     //In context *this* is referring to the array, so it doesn't work.
     enableBombs(scene) {
         console.log("This shouldn't be called right away");
-        scene.plrWtich.canThrow = true;
+        scene.plrWitch.canThrow = true;
     }
 
     enableDive(scene) {
         console.log("This shouldn't be called right away");
-        scene.plrWtich.canDive = true;
+        scene.plrWitch.canDive = true;
     }
 
     enableGravity(scene) {
-        scene.plrWtich.body.allowGravity = true;
+        scene.plrWitch.body.allowGravity = true;
     }
 
     disableGravity(scene) {
-        scene.plrWtich.body.allowGravity = false;
+        scene.plrWitch.body.allowGravity = false;
     }
 }
