@@ -15,5 +15,8 @@
       ["Try blast jumping off of this enemy by diving and using your movement keys.", 6],
       ["Excellent"],
       ["That’s everything you need to know.\n Let’s put those skills to the test."],
-      ["Defeat 5 enemies in a row without touching the ground to finish the tutorial", 7]
+      ["Blast jump 5 times without touching the ground to finish the tutorial", 7],
+      ["Great job!"],
+      ["Tutorial complete. Press X to return to the main menu"],
+      ["", 8]
 ]

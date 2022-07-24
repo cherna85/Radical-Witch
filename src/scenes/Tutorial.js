@@ -188,7 +188,8 @@ class Tutorial extends Phaser.Scene {
             4: [this.ghostSpawnSingleEasy, true, 0, this.enableGravity],
             5: [null, true, 0, this.enableDive, this.enableBombs, this.enableGravity],
             6: [this.ghostSpawnSingleHard, true, 0],
-            7: [null, false, 5]
+            7: [this.ghostSpawnRegular, true, 5, this.enableDive, this.enableBombs, this.enableGravity],
+            8: [null, false, 0, this.tutorialEnd]
         }
         this.currObjectiveID = -1;
         this.objevtiveProgress = 0;
@@ -214,11 +215,11 @@ class Tutorial extends Phaser.Scene {
                 this.objectiveComplete();
         });
         this.groupEnemies.on('enemyDefeated', () => {
-            if(this.currObjectiveID == 3 || this.currObjectiveID == 7)
+            if(this.currObjectiveID == 3)
                 this.objectiveComplete();
         });
         this.plrWitch.on('blastJump', () => {
-            if(this.currObjectiveID == 4 || this.currObjectiveID == 6)
+            if(this.currObjectiveID == 4 || this.currObjectiveID == 6 || this.currObjectiveID == 7)
                 this.objectiveComplete();
         });
         this.plrWitch.on('dive', () => {
@@ -267,7 +268,11 @@ class Tutorial extends Phaser.Scene {
             }
         }
     }
-
+    tutorialEnd(mainScene){ //Return to main menu
+        //ADD LATER: Mark tutorial as complete
+        mainScene.scene.start("menuScene");
+    }
+    
     ghostSpawnLowRandom(scene) {
         let frequency = 1;
         scene.ongoingSpawner = scene.time.addEvent({ delay: frequency*1000, startAt: 999, callback: () =>{
@@ -281,7 +286,22 @@ class Tutorial extends Phaser.Scene {
     ghostSpawnSingleHard(scene) {
         scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
     }
-    ghostSpawnRegular(scene) {}
+    ghostSpawnRegular(scene) { //Mimics how spawning works in the regular game, but with a slightly lower max spawn height
+        if(this.respawnFunc == null) //Prevents this spawner from being activated more than once
+        {
+            //Should ONLY be activated on the last objective
+            let frequency = 1;
+            scene.ongoingSpawner = scene.time.addEvent({ delay: frequency*1000, startAt: 999, callback: () =>{
+                // this is the lower set of spawners 
+                scene.enemySpawn(scene.groupEnemies, 200, game.config.height-145);
+            },  loop: true });
+            frequency = 2;
+            scene.spawnLow = scene.time.addEvent({ delay: frequency*1000, startAt: 999, callback: () =>{
+                // this is the lower set of spawners 
+                scene.enemySpawn(scene.groupEnemies,game.config.height-125, game.config.height-35);
+            },  loop: true });
+        }
+    }
     
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
@@ -375,7 +395,12 @@ class Tutorial extends Phaser.Scene {
         
         if(this.respawnFunc != null) //Call the enemy spawn function again
             this.respawnFunc(this);
-        this.sound.play('sfx_fail');
+
+        if(this.currObjectiveID != -1)
+            this.sound.play('sfx_fail');        
+
+        if(this.currObjectiveID == 7)
+            this.objectiveProgress = 5;
     }
 
     enemySpawn(group, yLow, yHigh, speed = undefined) {
