@@ -343,8 +343,11 @@ class Tutorial extends Phaser.Scene {
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
-        if (Phaser.Input.Keyboard.JustDown(keyCancel) && !this.objectiveText.visible)
-            this.tutorialNextLine();
+        if (Phaser.Input.Keyboard.JustDown(keyBomb))
+            if(this.objectiveText.visible)
+                this.plrWitch.throwBomb();
+            else
+                this.tutorialNextLine();
 
         if (!this.gameOver) {
             this.plrWitch.update(time, delta);

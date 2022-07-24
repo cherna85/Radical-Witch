@@ -48,6 +48,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         //TUTORIAL SETTINGS
         this.canDive = true;
         this.canThrow = true;
+        this.tutorialMode = false;
     }
 
     update(time, delta){
@@ -59,7 +60,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         this.throwCooldownTimer -= delta;
         this.blastJumping -= delta;
         
-        if(this.canThrow && Phaser.Input.Keyboard.JustDown(keyBomb) && !this.stunned){
+        if(Phaser.Input.Keyboard.JustDown(keyBomb) && !this.tutorialMode){
             this.throwBomb()
         }
 
@@ -107,7 +108,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
     // Create bomb prefab and set its velocity
     // Might want to throw at a steeper angle, or factor in the player's falling speed
     throwBomb(){
-        if(this.throwCooldownTimer <= 0){
+        if(this.canThrow && !this.stunned && this.throwCooldownTimer <= 0){
 
             let enemyList = this.scene.groupEnemies.children.getArray();
             //Adding (17, 14) to position to account for hitbox offset - Santiago
