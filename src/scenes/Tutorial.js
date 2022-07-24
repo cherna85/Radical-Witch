@@ -130,7 +130,7 @@ class Tutorial extends Phaser.Scene {
         let PlayConfig = {
             fontFamily: 'PressStart2P',
             fontSize: '16px',
-            backgroundColor: null,
+            backgroundColor: "#000000",
             color: '#FFFFFF',
             shadow: {
                 offsetX: 0,
@@ -181,18 +181,35 @@ class Tutorial extends Phaser.Scene {
         3rd slot is # of times an objective must be repeated
         4th and onwards is extra function calls*/
         this.objectives = {
-            0: [null, false, 0],
-            1: [null, false, 0],
-            2: [null, false, 0, this.enableBombs],
+            0: [null, false, 1],
+            1: [null, false, 1],
+            2: [null, false, 1, this.enableBombs],
             3: [this.ghostSpawnLowRandom, null, 3],
-            4: [this.ghostSpawnSingleEasy, true, 0, this.enableGravity],
-            5: [null, true, 0, this.enableDive, this.enableBombs, this.enableGravity],
-            6: [this.ghostSpawnSingleHard, true, 0],
+            4: [this.ghostSpawnSingleEasy, true, 1, this.enableGravity],
+            5: [null, true, 1, this.enableDive, this.enableBombs, this.enableGravity],
+            6: [this.ghostSpawnSingleHard, true, 1],
             7: [this.ghostSpawnRegular, true, 5, this.enableDive, this.enableBombs, this.enableGravity],
-            8: [null, false, 0, this.tutorialEnd]
+            8: [null, false, 1, this.tutorialEnd]
         }
         this.currObjectiveID = -1;
         this.objevtiveProgress = 0;
+        this.objectiveTotal = 0;
+
+        let PlayConfig = {
+            fontFamily: 'PressStart2P',
+            fontSize: '16px',
+            backgroundColor: "#000000",
+            color: '#FFFFFF',
+            align: "right",
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+            }
+        }
+        this.objectiveText = this.add.text(game.config.width - 20, game.config.height/2, "", PlayConfig).setOrigin(1, 0.5);
+        this.objectiveText.visible = false;
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
         Spawner is removed on each new line, so a line that has no spawner...maybe it would be undefined?
@@ -204,27 +221,27 @@ class Tutorial extends Phaser.Scene {
         //Objective listeners
         this.plrWitch.on('movLeft', () => {
             if(this.currObjectiveID == 0)
-                this.objectiveComplete();
+                this.objectiveUpdate();
         });
         this.plrWitch.on('movRight', () => {
             if(this.currObjectiveID == 1)
-                this.objectiveComplete();
+                this.objectiveUpdate();
         });
         this.plrWitch.on('throwBomb', () => {
             if(this.currObjectiveID == 2)
-                this.objectiveComplete();
+                this.objectiveUpdate();
         });
         this.groupEnemies.on('enemyDefeated', () => {
             if(this.currObjectiveID == 3)
-                this.objectiveComplete();
+                this.objectiveUpdate();
         });
         this.plrWitch.on('blastJump', () => {
             if(this.currObjectiveID == 4 || this.currObjectiveID == 6 || this.currObjectiveID == 7)
-                this.objectiveComplete();
+                this.objectiveUpdate();
         });
         this.plrWitch.on('dive', () => {
             if(this.currObjectiveID == 5)
-                this.objectiveComplete();
+                this.objectiveUpdate();
         })
     }
 
@@ -236,6 +253,7 @@ class Tutorial extends Phaser.Scene {
         
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
+        this.objectiveText.visible = false;
         this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
 
@@ -257,15 +275,24 @@ class Tutorial extends Phaser.Scene {
             for(let i = 3; i < currObjArray.length; i++){
                 currObjArray[i](this);
             }
+
+            //Set up objective text
+            this.objectiveTotal = currObjArray[2];
+            this.objectiveText.text = (this.objectiveTotal - this.objectiveProgress) + " / " + this.objectiveTotal;
+            this.objectiveText.visible = true;
         }
     }
-    objectiveComplete() {
+    objectiveUpdate() { //Update objective counter and possible mark as complete
         if(this.currObjectiveID != -1){
             this.objectiveProgress -= 1;
+
             if(this.objectiveProgress <= 0){
                 this.currObjectiveID = -1;
+                this.objectiveProgress = 0;
                 //Sounds and visual cues
             }
+
+            this.objectiveText.text = (this.objectiveTotal - this.objectiveProgress) + " / " + this.objectiveTotal;
         }
     }
     tutorialEnd(mainScene){ //Return to main menu
@@ -400,7 +427,8 @@ class Tutorial extends Phaser.Scene {
             this.sound.play('sfx_fail');        
 
         if(this.currObjectiveID == 7)
-            this.objectiveProgress = 5;
+            this.objectiveProgress = this.objectiveTotal;
+            this.objectiveText.text = (this.objectiveTotal - this.objectiveProgress) + " / " + this.objectiveTotal;
     }
 
     enemySpawn(group, yLow, yHigh, speed = undefined) {
