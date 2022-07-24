@@ -171,20 +171,28 @@ class Tutorial extends Phaser.Scene {
         this.tutorialText = this.add.text(game.config.width - 20, 20, "Tutorial", PlayConfig).setOrigin(1.0, 0.0);
         this.tutorialText.text = this.tutorialMsgs[0][0];
 
+        this.tutorialSetup();
+    }
+
+    tutorialSetup() {
         /* Objectives for the tutorial 
         1st slot is function for enemy spawning behavior, 2nd slot is whether or not to respawn the player
         3rd slot is # of times an objective must be repeated
         4th and onwards is extra function calls*/
+        this.tutCurrLine = 10;
         this.objectives = {
             0: [null, false, 0],
             1: [null, false, 0],
             2: [null, false, 0, this.enableBombs],
             3: [this.ghostSpawnLowRandom, null, 3],
-            4: [this.ghostSpawnSingleEasy, true, 0, this.enableGravity]
+            4: [this.ghostSpawnSingleEasy, true, 0, this.enableGravity],
+            5: [null, true, 0, this.enableDive, this.enableBombs, this.enableGravity],
+            6: [this.ghostSpawnSingleHard, true, 0],
+            7: [null, false, 5]
         }
         this.currObjectiveID = -1;
         this.objevtiveProgress = 0;
-        this.tutCurrLine = 0;
+        this.respawnFunc = null;
 
         keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
@@ -202,13 +210,17 @@ class Tutorial extends Phaser.Scene {
                 this.objectiveComplete();
         });
         this.groupEnemies.on('enemyDefeated', () => {
-            if(this.currObjectiveID == 3)
+            if(this.currObjectiveID == 3 || this.currObjectiveID == 7)
                 this.objectiveComplete();
         });
         this.plrWitch.on('blastJump', () => {
-            if(this.currObjectiveID == 4)
+            if(this.currObjectiveID == 4 || this.currObjectiveID == 6)
                 this.objectiveComplete();
         });
+        this.plrWitch.on('dive', () => {
+            if(this.currObjectiveID == 5)
+                this.objectiveComplete();
+        })
     }
 
     /*Called when the player presses the X button and the current objective is complete*/
@@ -219,12 +231,14 @@ class Tutorial extends Phaser.Scene {
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
         this.ghostSpawner.remove(); //Turn off any active enemy spawners
+        this.respawnFunc = null;
         //There is an objective, so advancing must be locked
         if(currentLine.length > 1){
             this.currObjectiveID = currentLine[1];
             //Activate enemy spawners
             if(this.objectives[this.currObjectiveID][0] != null)
                 this.objectives[this.currObjectiveID][0](this); //Turn ON a spawner
+                this.respawnFunc = this.objectives[this.currObjectiveID][0]
             
             if(this.objectives[this.currObjectiveID][1]){ //Reset player position?
                 this.plrWitch.x = this.plrSpawnX;
@@ -249,6 +263,10 @@ class Tutorial extends Phaser.Scene {
     }
 
     ghostSpawnSingleEasy(scene) {
+        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
+    }
+
+    ghostSpawnSingleHard(scene) {
         scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
     }
 
@@ -352,8 +370,8 @@ class Tutorial extends Phaser.Scene {
         this.plrWitch.x = this.plrSpawnX; //Reset player position
         this.plrWitch.y = this.plrSpawnY;
         
-        if(this.currObjectiveID != -1) //Call the enemy spawn function again
-            this.objectives[this.currObjectiveID][0](this);
+        if(this.respawnFunc != null) //Call the enemy spawn function again
+            this.respawnFunc(this);
         this.sound.play('sfx_fail');
     }
 

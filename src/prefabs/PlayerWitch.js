@@ -66,6 +66,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         // DIVE: Triples (Or whatever) falling speed
         if(this.canDive && keyDown.isDown && !this.stunned){
             this.maxFallSpeed = this.fallSpeedDefault * 3;
+            this.emit('dive');
         }
         else{
             this.maxFallSpeed = this.fallSpeedDefault;
