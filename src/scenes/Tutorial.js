@@ -56,8 +56,6 @@ class Tutorial extends Phaser.Scene {
         let particles = this.add.particles('poof');
         this.emitter = particles.createEmitter();
 
-
-
         //Explosion animation
         this.anims.create({
             key: 'explode',
@@ -88,10 +86,6 @@ class Tutorial extends Phaser.Scene {
         this.plrSpawnX = 100;
         this.plrSpawnY = 100;
         this.plrWitch = new PlayerWitch(this, this.plrSpawnX, this.plrSpawnY, 'witchFlying', 0, 'bomb', 'explosion');
-        this.plrWitch.body.allowGravity = false;
-        this.plrWitch.body.setVelocityY(0);
-        this.plrWitch.canDive = false;
-        this.plrWitch.canThrow = false;
         this.rushBarrier = new RushBarrier(this, this.plrSpawnX, this.plrSpawnY, 'vfxBarrier', 0, this.plrWitch);
         //reset gameover setting zzx
         this.gameOver = false;
@@ -162,11 +156,9 @@ class Tutorial extends Phaser.Scene {
         PlayConfig.fontSize = '32px';
         this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^", PlayConfig);
         this.speedUpdate = false;
-        this.ghostSpawner = this.time.addEvent({});
 
         /*Load JSON file for TUTORIAL*/
         this.tutorialMsgs = this.cache.json.get('tutorialMessages');
-
         PlayConfig.fontSize = '16px';
         this.tutorialText = this.add.text(game.config.width - 20, 20, "Tutorial", PlayConfig).setOrigin(1.0, 0.0);
         this.tutorialText.text = this.tutorialMsgs[0][0];
@@ -175,11 +167,19 @@ class Tutorial extends Phaser.Scene {
     }
 
     tutorialSetup() {
+        this.tutCurrLine = 0;
+        keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+
+        this.plrWitch.body.allowGravity = false;
+        this.plrWitch.body.setVelocityY(0);
+        this.plrWitch.canDive = false;
+        this.plrWitch.canThrow = false;
+
+        
         /* Objectives for the tutorial 
         1st slot is function for enemy spawning behavior, 2nd slot is whether or not to respawn the player
         3rd slot is # of times an objective must be repeated
         4th and onwards is extra function calls*/
-        this.tutCurrLine = 10;
         this.objectives = {
             0: [null, false, 0],
             1: [null, false, 0],
@@ -192,9 +192,13 @@ class Tutorial extends Phaser.Scene {
         }
         this.currObjectiveID = -1;
         this.objevtiveProgress = 0;
+        /*Need a spawner even so that we can have ghosts that continuously spawn
+        Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
+        Spawner is removed on each new line, so a line that has no spawner...maybe it would be undefined?
+        No, the spawner stays defined so we have no way to check it. Plus the # of repeats method does not work for repeated playbacks
+        */
+        this.ongoingSpawner = this.time.addEvent({});
         this.respawnFunc = null;
-
-        keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         //Objective listeners
         this.plrWitch.on('movLeft', () => {
@@ -227,49 +231,33 @@ class Tutorial extends Phaser.Scene {
     tutorialNextLine() {
         this.tutCurrLine += 1;
         if(this.tutCurrLine >= this.tutorialMsgs.length)
-            return;
+            return; //End of tutorial
+        
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
-        this.ghostSpawner.remove(); //Turn off any active enemy spawners
+        this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
-        //There is an objective, so advancing must be locked
+
+        //If there is an objective, advancing must be locked
         if(currentLine.length > 1){
             this.currObjectiveID = currentLine[1];
-            //Activate enemy spawners
-            if(this.objectives[this.currObjectiveID][0] != null)
-                this.objectives[this.currObjectiveID][0](this); //Turn ON a spawner
-                this.respawnFunc = this.objectives[this.currObjectiveID][0]
+            let currObjArray = this.objectives[this.currObjectiveID];
             
-            if(this.objectives[this.currObjectiveID][1]){ //Reset player position?
+            if(currObjArray[0] != null) //Activate enemy spawners
+                currObjArray[0](this);
+                this.respawnFunc = currObjArray[0]
+            if(currObjArray[1]){ //Reset player position?
                 this.plrWitch.x = this.plrSpawnX;
                 this.plrWitch.y = this.plrSpawnY;
             }
-
-            this.objectiveProgress = this.objectives[this.currObjectiveID][2];
+            this.objectiveProgress = currObjArray[2];
 
             //Calls any extra functions attached to the objective
-            for(let i = 3; i < this.objectives[this.currObjectiveID].length; i++){
-                this.objectives[this.currObjectiveID][i](this);
+            for(let i = 3; i < currObjArray.length; i++){
+                currObjArray[i](this);
             }
         }
     }
-
-    ghostSpawnLowRandom(scene) {
-        let frequency = 1;
-        scene.ghostSpawner = scene.time.addEvent({ delay: frequency*1000, startAt: 999, callback: () =>{
-            // this is the lower set of spawners 
-            scene.enemySpawn(scene.groupEnemies, game.config.height/2, game.config.height-125);
-        },  loop: true });
-    }
-
-    ghostSpawnSingleEasy(scene) {
-        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
-    }
-
-    ghostSpawnSingleHard(scene) {
-        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
-    }
-
     objectiveComplete() {
         if(this.currObjectiveID != -1){
             this.objectiveProgress -= 1;
@@ -280,6 +268,21 @@ class Tutorial extends Phaser.Scene {
         }
     }
 
+    ghostSpawnLowRandom(scene) {
+        let frequency = 1;
+        scene.ongoingSpawner = scene.time.addEvent({ delay: frequency*1000, startAt: 999, callback: () =>{
+            // this is the lower set of spawners 
+            scene.enemySpawn(scene.groupEnemies, game.config.height/2, game.config.height-125);
+        },  loop: true });
+    }
+    ghostSpawnSingleEasy(scene) {
+        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
+    }
+    ghostSpawnSingleHard(scene) {
+        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
+    }
+    ghostSpawnRegular(scene) {}
+    
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
