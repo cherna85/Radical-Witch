@@ -61,7 +61,7 @@ class Menu extends Phaser.Scene {
         this.playbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Play', MenuConfig).setOrigin(0.5);
         MenuConfig.shadow.blur =  0;
         MenuConfig.color =  '#FFFFFF';
-        this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Story + Tutorial', MenuConfig).setOrigin(0.5);
+        this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Tutorial', MenuConfig).setOrigin(0.5);
         this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 +96 , 'Credit', MenuConfig).setOrigin(0.5);
 
         // get any data of a highscore 

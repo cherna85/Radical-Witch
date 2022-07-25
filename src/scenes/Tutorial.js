@@ -16,7 +16,7 @@ class Tutorial extends Phaser.Scene {
         this.load.spritesheet('explosion', './assets/vfx_explosion.png', { frameWidth: 150, frameHeight: 180, startFrame: 0, endFrame: 10 });
         this.load.spritesheet('ghostMove', './assets/slimeGhost.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 3 });
         this.load.spritesheet('ghostDie', './assets/slimeDie.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 6 });
-        this.load.spritesheet('uiCheckmark', './assets/simpleCheckmark.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('uiCheckmark', './assets/checkmark.png', { frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 1});
 
         //Load new player assets
         let playerPath = './assets/playerAnims/';
@@ -220,7 +220,7 @@ class Tutorial extends Phaser.Scene {
         this.objectiveText.setDepth(1);
         this.checkMark = this.add.sprite(game.config.width - 136, this.tutorialText.height + 30, "uiCheckmark", 0).setOrigin(1, 0.5);
         this.checkMark.visible = false;
-        this.checkMark.setScale(2);
+        this.checkMark.setScale(1);
         this.objectiveText.setDepth(1);
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
@@ -503,9 +503,9 @@ class Tutorial extends Phaser.Scene {
             player.setTexture('witchStunned', 0);
 
             //Player is unstunned (regain control)
-            //Base stun duration is 0.5 seconds, and increases by 0.05 second for every 10 points
+            //Base stun duration is 0.75 seconds, and increases by 0.05 second for every 10 points
             this.regainControls = this.time.addEvent({
-                delay: 750 + this.p1Score * 5, callback: () => {
+                delay: 1000, callback: () => {
                     // console.log("Unstunned after " + ((500 + this.p1Score * 10) / 100) + " seconds.");
 
                     this.stunText.x = game.config.width + 400;
@@ -518,7 +518,7 @@ class Tutorial extends Phaser.Scene {
             //Player becomes vulnerable to stuns again, some time after regaining control
             //Current: Have 1.5 seconds of stun immunity (base delay - base delay of regainControls)
             this.stunImmune = this.time.addEvent({
-                delay: 2250 + this.p1Score * 5, callback: () => {
+                delay: 2500, callback: () => {
                     //console.log("not immune");
                     this.stunEffect = false;
                     this.vis.paused = true;

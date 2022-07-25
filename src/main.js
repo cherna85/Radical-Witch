@@ -38,7 +38,8 @@ let config = {
               debug: false
         }
     },
-    scene: [ Menu, Play, Tutorial, Option, Credit, AskTutorial ]
+    scene: [ Menu, Play, Tutorial, Option, Credit, AskTutorial ],
+    antialias: true
 }
 // for selecting menu
 let sceneSelect = 'playScene';
