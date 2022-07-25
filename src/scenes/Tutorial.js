@@ -221,6 +221,7 @@ class Tutorial extends Phaser.Scene {
         this.checkMark = this.add.sprite(game.config.width - 136, this.tutorialText.height + 30, "uiCheckmark", 0).setOrigin(1, 0.5);
         this.checkMark.visible = false;
         this.checkMark.setScale(1);
+        this.objectiveSound = this.sound.add('sfx_objectiveDone', {volume: 0.7});
         this.objectiveText.setDepth(1);
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
@@ -306,7 +307,7 @@ class Tutorial extends Phaser.Scene {
                 this.objectiveProgress = 0;
 
                 //Sounds and visual cues
-                this.sound.play('sfx_objectiveDone');
+                this.objectiveSound.play();
                 this.checkMark.visible = true;
                 //Auto-advance line after 1 second
                 this.time.addEvent({delay: 1000, callback: this.tutorialNextLine, callbackScope: this});
