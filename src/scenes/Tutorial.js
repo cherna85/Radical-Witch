@@ -331,7 +331,7 @@ class Tutorial extends Phaser.Scene {
         scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
     }
     ghostSpawnSingleHard(scene) {
-        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 5);
+        scene.enemySpawn(scene.groupEnemies, game.config.height-110, game.config.height-110, 10);
     }
     ghostSpawnRegular(scene) { //Mimics how spawning works in the regular game, but with a slightly lower max spawn height
         if(this.respawnFunc == null) //Prevents this spawner from being activated more than once
