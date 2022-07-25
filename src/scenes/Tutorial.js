@@ -168,6 +168,7 @@ class Tutorial extends Phaser.Scene {
         PlayConfig.shadow = {};
         this.tutorialText = this.add.text(game.config.width - 20, 20, "Tutorial", PlayConfig).setOrigin(1.0, 0.0);
         this.tutorialText.text = this.tutorialMsgs[0][0];
+        this.tutorialText.setDepth(1);
 
         this.tutorialSetup();
     }
@@ -216,8 +217,11 @@ class Tutorial extends Phaser.Scene {
         }
         this.objectiveText = this.add.text(game.config.width - 20, this.tutorialText.height + 30, "", PlayConfig).setOrigin(1, 0.5);
         this.objectiveText.visible = false;
+        this.objectiveText.setDepth(1);
         this.checkMark = this.add.sprite(game.config.width - 136, this.tutorialText.height + 30, "uiCheckmark", 0).setOrigin(1, 0.5);
         this.checkMark.visible = false;
+        this.checkMark.setScale(2);
+        this.objectiveText.setDepth(1);
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
         Spawner is removed on each new line, so a line that has no spawner...maybe it would be undefined?
