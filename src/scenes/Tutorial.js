@@ -162,6 +162,10 @@ class Tutorial extends Phaser.Scene {
         /*Load JSON file for TUTORIAL*/
         this.tutorialMsgs = this.cache.json.get('tutorialMessages');
         PlayConfig.fontSize = '16px';
+        PlayConfig.wordWrap = {
+            width: (game.config.width/3)*2
+        }
+        PlayConfig.shadow = {};
         this.tutorialText = this.add.text(game.config.width - 20, 20, "Tutorial", PlayConfig).setOrigin(1.0, 0.0);
         this.tutorialText.text = this.tutorialMsgs[0][0];
 
@@ -210,9 +214,9 @@ class Tutorial extends Phaser.Scene {
                 bottom: 10,
             }
         }
-        this.objectiveText = this.add.text(game.config.width - 20, game.config.height/2, "", PlayConfig).setOrigin(1, 0.5);
+        this.objectiveText = this.add.text(game.config.width - 20, this.tutorialText.height + 30, "", PlayConfig).setOrigin(1, 0.5);
         this.objectiveText.visible = false;
-        this.checkMark = this.add.sprite(game.config.width - 20, game.config.height/2 + 32, "uiCheckmark", 0).setOrigin(1, 0.5);
+        this.checkMark = this.add.sprite(game.config.width - 136, this.tutorialText.height + 30, "uiCheckmark", 0).setOrigin(1, 0.5);
         this.checkMark.visible = false;
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
@@ -258,7 +262,9 @@ class Tutorial extends Phaser.Scene {
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
         this.objectiveText.visible = false;
+        this.objectiveText.y = this.tutorialText.height + 50;
         this.checkMark.visible = false;
+        this.checkMark.y = this.tutorialText.height + 50;
         this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
 
