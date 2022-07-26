@@ -64,8 +64,8 @@ class Play extends Phaser.Scene {
         });
 
         // Buttons
-        keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
-        keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        keySelect = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         // animation config
          this.anims.create({
@@ -224,7 +224,7 @@ class Play extends Phaser.Scene {
                     sceneSelect = 'playScene';
                 }  
             }
-            if (Phaser.Input.Keyboard.JustDown(keyBomb)) {
+            if (Phaser.Input.Keyboard.JustDown(keySelect)) {
                 //console.log('selecting');
                 this.scene.start(sceneSelect);    
             }
@@ -292,7 +292,7 @@ class Play extends Phaser.Scene {
             if(this.endscreen == 1){
                 // camera shake on floor
                 this.cameras.main.shake( 200,0.02);
-                this.add.text(game.config.width/2, game.config.height/2 -32 , 'GAMEOVER',  PlayConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 -64 , 'GAME OVER',  PlayConfig).setOrigin(0.5);
                 // add highscore and save to local storage
                 PlayConfig.fontFamily = "PressStart2P"
                 if(highscore < this.p1Score){
@@ -300,12 +300,14 @@ class Play extends Phaser.Scene {
                     localStorage.setItem(localStorageName, highscore);
                 }
                  PlayConfig.fontSize = '16px';
-                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Restart', PlayConfig).setOrigin(0.5);
+                this.restartbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Restart', PlayConfig).setOrigin(0.5);
                 PlayConfig.color =  '#FFFFFF';
-                this.add.text(game.config.width/2, game.config.height/2 + 32, 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 , 'Highscore: ' + highscore, PlayConfig).setOrigin(0.5);
                 PlayConfig.shadow.blur = 0;
-                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +98 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
+                this.MainMenubutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Main Menu' ,PlayConfig).setOrigin(0.5);
                 this.sound.play('sfx_fail');
+                PlayConfig.color = '#AAAAAA';
+                this.add.text(game.config.width/2, game.config.height - 96, 'Press [Z] to select', PlayConfig).setOrigin(0.5);
                 //radicalMusic.pause();
             }   
     }

@@ -1,8 +1,8 @@
 [
-      ["Welcome to Radical Witch!\nPress [Z] to advance these messages.\nHere's how to play:"],
+      ["Welcome to Radical Witch!\nHere's how to play:"],
       ["Press <- on the keyboard to move left", 0],
       ["Press -> on the keyboard to move right", 1],
-      ["Press Z to throw bombs", 2],
+      ["Press [X] to throw bombs", 2],
       ["You earn points by throwing bombs at enemies. Try to hit 3 of them!", 3],
       ["Nice!"],
       ["Aside from earning points, you want to stay in the air for as long as possible.\nIf you touch the ground, it's game over."],
@@ -18,6 +18,6 @@
       ["That’s everything you need to know. Let’s put these skills to the test."],
       ["Blast jump 5 times without touching the ground to finish the tutorial", 7],
       ["Great job!"],
-      ["Tutorial complete. Press Z to return to the main menu."],
+      ["Tutorial complete. Press [Z] to return to the main menu."],
       ["", 8]
 ]

@@ -48,7 +48,7 @@ class Menu extends Phaser.Scene {
         
         keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-        keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        keySelect = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
         //set up text can be changed to be images
         this.add.text(game.config.width/2, game.config.height/2 - 98 , 'Radical Witch',MenuConfig ).setOrigin(0.5);
@@ -95,7 +95,7 @@ class Menu extends Phaser.Scene {
                 this.updateMenu(this.creditsbutton, this.tutbutton, 'tutorialScene');
             }  
         }
-        if (Phaser.Input.Keyboard.JustDown(keyBomb)) {
+        if (Phaser.Input.Keyboard.JustDown(keySelect)) {
             this.sound.play('sfx_button');
 
             if(sceneSelect == "playScene" && (true || playedBefore < 1)){

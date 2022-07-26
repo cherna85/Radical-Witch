@@ -65,8 +65,8 @@ class Tutorial extends Phaser.Scene {
         });
 
         // Buttons
-        keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
-        keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        keyBomb = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        keySelect = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         // animation config
         this.anims.create({
@@ -175,7 +175,6 @@ class Tutorial extends Phaser.Scene {
 
     tutorialSetup() {
         this.tutCurrLine = 0;
-        keyCancel = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         this.plrWitch.body.allowGravity = false;
         this.plrWitch.body.setVelocityY(0);
@@ -309,8 +308,8 @@ class Tutorial extends Phaser.Scene {
                 //Sounds and visual cues
                 this.objectiveSound.play();
                 this.checkMark.visible = true;
-                //Auto-advance line after 1 second
-                this.time.addEvent({delay: 1000, callback: this.tutorialNextLine, callbackScope: this});
+                //Auto-advance line after 1.5 seconds
+                this.time.addEvent({delay: 1500, callback: this.tutorialNextLine, callbackScope: this});
             }
 
             this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
@@ -355,10 +354,11 @@ class Tutorial extends Phaser.Scene {
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
         if (Phaser.Input.Keyboard.JustDown(keyBomb)){
-            if(this.objectiveText.visible)
-                this.plrWitch.throwBomb();
-            else
-                this.tutorialNextLine();
+            this.plrWitch.throwBomb();
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(keySelect) && !this.objectiveText.visible){
+            this.tutorialNextLine();
         }
 
         delta /= 1000;

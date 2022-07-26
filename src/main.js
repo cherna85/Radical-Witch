@@ -51,6 +51,6 @@ let playedBefore = 0; //0 = false, 1+ = true
 
 let speedLow ,speedHigh;
 //reserve keyboard vars
-let keyBomb, keyDown, keyLeft, keyRight, keyCancel, keyUp;
+let keyBomb, keyDown, keyLeft, keyRight, keySelect, keyUp;
 
 let game = new Phaser.Game(config);
