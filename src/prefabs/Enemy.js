@@ -35,7 +35,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         - Santiago */
         delta /= 1000
         //moving left
-        this.x -= this.moveSpeed;
+        this.x -= this.moveSpeed * 60 * delta;
         //wrap edges
         if(this.x <= 0 - this.width && this.active == true){
             this.destroyEnemy();

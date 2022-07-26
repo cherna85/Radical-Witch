@@ -83,8 +83,8 @@ class Play extends Phaser.Scene {
         // creates a floor to collide with 
         this.floor = new Floor(this,480,game.config.height-20);
 
-        this.plrWtich = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
-        this.rushBarrier = new RushBarrier(this, 100, 50, 'vfxBarrier', 0, this.plrWtich);
+        this.plrWitch = new PlayerWitch(this, 100, 50, 'witchFlying', 0, 'bomb', 'explosion');
+        this.rushBarrier = new RushBarrier(this, 100, 50, 'vfxBarrier', 0, this.plrWitch);
         //reset gameover setting zzx
         this.gameOver = false;
 
@@ -130,16 +130,16 @@ class Play extends Phaser.Scene {
         one of the two objects instead - Santiago*/
         this.physics.add.overlap(this.groupBombs, this.groupEnemies, this.bombHitsEnemy, null, this);
         this.physics.add.overlap(this.groupBombs, this.groupEnemieslow, this.bombHitsEnemy, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupExplosions, this.plrBlastJump, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupEnemies, this.stunned, null, this);
-        this.physics.add.overlap(this.plrWtich, this.groupEnemieslow, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWitch, this.groupExplosions, this.plrBlastJump, null, this);
+        this.physics.add.overlap(this.plrWitch, this.groupEnemies, this.stunned, null, this);
+        this.physics.add.overlap(this.plrWitch, this.groupEnemieslow, this.stunned, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemies, this.explosionHitsEnemy, null, this);
         this.physics.add.overlap(this.groupExplosions, this.groupEnemieslow, this.explosionHitsEnemy, null, this);
 
         this.physics.add.overlap(this.groupBombs, this.floor, this.bombHitsFloor, null, this);
         //makes the floor a solid object and then ends game when player collides with it
-        this.physics.add.collider(this.plrWtich,this.floor);
-        this.physics.add.overlap(this.plrWtich, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
+        this.physics.add.collider(this.plrWitch,this.floor);
+        this.physics.add.overlap(this.plrWitch, this.floor, this.gameEnd, null, this); //bomb poofs when colliding with floor 
         // UI
         let PlayConfig = {
             fontFamily:  'PressStart2P', 
@@ -176,17 +176,20 @@ class Play extends Phaser.Scene {
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
+        delta /= 1000;
+
         if(!this.gameOver){
-            this.plrWtich.update(time, delta);
+            this.plrWitch.update(time, delta * 1000);
             this.rushBarrier.update();
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
             //scroll background
-            this.bgMoon.tilePositionX += this.bgPathScroll - 5.85; // starts 0.15
-            this.bgCity.tilePositionX += this.bgPathScroll - 5.75; // starts 0.25
-            this.bgCritters.tilePositionX += this.bgPathScroll - 4; // starts 2
-            this.bgTrees.tilePositionX += this.bgPathScroll - 2; //starts as 4
-            this.bgPath.tilePositionX += this.bgPathScroll; // starts at 6
+            delta *= 60;
+            this.bgMoon.tilePositionX += (this.bgPathScroll - 5.85) * delta; // starts 0.15
+            this.bgCity.tilePositionX += (this.bgPathScroll - 5.75) * delta; // starts 0.25
+            this.bgCritters.tilePositionX += (this.bgPathScroll - 4) * delta; // starts 2
+            this.bgTrees.tilePositionX += (this.bgPathScroll - 2) * delta; //starts as 4
+            this.bgPath.tilePositionX += (this.bgPathScroll) * delta; // starts at 6
         }
         if(this.gameOver){
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {
@@ -232,7 +235,7 @@ class Play extends Phaser.Scene {
             //console.log("gotta go faster");
             speedLow = (speedLow <12) ? speedLow+=1:12;
             this.speedUpdate = false;
-            this.plrWtich.hMoveSpeed = (this.plrWtich.hMoveSpeed < 300) ? this.plrWtich.hMoveSpeed+=50:300; 
+            this.plrWitch.hMoveSpeed = (this.plrWitch.hMoveSpeed < 300) ? this.plrWitch.hMoveSpeed+=50:300; 
             this.bgPathScroll +=1
         }
         if (this.p1Score %50 != 0 && !this.speedUpdate ){
@@ -240,15 +243,15 @@ class Play extends Phaser.Scene {
         }
         //the text will follow player
         if(this.stunEffect && !keyBomb.enabled ){
-             this.stunText.x = this.plrWtich.x -40;
-             this.stunText.y = this.plrWtich.y - 55;
+             this.stunText.x = this.plrWitch.x -40;
+             this.stunText.y = this.plrWitch.y - 55;
             if(!keyLeft.enabled){
-                this.plrWtich.setVelocityX(0);
+                this.plrWitch.setVelocityX(0);
             }
         }
         // when out of bounds arrows follow players position
-        if(this.plrWtich.y <0){
-            this.OutofBoundsText.x = this.plrWtich.x -40;
+        if(this.plrWitch.y <0){
+            this.OutofBoundsText.x = this.plrWitch.x -40;
         }
         else{
             this.OutofBoundsText.x = -200;
@@ -282,8 +285,8 @@ class Play extends Phaser.Scene {
                 },
             }
 
-            this.plrWtich.faceplantSlide(this.endscreen, this.bgPathScroll);
-            this.plrWtich.setTexture('witchFaceplant');
+            this.plrWitch.faceplantSlide(this.endscreen, this.bgPathScroll);
+            this.plrWitch.setTexture('witchFaceplant');
 
             //prints text
             if(this.endscreen == 1){
@@ -344,11 +347,11 @@ class Play extends Phaser.Scene {
     stunned(player,enemy){
         // Blast boost attack implementation
         // stun implmentation
-       if(!this.stunEffect && this.plrWtich.body.velocity.y > 0 && !this.gameOver){
+       if(!this.stunEffect && this.plrWitch.body.velocity.y > 0 && !this.gameOver){
             //console.log("stunned");
             //PLayer is stunned (loses controls)
             this.stunEffect = true;
-            this.plrWtich.stunned = true;
+            this.plrWitch.stunned = true;
             this.sound.play('sfx_stun');
             player.setTexture('witchStunned', 0);
 
@@ -359,8 +362,8 @@ class Play extends Phaser.Scene {
 
                 this.stunText.x = game.config.width + 400;
 
-                this.plrWtich.stunned = false;
-                this.plrWtich.setTexture('witchFlying', 0);
+                this.plrWitch.stunned = false;
+                this.plrWitch.setTexture('witchFlying', 0);
                 this.immunityVisual();
             } });
             //Player becomes vulnerable to stuns again, some time after regaining control
@@ -374,7 +377,7 @@ class Play extends Phaser.Scene {
             //Knockback
             player.KnockBack();
       }
-       else if(this.plrWtich.body.velocity.y < 0 && !this.stunEffect){
+       else if(this.plrWitch.body.velocity.y < 0 && !this.stunEffect){
             enemy.destroy();
             this.sound.play('sfx_mist');
             let die = this.add.sprite(enemy.x, enemy.y, 'ghostDie').setOrigin(0,0);
@@ -388,12 +391,12 @@ class Play extends Phaser.Scene {
     }
     immunityVisual(){
         this.vis = this.time.addEvent({delay: 300, callback: () =>{
-            this.plrWtich.alpha= 0.5;
+            this.plrWitch.alpha= 0.5;
         }, loop: true });
         this.invis = this.time.addEvent({delay: 600, callback: () =>{
-            this.plrWtich.alpha= 1;
+            this.plrWitch.alpha= 1;
         }, loop: true });
-        this.plrWtich.alpha= 1;
+        this.plrWitch.alpha= 1;
     }
     bombHitsFloor(floor, bomb){
         this.emitter.setPosition(bomb.x, bomb.y);

@@ -29,7 +29,7 @@ let config = {
     width: 960, // 16 x 9 aspect ratio. Can be scaled up by 2 for fullscreen or divided by 3 to get a good pixel art size
     height: 540,
     scale: {
-      autoCenter: Phaser.Scale.CENTER_BOTH
+      autoCenter: Phaser.Scale.CENTER_BOTH //Would use zoom: 2 to scale up but this fils entire 1920x1080 space, which is not ideal unless fullscreen
     },
     physics: {
         default: 'arcade',

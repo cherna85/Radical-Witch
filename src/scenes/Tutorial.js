@@ -354,23 +354,27 @@ class Tutorial extends Phaser.Scene {
     //Time = time passed since game launch
     //Delta = time since last frame in MS (Whole MS, not fractional seconds)
     update(time, delta) {
-        if (Phaser.Input.Keyboard.JustDown(keyBomb))
+        if (Phaser.Input.Keyboard.JustDown(keyBomb)){
             if(this.objectiveText.visible)
                 this.plrWitch.throwBomb();
             else
                 this.tutorialNextLine();
+        }
 
-        if (!this.gameOver) {
-            this.plrWitch.update(time, delta);
+        delta /= 1000;
+
+        if(!this.gameOver){
+            this.plrWitch.update(time, delta * 1000);
             this.rushBarrier.update();
             //console.log(this.groupExplosions.getLength())
             //Members are removed from the group when they are destroyed. So wtf?
             //scroll background
-            this.bgMoon.tilePositionX += this.bgPathScroll - 5.85; // starts 0.15
-            this.bgCity.tilePositionX += this.bgPathScroll - 5.75; // starts 0.25
-            this.bgCritters.tilePositionX += this.bgPathScroll - 4; // starts 2
-            this.bgTrees.tilePositionX += this.bgPathScroll - 2; //starts as 4
-            this.bgPath.tilePositionX += this.bgPathScroll; // starts at 6
+            delta *= 60;
+            this.bgMoon.tilePositionX += (this.bgPathScroll - 5.85) * delta; // starts 0.15
+            this.bgCity.tilePositionX += (this.bgPathScroll - 5.75) * delta; // starts 0.25
+            this.bgCritters.tilePositionX += (this.bgPathScroll - 4) * delta; // starts 2
+            this.bgTrees.tilePositionX += (this.bgPathScroll - 2) * delta; //starts as 4
+            this.bgPath.tilePositionX += (this.bgPathScroll) * delta; // starts at 6
         }
         if (this.gameOver) {
             if (Phaser.Input.Keyboard.JustDown(keyDown)) {

@@ -56,7 +56,7 @@ class PlayerWitch extends Phaser.Physics.Arcade.Sprite {
         to read, but might not match up with how physics object uses delta.
         Let me know if physics seems weird
         - Santiago */
-        delta /= 1000
+        delta /= 1000 //The time in seconds since the last frame (usually like 0.016)
         this.throwCooldownTimer -= delta;
         this.blastJumping -= delta;
         
