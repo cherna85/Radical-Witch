@@ -214,14 +214,14 @@ class Tutorial extends Phaser.Scene {
                 bottom: 10,
             }
         }
-        this.objectiveText = this.add.text(game.config.width - 20, this.tutorialText.height + 30, "", PlayConfig).setOrigin(1, 0.5);
-        this.objectiveText.visible = false;
+        this.objectiveText = this.add.text(game.config.width - 20, this.tutorialText.height + 50, "Press [Z] to advance", PlayConfig).setOrigin(1, 0.5);
+        this.objectiveText.setColor('#AAAAAA');
         this.objectiveText.setDepth(1);
-        this.checkMark = this.add.sprite(game.config.width - 136, this.tutorialText.height + 30, "uiCheckmark", 0).setOrigin(1, 0.5);
+        this.checkMark = this.add.sprite(game.config.width - 136, this.tutorialText.height + 50, "uiCheckmark", 0).setOrigin(1, 0.5);
         this.checkMark.visible = false;
-        this.checkMark.setScale(1);
+        this.checkMark.setDepth(1);
         this.objectiveSound = this.sound.add('sfx_objectiveDone', {volume: 0.7});
-        this.objectiveText.setDepth(1);
+        
         /*Need a spawner even so that we can have ghosts that continuously spawn
         Could have single respawn func be an event that fires once. On respawn, the current # of repeats is set to 0 and the thing is reset so it plays once again.
         Spawner is removed on each new line, so a line that has no spawner...maybe it would be undefined?
@@ -265,11 +265,12 @@ class Tutorial extends Phaser.Scene {
         
         let currentLine = this.tutorialMsgs[this.tutCurrLine]
         this.tutorialText.text = currentLine[0];
-        this.objectiveText.visible = false;
+        this.objectiveText.text = "Press [Z] to advance";
+        this.objectiveText.setColor('#AAAAAA');
         this.objectiveText.y = this.tutorialText.height + 50;
         this.checkMark.visible = false;
         this.checkMark.y = this.tutorialText.height + 50;
-        
+
         this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
 
@@ -298,7 +299,7 @@ class Tutorial extends Phaser.Scene {
             //Set up objective text
             this.objectiveGoal = currObjArray[2];
             this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
-            this.objectiveText.visible = true;
+            this.objectiveText.setColor('#FFFFFF');
         }
     }
     objectiveUpdate() { //Update objective counter and possible mark as complete
@@ -454,12 +455,13 @@ class Tutorial extends Phaser.Scene {
         if(this.respawnFunc != null) //Call the enemy spawn function again
             this.respawnFunc(this);
 
-        if(this.currObjectiveID != -1)
+        if(this.objectiveProgress > 0) //Maybe there should be an 'objective complete' var just so this is easier to understand
             this.sound.play('sfx_fail');        
 
-        if(this.currObjectiveID == 7 && this.objectiveProgress > 0) //If objective 7 and objective has not already been completed...
+        if(this.currObjectiveID == 7 && this.objectiveProgress > 0){ //If objective 7 and objective has not already been completed...
             this.objectiveProgress = this.objectiveGoal;
             this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
+        }
     }
 
     enemySpawn(group, yLow, yHigh, speed = undefined) {
