@@ -499,6 +499,11 @@ class Tutorial extends Phaser.Scene {
         if (player.blastJumping < -0.75) {
             //console.log("Player caught in blast!");
             player.blastJump();
+            if(this.plrWitch.stunned){ //Cancel stun & stun immunity
+                this.plrWitch.stunned = false;
+                this.regainControls.elapsed = (this.regainControls.delay - 1);
+                this.stunImmune.elapsed = (this.stunImmune.delay - 2);
+            }
         }
     }
     stunned(player, enemy) {
@@ -520,9 +525,11 @@ class Tutorial extends Phaser.Scene {
 
                     this.stunText.x = game.config.width + 400;
 
+                    if(this.plrWitch.stunned){
+                        this.plrWitch.setTexture('witchFlying', 0);
+                    }
+                    this.immunityVisual();  //Starts event that makes player's sprite flicker
                     this.plrWitch.stunned = false;
-                    this.plrWitch.setTexture('witchFlying', 0);
-                    this.immunityVisual();
                 }
             });
             //Player becomes vulnerable to stuns again, some time after regaining control
@@ -531,8 +538,9 @@ class Tutorial extends Phaser.Scene {
                 delay: 2500, callback: () => {
                     //console.log("not immune");
                     this.stunEffect = false;
-                    this.vis.paused = true;
-                    this.invis.paused = false;
+                    this.plrWitch.alpha= 1;
+                    this.vis.remove();
+                    this.invis.remove();
                 }
             });
             //Knockback

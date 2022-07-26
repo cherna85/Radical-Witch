@@ -229,7 +229,7 @@ class Play extends Phaser.Scene {
                 this.scene.start(sceneSelect);    
             }
         }
-        // implements speedup
+        // Speedup: Get faster every 50 points until cap of 15/12 for high/low
         if(this.p1Score %50 == 0 && this.speedUpdate ){
             speedHigh = (speedHigh <15) ? speedHigh+=1:15;
             //console.log("gotta go faster");
@@ -339,11 +339,18 @@ class Play extends Phaser.Scene {
     }
 
     // When player and explosion touch, send player upwards
+    /*Easy fix is to make blast jump cancel stun, but I'm concerned the game might get too easy, since you'd just need to dive straight
+    into an enemy and press throw. But I guess some timing is still required. Could maybe reduce aim-assist?*/
     plrBlastJump(player, explosion){
         //Player can only blast jump again after 0.75 seconds
         if(player.blastJumping < -0.75){
             //console.log("Player caught in blast!");
             player.blastJump();
+            if(this.plrWitch.stunned){ //Cancel stun & stun immunity
+                this.plrWitch.stunned = false;
+                this.regainControls.elapsed = (this.regainControls.delay - 1);
+                this.stunImmune.elapsed = (this.stunImmune.delay - 2);
+            }
         }
     }
     stunned(player,enemy){
@@ -364,17 +371,20 @@ class Play extends Phaser.Scene {
 
                 this.stunText.x = game.config.width + 400;
 
+                if(this.plrWitch.stunned){
+                    this.plrWitch.setTexture('witchFlying', 0);
+                }
+                this.immunityVisual();  //Starts event that makes player's sprite flicker
                 this.plrWitch.stunned = false;
-                this.plrWitch.setTexture('witchFlying', 0);
-                this.immunityVisual();
             } });
             //Player becomes vulnerable to stuns again, some time after regaining control
             //Current: Have 1.5 seconds of stun immunity (base delay - base delay of regainControls)
             this.stunImmune = this.time.addEvent({ delay: 2250 + this.p1Score * 5, callback: () =>{
                 //console.log("not immune");
                 this.stunEffect = false;
-                this.vis.paused = true;
-                this.invis.paused = false;
+                this.plrWitch.alpha= 1;
+                this.vis.remove();
+                this.invis.remove();
             } });
             //Knockback
             player.KnockBack();
