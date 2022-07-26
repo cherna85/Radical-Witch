@@ -197,8 +197,8 @@ class Tutorial extends Phaser.Scene {
             7: [this.ghostSpawnRegular, true, 5, this.enableDive, this.enableBombs, this.enableGravity],
             8: [null, false, 1, this.tutorialEnd]
         }
-        this.currObjectiveID = -1;
-        this.objevtiveProgress = 0;
+        this.currObjectiveID = -1; //If there is an objective currently active or during animation after an objective is complete
+        this.objectiveProgress = 0; //If 0 it means the objective is complete - no more progress can be made nor can it be reset
         this.objectiveGoal = 0;
         
         let PlayConfig = {
@@ -269,8 +269,12 @@ class Tutorial extends Phaser.Scene {
         this.objectiveText.y = this.tutorialText.height + 50;
         this.checkMark.visible = false;
         this.checkMark.y = this.tutorialText.height + 50;
+        
         this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
+
+        this.objectiveProgress = 0; //Reset progress
+        this.currObjectiveID = -1;
 
         //If there is an objective, advancing must be locked
         if(currentLine.length > 1){
@@ -298,11 +302,10 @@ class Tutorial extends Phaser.Scene {
         }
     }
     objectiveUpdate() { //Update objective counter and possible mark as complete
-        if(this.currObjectiveID != -1){
+        if(this.objectiveProgress > 0){
             this.objectiveProgress -= 1;
 
             if(this.objectiveProgress <= 0){
-                this.currObjectiveID = -1;
                 this.objectiveProgress = 0;
 
                 //Sounds and visual cues
@@ -357,7 +360,7 @@ class Tutorial extends Phaser.Scene {
             this.plrWitch.throwBomb();
         }
 
-        if(Phaser.Input.Keyboard.JustDown(keySelect) && !this.objectiveText.visible){
+        if(Phaser.Input.Keyboard.JustDown(keySelect) && this.currObjectiveID == -1){
             this.tutorialNextLine();
         }
 
@@ -454,7 +457,7 @@ class Tutorial extends Phaser.Scene {
         if(this.currObjectiveID != -1)
             this.sound.play('sfx_fail');        
 
-        if(this.currObjectiveID == 7)
+        if(this.currObjectiveID == 7 && this.objectiveProgress > 0) //If objective 7 and objective has not already been completed...
             this.objectiveProgress = this.objectiveGoal;
             this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
     }
