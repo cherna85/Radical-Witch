@@ -170,6 +170,9 @@ class Play extends Phaser.Scene {
         PlayConfig.fontSize = '32px';
         this.OutofBoundsText = this.add.text(game.config.width + 400, 0, "^^^^",  PlayConfig);
         this.speedUpdate = false;
+
+        playedBefore = 1;
+        localStorage.setItem('playedBefore', playedBefore);
     } 
     
 

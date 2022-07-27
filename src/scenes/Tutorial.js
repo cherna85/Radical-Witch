@@ -320,8 +320,9 @@ class Tutorial extends Phaser.Scene {
             this.objectiveText.text = (this.objectiveGoal - this.objectiveProgress) + " / " + this.objectiveGoal;
         }
     }
-    tutorialEnd(mainScene){ //Return to main menu
-        //ADD LATER: Mark tutorial as complete
+    tutorialEnd(mainScene){ //Return to main menu & mark tutorial as complete
+        playedBefore = 1;
+        localStorage.setItem('playedBefore', playedBefore);
         mainScene.scene.start("menuScene");
     }
     

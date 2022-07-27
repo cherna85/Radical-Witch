@@ -98,10 +98,8 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keySelect)) {
             this.sound.play('sfx_button');
 
-            if(sceneSelect == "playScene" && (true || playedBefore < 1)){
+            if(sceneSelect == "playScene" && (playedBefore < 1)){
                 this.scene.start("askTutorialScene");
-                playedBefore = 1;
-                localStorage.setItem('playedBefore', playedBefore);
             }
             else
                 this.scene.start(sceneSelect);    
