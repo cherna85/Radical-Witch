@@ -271,7 +271,8 @@ class Tutorial extends Phaser.Scene {
         this.checkMark.visible = false;
         this.checkMark.y = this.tutorialText.height + 50;
 
-        this.ongoingSpawner.remove(); //Turn off any active enemy spawners
+        if(this.tutCurrLine < 18)
+            this.ongoingSpawner.remove(); //Turn off any active enemy spawners
         this.respawnFunc = null;
 
         this.objectiveProgress = 0; //Reset progress
