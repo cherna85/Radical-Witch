@@ -58,11 +58,13 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/2, game.config.height/2 - 32 , 'Press Z to select',MenuConfig  ).setOrigin(0.5);
         MenuConfig.fontSize = '16px';
         MenuConfig.color =  '#FF994F';
-        this.playbutton = this.add.text(game.config.width/2, game.config.height/2 +32 , 'Play', MenuConfig).setOrigin(0.5);
+        this.playbutton = this.add.text(game.config.width/2, game.config.height/2 + 32, 'Play', MenuConfig).setOrigin(0.5);
         MenuConfig.shadow.blur =  0;
         MenuConfig.color =  '#FFFFFF';
         this.tutbutton = this.add.text(game.config.width/2, game.config.height/2 +64 , 'Tutorial', MenuConfig).setOrigin(0.5);
-        this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 +96 , 'Credit', MenuConfig).setOrigin(0.5);
+        this.storybutton = this.add.text(game.config.width/2, game.config.height/2 + 96, 'Story', MenuConfig).setOrigin(0.5);
+        this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 + 128, 'Options', MenuConfig).setOrigin(0.5);
+        this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 + 160, 'Credit', MenuConfig).setOrigin(0.5);
 
         // get any data of a highscore 
         // this line of code taken from 
@@ -78,8 +80,14 @@ class Menu extends Phaser.Scene {
                this.updateMenu(this.playbutton,this.tutbutton, 'tutorialScene');
             }
             else if(sceneSelect == 'tutorialScene'){
-                this.updateMenu(this.tutbutton, this.creditsbutton, 'creditScene');
-            }  
+                this.updateMenu(this.tutbutton, this.storybutton, 'storyScene');
+            }
+            else if(sceneSelect == 'storyScene'){
+                this.updateMenu(this.storybutton, this.optionsbutton, 'optionsScene');
+            }
+            else if(sceneSelect == 'optionsScene'){
+                this.updateMenu(this.optionsbutton, this.creditsbutton, 'creditScene');
+            }
             else if(sceneSelect == 'creditScene'){
                 this.updateMenu(this.creditsbutton, this.playbutton, 'playScene');
             }  
@@ -90,9 +98,15 @@ class Menu extends Phaser.Scene {
             }
             else if(sceneSelect == 'tutorialScene'){
                 this.updateMenu(this.tutbutton, this.playbutton, 'playScene');
-            }  
+            }
+            else if(sceneSelect == 'storyScene'){
+                this.updateMenu(this.storybutton, this.tutbutton, 'tutorialScene');
+            }
+            else if(sceneSelect == 'optionsScene'){
+                this.updateMenu(this.optionsbutton, this.storybutton, 'storyScene');
+            }
             else if(sceneSelect == 'creditScene'){
-                this.updateMenu(this.creditsbutton, this.tutbutton, 'tutorialScene');
+                this.updateMenu(this.creditsbutton, this.optionsbutton, 'optionsScene');
             }  
         }
         if (Phaser.Input.Keyboard.JustDown(keySelect)) {

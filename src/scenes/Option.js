@@ -1,6 +1,6 @@
-class Story extends Phaser.Scene {
+class Option extends Phaser.Scene {
     constructor() {
-        super('storyScene');
+        super('optionsScene');
     }
 
     preload(){
