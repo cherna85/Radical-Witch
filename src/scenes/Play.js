@@ -93,13 +93,13 @@ class Play extends Phaser.Scene {
         this.groupEnemies.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemies.runChildUpdate = true;
 
-        this.groupEnemies.add(new Enemy(this, 700, 330, 'enemy', 0, 10));
         //creating bottom level spawners 
         this.groupEnemieslow = this.physics.add.group();
         this.groupEnemieslow.defaults = {}; //Prevents group from chainging properies (such as gravity) of added objects
         this.groupEnemieslow.runChildUpdate = true;
 
-        this.groupEnemies.add(new Enemy(this,  900, game.config.height-125, 'enemy', 0, 10));
+        //First ghost spawns at a garunteed height and speed, such that player does not have to move
+        this.firstGhost = this.groupEnemies.add(new Enemy(this, game.config.width -100, game.config.height-200, 'enemy', 0, 10, speedLow + 1));
 
         //number of seconds it takes to spawn a new enemy
         let frequency = 1.0;
