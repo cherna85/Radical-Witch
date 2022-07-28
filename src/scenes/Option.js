@@ -69,6 +69,9 @@ class Option extends Phaser.Scene {
             //TODO: Update the volume on the save file
             this.scene.start('menuScene');
         }
+
+        let musicDisplayVol = Math.round(this.game.music.volume * 10) / 10
+        this.textMusic.setText("Music Volume < " + musicDisplayVol + " >");
     }
 
     changeRow(posChange){
@@ -94,13 +97,12 @@ class Option extends Phaser.Scene {
         if(audioChannel == this.textMusic){
             //TODO: Update the volume level
             let newVolume = this.game.music.volume += changeAmount;
-            console.log(newVolume);
             newVolume = Math.min(Math.max(newVolume, 0.0), 1.0);
-            
-            this.game.music.volume = newVolume;
-            //TODO: Change the text of the row
-            this.textMusic.setText("Music Volume < " + this.game.music.volume + " >");
+            this.game.music.volume = newVolume; //Doesn't update to 0.9 if I go left first?
+            //It doesn't change until the next frame
+            console.log("True volume: " + newVolume)
             //TODO: Starting text should be whatever volume is currently
         }
+        //TODO: Apply to sound effects as well
     }
 }
