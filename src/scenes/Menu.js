@@ -67,11 +67,13 @@ class Menu extends Phaser.Scene {
         this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 + 128, 'Options', MenuConfig).setOrigin(0.5);
         this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 + 160, 'Credit', MenuConfig).setOrigin(0.5);
 
-        // get any data of a highscore 
+        // get any data of a highscore & volume settings
         // this line of code taken from 
         //https://phaserjs.com/saving-high-score
         highscore = parseInt(localStorage.getItem(localStorageName)) || 0;
         playedBefore = parseInt(localStorage.getItem('playedBefore')) || 0;
+        game.music.volume = parseFloat(localStorage.getItem('musicVolume')) || 1.0;
+        game.sound.volume = parseFloat(localStorage.getItem('soundVolume')) || 1.0;
         //Display Highscore
         this.add.text(150,40, 'Highscore: ' + highscore, MenuConfig ).setOrigin(0.5);
     }

@@ -36,12 +36,13 @@ class Option extends Phaser.Scene {
         //Text options
         MenuConfig.fontSize = '16px';
         MenuConfig.color =  '#FF994F';
+        //Starting text is what the volume is currently
         this.textMusic = this.add.text(game.config.width/2, game.config.height/2,
         "Music Volume < " + this.game.music.volume + " >", MenuConfig).setOrigin(0.5);
         MenuConfig.shadow.blur =  0;
         MenuConfig.color =  '#FFFFFF';
         this.textSound = this.add.text(game.config.width/2, game.config.height/2 + 32,
-         "Sound Volume < " + 1.0 + " >", MenuConfig).setOrigin(0.5);
+         "Sound Volume < " + this.game.sound.volume + " >", MenuConfig).setOrigin(0.5);
         this.textReturn = this.add.text(game.config.width/2, game.config.height/2 + 64,
         "Return", MenuConfig).setOrigin(0.5);
 
@@ -64,14 +65,17 @@ class Option extends Phaser.Scene {
         else if(Phaser.Input.Keyboard.JustDown(keyRight))
             this.changeVolume(this.rows[this.currentRow], 1);
 
-        //Return to main menu
+        //Return to main menu & Update the volume on the save file
         if(Phaser.Input.Keyboard.JustDown(keySelect) && this.rows[this.currentRow] == this.textReturn){
-            //TODO: Update the volume on the save file
+            localStorage.setItem('musicVolume', game.music.volume);
+            localStorage.setItem('soundVolume', game.sound.volume);
             this.scene.start('menuScene');
         }
 
         let musicDisplayVol = Math.round(this.game.music.volume * 10) / 10
         this.textMusic.setText("Music Volume < " + musicDisplayVol + " >");
+        let soundDisplayVol = Math.round(this.game.sound.volume * 10) / 10
+        this.textSound.setText("Sound Volume < " + soundDisplayVol + " >");
     }
 
     changeRow(posChange){
@@ -95,14 +99,22 @@ class Option extends Phaser.Scene {
     changeVolume(audioChannel, direction){
         let changeAmount = direction * 0.1;
         if(audioChannel == this.textMusic){
-            //TODO: Update the volume level
+            //Update the volume level
             let newVolume = this.game.music.volume += changeAmount;
-            newVolume = Math.min(Math.max(newVolume, 0.0), 1.0);
+            newVolume = Math.min(Math.max(newVolume, 0.0), 2.0);
             this.game.music.volume = newVolume; //Doesn't update to 0.9 if I go left first?
             //It doesn't change until the next frame
             console.log("True volume: " + newVolume)
-            //TODO: Starting text should be whatever volume is currently
         }
-        //TODO: Apply to sound effects as well
+        else if(audioChannel == this.textSound){
+            let newVolume = this.game.sound.volume += changeAmount;
+            newVolume = Math.min(Math.max(newVolume, 0.0), 2.0);
+            this.game.sound.volume = newVolume;
+
+            console.log("True volume: " + newVolume)
+            this.time.addEvent({delay: 1, callback: () => {
+                this.sound.play('sfx_button');
+            }})
+        }
     }
 }
