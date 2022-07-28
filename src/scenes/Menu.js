@@ -16,6 +16,23 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_objectiveDone', './assets/sfx/objectiveDone.wav')
     }
     create() {
+        // get any data of a highscore & volume settings
+        // this line of code taken from 
+        //https://phaserjs.com/saving-high-score
+        highscore = parseInt(localStorage.getItem(localStorageName)) || 0;
+        playedBefore = parseInt(localStorage.getItem('radWitch-playedBefore')) || 0;
+        let getMusicVolume = parseFloat(localStorage.getItem('radWitch-musicVolume'));
+        console.log(getMusicVolume);
+        if(getMusicVolume == 0)
+            game.music.volume = 0;
+        else
+            game.music.volume = getMusicVolume || 1.0;
+        let getSoundVolume = parseFloat(localStorage.getItem('radWitch-soundVolume'));
+        if(getSoundVolume == 0)
+            game.sound.volume = 0;
+        else
+            game.sound.volume = getSoundVolume || 1.0;
+
         this.game.sound.stopAll();
         this.game.music.stopAll();
         var radicalMusic = this.game.music.add('bg_music', {volume: 0.4}); 
@@ -67,13 +84,6 @@ class Menu extends Phaser.Scene {
         this.optionsbutton = this.add.text(game.config.width/2, game.config.height/2 + 128, 'Options', MenuConfig).setOrigin(0.5);
         this.creditsbutton = this.add.text(game.config.width/2, game.config.height/2 + 160, 'Credit', MenuConfig).setOrigin(0.5);
 
-        // get any data of a highscore & volume settings
-        // this line of code taken from 
-        //https://phaserjs.com/saving-high-score
-        highscore = parseInt(localStorage.getItem(localStorageName)) || 0;
-        playedBefore = parseInt(localStorage.getItem('playedBefore')) || 0;
-        game.music.volume = parseFloat(localStorage.getItem('musicVolume')) || 1.0;
-        game.sound.volume = parseFloat(localStorage.getItem('soundVolume')) || 1.0;
         //Display Highscore
         this.add.text(150,40, 'Highscore: ' + highscore, MenuConfig ).setOrigin(0.5);
     }

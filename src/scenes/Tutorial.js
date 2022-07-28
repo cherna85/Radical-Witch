@@ -322,7 +322,7 @@ class Tutorial extends Phaser.Scene {
     }
     tutorialEnd(mainScene){ //Return to main menu & mark tutorial as complete
         playedBefore = 1;
-        localStorage.setItem('playedBefore', playedBefore);
+        localStorage.setItem('radWitch-playedBefore', playedBefore);
         mainScene.scene.start("menuScene");
     }
     

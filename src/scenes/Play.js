@@ -172,7 +172,7 @@ class Play extends Phaser.Scene {
         this.speedUpdate = false;
 
         playedBefore = 1;
-        localStorage.setItem('playedBefore', playedBefore);
+        localStorage.setItem('radWitch-playedBefore', playedBefore);
     } 
     
 

@@ -50,7 +50,7 @@ let config = {
 let sceneSelect = 'playScene';
 let enemyGroup;
 
-let localStorageName = "Radical Witch"
+let localStorageName = "radWitch-highScore"
 let highscore = 0;
 let playedBefore = 0; //0 = false, 1+ = true
 

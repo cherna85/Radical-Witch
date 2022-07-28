@@ -67,8 +67,8 @@ class Option extends Phaser.Scene {
 
         //Return to main menu & Update the volume on the save file
         if(Phaser.Input.Keyboard.JustDown(keySelect) && this.rows[this.currentRow] == this.textReturn){
-            localStorage.setItem('musicVolume', game.music.volume);
-            localStorage.setItem('soundVolume', game.sound.volume);
+            localStorage.setItem('radWitch-musicVolume', game.music.volume);
+            localStorage.setItem('radWitch-soundVolume', game.sound.volume);
             this.scene.start('menuScene');
         }
 
