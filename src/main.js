@@ -39,7 +39,12 @@ let config = {
         }
     },
     scene: [ Menu, Play, Tutorial, Story, Option, Credit, AskTutorial ],
-    antialias: true
+    antialias: true,
+    callbacks: {
+      preBoot: function (game) { //Adds another sound manager for the music
+        game.music = Phaser.Sound.SoundManagerCreator.create(game);
+      }
+    }
 }
 // for selecting menu
 let sceneSelect = 'playScene';
