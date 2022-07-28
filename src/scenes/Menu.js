@@ -35,7 +35,7 @@ class Menu extends Phaser.Scene {
 
         this.game.sound.stopAll();
         this.game.music.stopAll();
-        var radicalMusic = this.game.music.add('bg_music', {volume: 0.4}); 
+        var radicalMusic = this.game.music.add('bg_music', {volume: 0.6}); 
         radicalMusic.setLoop(true);
         radicalMusic.play();
         this.menuSplash = this.add.tileSprite(0, 0, 960, 540, 'menuSplash').setOrigin(0,0);
