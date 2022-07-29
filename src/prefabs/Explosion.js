@@ -26,7 +26,7 @@ class Explosion extends Phaser.Physics.Arcade.Sprite {
             delta /= 1000;
 
             this.lifespan -= delta;
-            this.x -= this.move * 60 * delta;
+            this.x -= (this.move * 60 * delta);
             if(this.lifespan <= 0){
                   //Disables further overlap interactions after [lifespan] seconds
                   this.body.setEnable(false);
