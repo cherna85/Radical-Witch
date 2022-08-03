@@ -53,7 +53,7 @@ class Play extends Phaser.Scene {
         //particles
         let particles = this.add.particles('poof');
         this.emitter = particles.createEmitter();
-
+        this.emitter.setPosition(-game.config.width, -game.config.height);
 
 
         //Explosion animation
